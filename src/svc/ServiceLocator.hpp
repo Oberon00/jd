@@ -1,0 +1,51 @@
+#ifndef SERVICE_LOCATOR_HPP_INCLUDED
+#define SERVICE_LOCATOR_HPP_INCLUDED SERVICE_LOCATOR_HPP_INCLUDED
+
+#include <stdexcept>
+#include <unordered_map>
+
+class StateManager;
+class LuaVm;
+class Mainloop;
+class DrawService;
+class EventDispatcher;
+class EntityCollection;
+class CollisionManager;
+class Timer;
+
+class Component;
+class MetaComponent;
+
+typedef Component Service;
+
+class ServiceLocator {
+public:
+    class Error: public std::runtime_error {
+    public:
+        Error(std::string const& msg): std::runtime_error(msg) { }
+    };
+
+    template<typename T>
+    static T& get()
+    {
+        return ServiceLocator::get(T::staticMetaComponent).as<T>();
+    }
+
+    static Component& get (MetaComponent const& m);
+
+    static void registerService(Service& s);
+
+    static StateManager& stateManager();
+    static LuaVm& luaVm();
+    static Mainloop& mainloop();
+    static DrawService& drawService();
+    static EventDispatcher& eventDispatcher();
+    static EntityCollection& entityRoot();
+    static CollisionManager& collisionManager();
+    static Timer& timer();
+
+private:
+    static std::unordered_map<MetaComponent const*, Service*> registry;
+};
+
+#endif
