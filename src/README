@@ -1,0 +1,6 @@
+JadeEngine
+==========
+
+**JadeEngine** (or '**jd**' for short) is a game Engine written in *C++* for
+*Lua* with *SFML* for graphics and audio (not implemented yet), *PhysFS* as
+virtual file system and a custom *TMX-Loader* (Tiled Map Editor's format).
