@@ -51,9 +51,6 @@ void ResourceManager<ResT>::tidy()
 			 it = m_resMap.erase(it);
 		 else ++it;
 	 }
-    //m_resMap.erase(std::remove_if(m_resMap.begin(), m_resMap.end(),
-    //        [](resMap_t::reference r) { return r.second.expired(); }),
-    //    m_resMap.end());
 }
 
 template<typename ResT>

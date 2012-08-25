@@ -83,9 +83,4 @@ void init(LuaVm& vm)
             .def(const_self == other<Entity*>())
 #       undef LHCURCLASS // avoid compiler warning
     ];
-
-    //lua_State* L = vm.L();
-    //lua_getglobal(L, "jd");
-    //lua_getfield(L, -1, "Entity");
-    //lua_getmetatable(L, -1
 }

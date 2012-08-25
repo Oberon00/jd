@@ -5,10 +5,10 @@
 
 // Provide a function of the following form to use AutoResource<mediaT, resT>:
 // 
-//void updateAutoResourceMedia(mediaT& m, typename ResourceTraits<resT>::Ptr p)
-//{
+// void updateAutoResourceMedia(mediaT& m, typename ResourceTraits<resT>::Ptr p)
+// {
 //    m.setWhatever(*p); 
-//}
+// }
 
 template <typename mediaT, typename resT>
 class AutoResource: public mediaT

@@ -332,13 +332,6 @@ static int Rect_contains(lua_State* L)
 }
 
 
-// LuaVec2 is trivially destructible
-//static int Vec2_gc(lua_State* L)
-//{
-//    LuaVec2* vec2 = tovec2(L, 1);
-//    vec2->~LuaVec2();
-//    return 0;
-//}
 
 template <typename T>
 void Vec_export(lua_State* L)
@@ -355,6 +348,7 @@ void Vec_export(lua_State* L)
         {"__mul", &Vec_mul<T>},
         {"__div", &Vec_div<T>},
         {"__tostring", &geo_tostring<T>},
+        // no __gc, because LuaVec is trivially destructible
         {nullptr, nullptr}
     };
     luaL_setfuncs(L, fns, 0);

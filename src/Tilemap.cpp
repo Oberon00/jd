@@ -168,8 +168,6 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     std::size_t const mapSkipY = size.x - distance.x;
     std::size_t const mapSkipZ =
         size.x * size.y - distance.x * distance.y - mapSkipY * distance.y;
-        //firstTPos.x + firstTPos.y
-        //+ size.x + 1 - lastTPos.x + size.y + 1 - lastTPos.y;
 
     std::size_t iMap = index(Vector3u(
         firstTPos.x,
