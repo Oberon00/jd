@@ -7,7 +7,6 @@
 #include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/Timer.hpp"
-#include "Collisions.hpp"
 
 /* static */ std::unordered_map<MetaComponent const*, Service*> ServiceLocator::registry;
 
@@ -20,7 +19,6 @@
         return *vn##_;                                            \
     }
 
-DEFINE_SVC_GETTER(CollisionManager, collisionManager)
 DEFINE_SVC_GETTER(StateManager, stateManager)
 DEFINE_SVC_GETTER(LuaVm, luaVm)
 DEFINE_SVC_GETTER(Mainloop, mainloop)
@@ -41,7 +39,6 @@ DEFINE_SVC_GETTER(Timer, timer)
     else ENTRY(Mainloop, mainloop)
     else ENTRY(EventDispatcher, eventDispatcher)
     else ENTRY(DrawService, drawService)
-    else ENTRY(CollisionManager, collisionManager)
     else ENTRY(Timer, timer)
 
 #   undef ENTRY

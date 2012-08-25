@@ -29,7 +29,6 @@ static void init(LuaVm& vm)
         LHMEMFN(mainloop),
         LHMEMFN(drawService),
         LHMEMFN(eventDispatcher),
-        LHMEMFN(collisionManager),
         LHMEMFN(timer),
         def("get", &getService)
     ] ];

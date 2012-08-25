@@ -11,7 +11,6 @@
 #include "svc/Configuration.hpp"
 #include "svc/StateManager.hpp"
 #include "svc/Timer.hpp"
-#include "Collisions.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <boost/bind.hpp>
@@ -136,7 +135,6 @@ int main(int argc, char* argv[])
             luaVm.initLibs();
             LOG_D("Finished initializing Lua.");
 
-            ServiceEntry<CollisionManager> collisionManager;
             ServiceEntry<Mainloop> mainloop;
             ServiceEntry<Configuration> conf;
             ServiceEntry<Timer> timer;
@@ -165,7 +163,6 @@ int main(int argc, char* argv[])
             regSvc(drawService);
             mainloop.connect_preFrame(bind(&Timer::beginFrame, &timer));
             mainloop.connect_update(bind(&Timer::processCallbacks, &timer));
-            mainloop.connect_interact(bind(&CollisionManager::collide, &collisionManager));
             mainloop.connect_preDraw(bind(&DrawService::clear, &drawService));
             mainloop.connect_draw(bind(&DrawService::draw, &drawService));
             mainloop.connect_postDraw(bind(&DrawService::display, &drawService));

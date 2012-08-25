@@ -13,9 +13,9 @@ namespace {
 
 class LTileCollideableGroup: public TileCollideableGroup, public CollideableGroupRemover {
 public:
-    LTileCollideableGroup(std::string const& id, jd::Tilemap& tm):
+    LTileCollideableGroup(CollisionManager& parent, std::string const& id, jd::Tilemap& tm):
         TileCollideableGroup(tm),
-        CollideableGroupRemover(id, ServiceLocator::collisionManager())
+        CollideableGroupRemover(id, parent)
       { }
 
 private:
@@ -24,8 +24,8 @@ private:
 
 class LRectCollideableGroup: public RectCollideableGroup, public CollideableGroupRemover {
 public:
-    explicit LRectCollideableGroup(std::string const& id):
-        CollideableGroupRemover(id, ServiceLocator::collisionManager())
+    LRectCollideableGroup(CollisionManager& parent, std::string const& id):
+        CollideableGroupRemover(id, parent)
       { }
 private:
     LRectCollideableGroup operator=(LTileCollideableGroup const&);
@@ -65,7 +65,8 @@ static void init(LuaVm& vm)
         cCollisionVec,
 
 #       define LHCURCLASS CollisionManager
-        class_<LHCURCLASS, Component, WeakRef<Component>>("CollisionManager")
+        LHCLASS
+            .def(constructor<>())
             .LHMEMFN(addPairing)
             .def("group", &LHCURCLASS::operator[])
             .LHMEMFN(collide)
@@ -101,7 +102,7 @@ static void init(LuaVm& vm)
                 CollideableGroupRemover,
                 CollideableGroup>
         >("TileCollideableGroup")
-            .def(constructor<std::string const&, jd::Tilemap&>())
+            .def(constructor<CollisionManager&, std::string const&, jd::Tilemap&>())
             .LHMEMFN(setProxy)
             .LHMEMFN(setColliding),
 #       undef LHCURCLASS
@@ -112,7 +113,7 @@ static void init(LuaVm& vm)
                 CollideableGroupRemover,
                 CollideableGroup>
         >("RectCollideableGroup")
-            .def(constructor<std::string const&>())
+            .def(constructor<CollisionManager&, std::string const&>())
             .LHMEMFN(add)
             .LHMEMFN(remove)
 #       undef LHCURCLASS

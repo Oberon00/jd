@@ -1,10 +1,7 @@
 #include "Collisions.hpp"
-#include "compsys/BasicMetaComponent.hpp"
 #include <boost/foreach.hpp>
 #include <algorithm>
 #include "Logfile.hpp"
-
-JD_BASIC_COMPONENT_IMPL(CollisionManager)
 
 CollisionManager::CollisionManager():
     m_pairsModified(false)

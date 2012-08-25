@@ -5,7 +5,6 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <boost/container/flat_map.hpp>
 #include <string>
-#include "compsys/Component.hpp"
 
 class Entity;
 
@@ -47,8 +46,7 @@ protected:
     }
 };
 
-class CollisionManager: public Component {
-    JD_COMPONENT
+class CollisionManager {
 public:
     class Error: public std::runtime_error {
         public: Error (char const* msg): std::runtime_error(msg) { }
