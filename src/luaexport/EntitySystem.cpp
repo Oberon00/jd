@@ -1,12 +1,30 @@
 #include "compsys/Entity.hpp"
+#include "compsys/Component.hpp"
 #include <luabind/adopt_policy.hpp>
 #include "compsys/ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
+#include <boost/foreach.hpp>
+#include "LuaUtils.hpp"
+#include "container.hpp"
 
 char const libname[] = "EntitySystem";
 #include "ExportThis.hpp"
 #include <luabind/operator.hpp>
+#include <luabind/dependency_policy.hpp>
+#include <luabind/iterator_policy.hpp>
 
+static std::vector<luabind::object> getComponents(Entity& this_, lua_State* L)
+{
+    LUAU_BALANCED_STACK_DBG(L);
+    auto const& comps = this_.components();
+    std::vector<luabind::object> result;
+    BOOST_FOREACH (Component const& c, comps) {
+        c.metaComponent().castUp(L, const_cast<Component*>(&c));
+        result.push_back(luabind::object(luabind::from_stack(L, -1)));
+        lua_pop(L, 1);
+    }
+    return result;
+}
 
 static luabind::object getComponent(Entity& this_, lua_State* L, std::string const& name)
 {
@@ -30,7 +48,11 @@ static luabind::object requireComponent(Entity& this_, lua_State* L, std::string
 
 static std::ostream& operator<< (std::ostream& os, Entity const& e)
 {
-    return os << "jd.Entity (" << &e << ')';
+    os << "jd.Entity ( @" << &e << "; ";
+    auto const& comps = e.components();
+    BOOST_FOREACH (Component const& c, comps)
+        os << c.metaComponent().name();
+    return os << ')';
 }
 
 static bool operator==(Entity const& lhs, Entity const* rhs)
@@ -38,15 +60,23 @@ static bool operator==(Entity const& lhs, Entity const* rhs)
 
 void init(LuaVm& vm)
 {
+    typedef std::vector<luabind::object> ObjectVec;
+    luabind::class_<ObjectVec> cObjectVec("ComponentList");
+    exportRandomAccessContainer(cObjectVec);
+
     vm.initLib("ComponentSystem");
     LHMODULE [
 
 #       define LHCURCLASS Entity
         class_<LHCURCLASS, WeakRef<LHCURCLASS>>("Entity")
+            .scope [
+                cObjectVec
+            ]
             .def(constructor<>())
             .LHMEMFN(finish)
             .LHMEMFN(kill)
             .LHPROPG(state)
+            .def("components", &getComponents, dependency(_1, result))
             .def("component", &getComponent)
             .def("require", &requireComponent)
             .def(tostring(const_self))

@@ -8,7 +8,6 @@
 #include "svc/DrawService.hpp"
 #include "svc/Timer.hpp"
 #include "Collisions.hpp"
-#include "compsys/Entity.hpp"
 
 static char const libname[] = "ServiceLocator";
 #include "ExportThis.hpp"

@@ -45,6 +45,12 @@ public:
     bool operator== (Entity const& rhs) const { return this == &rhs; }
     bool operator!= (Entity const& rhs) const { return this != &rhs; }
 
+    // You may const_cast the Components of the returned vector, but you
+    // must not modify the vector itself.
+    boost::ptr_vector<Component> const& components() const
+    {
+        return m_components;
+    }
 
 private:
     Entity(Entity const&); // Get better error reports on MSVC

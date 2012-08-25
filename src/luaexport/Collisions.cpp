@@ -8,8 +8,6 @@
 
 static char const libname[] = "Collisions";
 #include "ExportThis.hpp"
-#include <luabind/iterator_policy.hpp>
-#include <luabind/dependency_policy.hpp>
 
 namespace {
 
