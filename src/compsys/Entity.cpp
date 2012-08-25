@@ -1,27 +1,27 @@
 #include "Entity.hpp"
-#include "EntityCollection.hpp"
 #include "compsys/Component.hpp"
 #include "Logfile.hpp"
 #include <boost/foreach.hpp>
 
-Entity::Entity(EntityCollection& parent, std::string const& id):
-   m_parent(nullptr),
-   m_id(id),
-   m_state(created)
-{
-    parent.add(*this);
-    assert(m_parent == &parent);
-}
 
-Entity::Entity(std::string const& id):
-    m_parent(nullptr),
-    m_id(id),
+Entity::Entity():
     m_state(created)
 {
 }
 
 Entity::~Entity()
 {
+    if (m_state == finished) {
+        try { kill(); }
+        catch (std::exception const& e) {
+            LOG_E("Exception in Entity destructor: kill() threw:");
+            LOG_EX(e);
+        } catch (...) {
+            LOG_F("Exception in Entity destructor:"
+                  " kill() threw an unknown exception. Terminating.");
+            std::terminate();
+        }
+    }
 }
 
 void Entity::add(Component& c)

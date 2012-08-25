@@ -6,7 +6,6 @@ set(SVC_HEADERS
     svc/EventDispatcher.hpp
     svc/DrawService.hpp
     svc/Configuration.hpp
-    svc/EntityRoot.hpp
     svc/ServiceLocator.hpp
 	svc/Timer.hpp)    
 source_group("Service Headers" FILES ${SVC_HEADERS})
@@ -28,14 +27,12 @@ set(COMPSYS_HEADERS
     compsys/MetaComponent.hpp
     compsys/BasicMetaComponent.hpp
     compsys/ComponentRegistry.hpp
-    compsys/Entity.hpp
-    compsys/EntityCollection.hpp)
+    compsys/Entity.hpp)
 source_group("Component System Headers" FILES ${COMPSYS_HEADERS})
 
 set(COMPSYS_SOURCES
     compsys/MetaComponent.cpp
     compsys/ComponentRegistry.cpp
-    compsys/EntityCollection.cpp
     compsys/Entity.cpp)
 source_group("Component System Sources" FILES ${COMPSYS_SOURCES})
     
@@ -73,7 +70,6 @@ set(LUAEXPORT_SOURCES
     luaexport/FileSystemMeta.cpp
     luaexport/DrawServiceMeta.cpp
     luaexport/MainloopMeta.cpp
-    luaexport/EntityRootMeta.cpp
     luaexport/StateManagerMeta.cpp
     luaexport/State.cpp
     luaexport/TileCollisionComponentMeta.cpp
@@ -139,10 +135,11 @@ if (MSVC)
     add_definitions(
 	/wd4251 # disable warnings about undefined DLL interfaces (luabind)
     /wd4709 # comma operator in array subscript expression (warning is issued incorrectly)
-	/W4)
+	/W4) # warning level 4
     list(APPEND COMP_DEFS "_CRT_SECURE_NO_WARNINGS" "_SCL_SECURE_NO_WARNINGS")
     
-    # Comment out the following line, if you do not have VLD (http://vld.codeplex.com) installed
+    # Comment out the following line, if you do not have 
+	# VLD (http://vld.codeplex.com) installed
     list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
@@ -158,7 +155,6 @@ include_directories(
     ${SSIG_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR})
 add_executable(jd ${JD_HEADERS} ${JD_SOURCES})
-message(${COMP_DEFS})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd
     ${SFML_LIBRARIES}
@@ -166,3 +162,4 @@ target_link_libraries(jd
     ${LUABIND_LIBRARY}
     ${PHYSFS_LIBRARY}
     ${ZLIB_LIBRARY})
+

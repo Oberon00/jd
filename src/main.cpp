@@ -10,7 +10,6 @@
 #include "svc/EventDispatcher.hpp"
 #include "svc/Configuration.hpp"
 #include "svc/StateManager.hpp"
-#include "svc/EntityRoot.hpp"
 #include "svc/Timer.hpp"
 #include "Collisions.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -140,7 +139,6 @@ int main(int argc, char* argv[])
             ServiceEntry<CollisionManager> collisionManager;
             ServiceEntry<Mainloop> mainloop;
             ServiceEntry<Configuration> conf;
-            ServiceEntry<EntityRoot> entityRoot;
             ServiceEntry<Timer> timer;
 
             // Create the RenderWindow now, because some services depend on it.
@@ -188,10 +186,6 @@ int main(int argc, char* argv[])
 
             drawService.resetLayerViews();
 
-            timer.callEvery(
-                conf.get("misc.entityTidyingTimeout", sf::milliseconds(500)),
-                bind(&EntityRoot::tidy, &entityRoot));
-
             timer.callEvery(sf::milliseconds(600), [&timer, &window, &title]() {
                 std::string const fps = boost::lexical_cast<std::string>(
                     1.f / timer.frameDuration().asSeconds());
@@ -220,7 +214,6 @@ int main(int argc, char* argv[])
 
             LOG_D("Cleanup...");
             stateManager.clear();
-            entityRoot.clear();
             lua_gc(luaVm.L(), LUA_GCCOLLECT, 0);
 
         } catch (luabind::error const& e) {

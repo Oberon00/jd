@@ -9,20 +9,14 @@
 class Component;
 class MetaComponent;
 
-class EntityCollection;
-
 class Entity: public EnableWeakRefFromThis<Entity>, private boost::noncopyable {
 public:
     enum EntityState { created, finished, killed };
 
-    Entity(EntityCollection& parent, std::string const& id = std::string());
-    explicit Entity(std::string const& id = std::string());
+    Entity();
     ~Entity();
 
-    EntityCollection* parent() const { return m_parent; }
     void add(Component& c);
-    std::string const& id() const { return m_id; }
-    void setId(std::string const& id) { m_id = id; }
     void finish();
     void kill();
     EntityState state() const { return m_state; }
@@ -55,9 +49,6 @@ public:
 private:
     Entity(Entity const&); // Get better error reports on MSVC
 
-    friend EntityCollection;
-
-    EntityCollection* m_parent;
     std::string m_id;
     EntityState m_state;
     boost::ptr_vector<Component> m_components;

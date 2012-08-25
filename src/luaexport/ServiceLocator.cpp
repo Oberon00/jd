@@ -6,7 +6,6 @@
 #include "svc/Mainloop.hpp"
 #include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
-#include "svc/EntityRoot.hpp"
 #include "svc/Timer.hpp"
 #include "Collisions.hpp"
 #include "compsys/Entity.hpp"
@@ -31,7 +30,6 @@ static void init(LuaVm& vm)
         LHMEMFN(mainloop),
         LHMEMFN(drawService),
         LHMEMFN(eventDispatcher),
-        LHMEMFN(entityRoot),
         LHMEMFN(collisionManager),
         LHMEMFN(timer),
         def("get", &getService)

@@ -9,7 +9,6 @@ class LuaVm;
 class Mainloop;
 class DrawService;
 class EventDispatcher;
-class EntityCollection;
 class CollisionManager;
 class Timer;
 
@@ -40,7 +39,6 @@ public:
     static Mainloop& mainloop();
     static DrawService& drawService();
     static EventDispatcher& eventDispatcher();
-    static EntityCollection& entityRoot();
     static CollisionManager& collisionManager();
     static Timer& timer();
 

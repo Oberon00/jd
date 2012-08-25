@@ -6,7 +6,6 @@
 #include "svc/Mainloop.hpp"
 #include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
-#include "svc/EntityRoot.hpp"
 #include "svc/Timer.hpp"
 #include "Collisions.hpp"
 
@@ -27,7 +26,6 @@ DEFINE_SVC_GETTER(LuaVm, luaVm)
 DEFINE_SVC_GETTER(Mainloop, mainloop)
 DEFINE_SVC_GETTER(EventDispatcher, eventDispatcher)
 DEFINE_SVC_GETTER(DrawService, drawService)
-DEFINE_SVC_GETTER(EntityCollection, entityRoot)
 DEFINE_SVC_GETTER(Timer, timer)
 
 /* static */ void ServiceLocator::registerService(Service& s)
@@ -43,7 +41,6 @@ DEFINE_SVC_GETTER(Timer, timer)
     else ENTRY(Mainloop, mainloop)
     else ENTRY(EventDispatcher, eventDispatcher)
     else ENTRY(DrawService, drawService)
-    else ENTRY(EntityRoot, entityRoot)
     else ENTRY(CollisionManager, collisionManager)
     else ENTRY(Timer, timer)
 
