@@ -1,6 +1,6 @@
 #include "cmdline.hpp"
 #include <boost/lexical_cast.hpp>
-#include <boost/filesystem/v3/operations.hpp>
+#include <boost/filesystem/operations.hpp>
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/FileSystem.hpp"
@@ -64,7 +64,7 @@ static State* loadStateFromLua(std::string const& name)
         // The state must stay alive as long as the StateManager.
         // However, if we simply use luabind::adopt here, we cause a memory
         // leak. So, instead we bind the lifetime of the state to the one
-        // from the lua_State (== LuaVm in this case) .As long as the LuaVm is
+        // from the lua_State (== LuaVm in this case). As long as the LuaVm is
         // destroyed (shortly) *after* the StateManager it just works.
         // Otherwise, we would have a real problem: how could you possibly keep
         // a Lua object alive, longer than it's lua_State?
@@ -75,10 +75,9 @@ static State* loadStateFromLua(std::string const& name)
     } catch (luabind::cast_failed const& e) {
         LOG_E("failed casting lua value to " + std::string(e.info().name()));
     } catch (luabind::error const& e) {
-        LOG_E(luaU::Error(e, "failed loading state").what());
+        LOG_E(luaU::Error(e, "failed loading state \"" + name + '\"').what());
     } catch (std::exception const& e) {
         LOG_EX(e);
-        return nullptr;
     }
     log().write(
         "Loading State " + name + (s ? " finished." : " failed."),

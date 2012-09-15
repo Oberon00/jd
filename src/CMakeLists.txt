@@ -135,6 +135,7 @@ if (MSVC)
     add_definitions(
 	/wd4251 # disable warnings about undefined DLL interfaces (luabind)
     /wd4709 # comma operator in array subscript expression (warning is issued incorrectly)
+	/wd4250 # 'class1' : inherits 'class2::member' via dominance (Boost.IOStreams)
 	/W4) # warning level 4
     list(APPEND COMP_DEFS "_CRT_SECURE_NO_WARNINGS" "_SCL_SECURE_NO_WARNINGS")
     
