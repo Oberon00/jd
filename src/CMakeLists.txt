@@ -59,6 +59,7 @@ set(LUAEXPORT_HEADERS
 source_group("LuaExport Headers" FILES ${LUAEXPORT_HEADERS})
 
 set(LUAEXPORT_SOURCES
+	luaexport/LuaExtra.cpp
     luaexport/SfSystem.cpp
     luaexport/SfWindow.cpp
     luaexport/SfGraphics.cpp
