@@ -37,8 +37,9 @@ static std::string const searchPath(
         if (PHYSFS_exists(filename))
             return std::string(elem.begin(), elem.end());
     }
+    replace_all(path, std::string(1, '\0'), ";"); // print all elements in error message
     throw luaU::Error(
-        "none of the files in path could be opened; searched: " + path);
+        "none of the files in path could be opened:\n\t\t" + path);
 }
 
 static int findPackageInPhysFs(lua_State* L)
