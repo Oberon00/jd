@@ -51,7 +51,7 @@ static std::ostream& operator<< (std::ostream& os, Entity const& e)
     os << "jd.Entity ( @" << &e << "; ";
     auto const& comps = e.components();
     BOOST_FOREACH (Component const& c, comps)
-        os << c.metaComponent().name();
+        os << c.metaComponent().name() << ' ';
     return os << ')';
 }
 
@@ -68,7 +68,7 @@ void init(LuaVm& vm)
     LHMODULE [
 
 #       define LHCURCLASS Entity
-        class_<LHCURCLASS, WeakRef<LHCURCLASS>>("Entity")
+		LHCLASS
             .scope [
                 cObjectVec
             ]
