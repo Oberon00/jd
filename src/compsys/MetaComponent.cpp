@@ -158,7 +158,7 @@ Component* LuaMetaComponent::create() const
 void LuaMetaComponent::castUp(lua_State* L, Component* c) const
 {
     assert(dynamic_cast<wrap_Component*>(c));
-    luabind::object o(L, c->ref());
+	luabind::object o(L, c->ref<wrap_Component>());
     o.push(L);
 }
 
