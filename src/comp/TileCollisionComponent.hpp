@@ -17,6 +17,7 @@ class TileCollisionComponent: public Component {
     SSIG_DEFINE_MEMBERSIGNAL(overridden, void(Vector3u, TileCollisionComponent&))
 
 public:
+    explicit TileCollisionComponent(Entity& parent);
     explicit TileCollisionComponent(TileCollideableGroup& group);
     TileCollisionComponent(Entity& parent, TileCollideableGroup& group);
 
@@ -41,7 +42,7 @@ private:
     ScopedConnection<
         void(sf::Vector3<unsigned>, sf::Vector3<unsigned>)
     > m_con_positionChanged;
-    TileCollideableGroup& m_group;
+    TileCollideableGroup* m_group;
 };
 
 #endif
