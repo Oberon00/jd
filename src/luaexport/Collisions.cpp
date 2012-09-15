@@ -5,6 +5,7 @@
 #include "RectCollideableGroup.hpp"
 #include "container.hpp"
 #include "svc/ServiceLocator.hpp"
+#include "Tilemap.hpp"
 
 static char const libname[] = "Collisions";
 #include "ExportThis.hpp"
@@ -16,7 +17,7 @@ public:
     LTileCollideableGroup(CollisionManager& parent, std::string const& id, jd::Tilemap& tm):
         TileCollideableGroup(tm),
         CollideableGroupRemover(id, parent)
-      { }
+      { parent.addGroup(id, *this); }
 
 private:
     LTileCollideableGroup operator=(LTileCollideableGroup const&);
@@ -26,7 +27,7 @@ class LRectCollideableGroup: public RectCollideableGroup, public CollideableGrou
 public:
     LRectCollideableGroup(CollisionManager& parent, std::string const& id):
         CollideableGroupRemover(id, parent)
-      { }
+      { parent.addGroup(id, *this); }
 private:
     LRectCollideableGroup operator=(LTileCollideableGroup const&);
 
@@ -87,7 +88,8 @@ static void init(LuaVm& vm)
             .def("colliding", 
                 (CollisionVec const(LHCURCLASS::*)(sf::Vector2f, sf::Vector2f))
                     &LHCURCLASS::colliding)
-            .LHMEMFN(collideWith),
+            .LHMEMFN(collideWith)
+            .LHMEMFN(clear),
 #       undef LHCURCLASS
 
 #       define LHCURCLASS CollideableGroupRemover
@@ -96,22 +98,26 @@ static void init(LuaVm& vm)
             .LHPROPG(id),
 #       undef LHCURCLASS
 
+        class_<TileCollideableGroup, CollideableGroup>("@TileCollideableGroup@"),
+
 #       define LHCURCLASS LTileCollideableGroup
         class_<LHCURCLASS,
             bases<
                 CollideableGroupRemover,
-                CollideableGroup>
+                TileCollideableGroup>
         >("TileCollideableGroup")
             .def(constructor<CollisionManager&, std::string const&, jd::Tilemap&>())
             .LHMEMFN(setProxy)
-            .LHMEMFN(setColliding),
+            .LHMEMFN(setColliding)
+            .LHPROPG(tilemap),
 #       undef LHCURCLASS
 
+        class_<RectCollideableGroup, CollideableGroup>("@RectCollideableGroup@"),
 #       define LHCURCLASS LRectCollideableGroup
         class_<LHCURCLASS,
             bases<
                 CollideableGroupRemover,
-                CollideableGroup>
+                RectCollideableGroup>
         >("RectCollideableGroup")
             .def(constructor<CollisionManager&, std::string const&>())
             .LHMEMFN(add)
