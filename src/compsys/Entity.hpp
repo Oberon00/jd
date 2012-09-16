@@ -55,7 +55,6 @@ public:
 private:
     Entity(Entity const&); // Get better error reports on MSVC
 
-    std::string m_id;
     EntityState m_state;
     boost::ptr_vector<Component> m_components;
 };
