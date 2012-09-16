@@ -209,8 +209,15 @@ void LuaVm::deinit()
 	lua_pushliteral(m_L, "package");
 	lua_rawget(m_L, -2);
 
+	if (lua_isnil(m_L, -1)) {
+		// already cleared.
+		lua_pop(m_L, 2); // nil, globals table
+		return;
+	}
+
 	lua_pushliteral(m_L, "loaded");
 	lua_rawget(m_L, -2);
+
 	clearTable(m_L, -1);
 
 	lua_pushliteral(m_L, "preload");
