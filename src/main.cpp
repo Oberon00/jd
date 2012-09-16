@@ -210,7 +210,7 @@ int main(int argc, char* argv[])
 
             LOG_D("Cleanup...");
             stateManager.clear();
-            lua_gc(luaVm.L(), LUA_GCCOLLECT, 0);
+			luaVm.deinit();
 
         } catch (luabind::error const& e) {
             throw luaU::Error(e);

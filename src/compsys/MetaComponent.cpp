@@ -4,6 +4,9 @@
 #include <unordered_map>
 #include <boost/foreach.hpp>
 #include "LuaUtils.hpp"
+#include "svc/ServiceLocator.hpp"
+#include "svc/LuaVm.hpp"
+#include "Logfile.hpp"
 
 static char const libname[] = "ComponentSystem";
 #include "luaexport/ExportThis.hpp"
@@ -70,7 +73,15 @@ public:
     virtual MetaComponent const& metaComponent() const { return *m_metaComponent; }
 
     virtual void initComponent() { call<void>("initComponent"); }
-    virtual void cleanupComponent() { call<void>("cleanupComponent"); }
+    virtual void cleanupComponent()
+	{
+		if (ServiceLocator::luaVm().L()) {
+			call<void>("cleanupComponent");
+		} else {
+			LOG_W("wrap_Component::cleanupComponent: cannot dispatch to Lua, because"
+			     " the lua_State is closing.");
+		}
+	}
 
     static void nop(Component*) { /* NOP */ }
 

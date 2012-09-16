@@ -23,6 +23,8 @@ public:
     void initLib(std::string const& libname);
     void initLibs();
 
+	void deinit();
+
     lua_State* L() { return m_L; }
 
     static LuaVm& get(lua_State* L);

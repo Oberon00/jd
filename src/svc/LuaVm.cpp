@@ -116,17 +116,14 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
 
 LuaVm::~LuaVm()
 {
-    // Try to avoid crashes caused by the undefined order
-    // in which lua_close calls finalizers.
-    lua_createtable(m_L, 1, 0);
-    lua_pushboolean(m_L, true);
-    lua_setfield(m_L, -2, "CLOSING");
-    lua_setglobal(m_L, "jd");
-    lua_gc(m_L, LUA_GCCOLLECT, 0);
+    deinit();
     
     if (lua_gettop(m_L) != 0)
         LOG_W("Elements left on Lua stack: " + luaU::dumpstack(m_L));
-    lua_close(m_L);
+
+	lua_State* L = m_L;
+	m_L = nullptr;
+    lua_close(L);
 }
 
 /* static */ void LuaVm::registerLib(std::string const& libname, LibInitFn const& initFn)
@@ -176,6 +173,57 @@ void LuaVm::initLibs()
             lib.second.initFn(*this);
             r.commit();
         }
+}
+
+
+static void clearTable(lua_State* L, int idx)
+{
+	idx = lua_absindex(L, idx);
+	// see http://www.lua.org/manual/5.2/manual.html#lua_next
+    lua_pushnil(L);
+    while (lua_next(L, idx) != 0) {
+		lua_pop(L, 1); // remove value, keep key on stack for lua_next
+		lua_pushvalue(L, -1); // copy key
+		lua_pushnil(L); // new value
+		lua_rawset(L, idx);
+    }
+	lua_pop(L, 1);
+}
+
+void LuaVm::deinit()
+{
+	// Try to avoid crashes caused by the undefined order
+    // in which lua_close calls finalizers.
+
+	lua_gc(m_L, LUA_GCCOLLECT, 0);
+
+    lua_createtable(m_L, 1, 0);
+    lua_pushboolean(m_L, true);
+    lua_setfield(m_L, -2, "CLOSING");
+    lua_setglobal(m_L, "jd");
+    lua_gc(m_L, LUA_GCCOLLECT, 0);
+
+	lua_pushglobaltable(m_L);
+
+	// clear package.loaded and .preload //
+	lua_pushliteral(m_L, "package");
+	lua_rawget(m_L, -2);
+
+	lua_pushliteral(m_L, "loaded");
+	lua_rawget(m_L, -2);
+	clearTable(m_L, -1);
+
+	lua_pushliteral(m_L, "preload");
+	lua_rawget(m_L, -2);
+	clearTable(m_L, -1);
+
+	lua_pop(m_L, 1); // pop package table
+
+
+	// clear globals table //
+	clearTable(m_L, -1);
+
+	lua_gc(m_L, LUA_GCCOLLECT, 0);
 }
 
 

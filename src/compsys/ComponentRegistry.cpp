@@ -52,6 +52,7 @@ static int destroyComponentRegistry(lua_State* L)
     assert(lua_type(L, -1) == LUA_TNIL);
 
     void* registryLocation = lua_newuserdata(L, sizeof (ComponentRegistry)); // allocate memory
+	assert(registryLocation);
 
     // create metatable
     lua_createtable(L, 0, 1);
