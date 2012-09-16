@@ -94,9 +94,9 @@ static void init(LuaVm& vm)
             .LHPROPG(size)
             .LHPROPG(texture),
 #   undef LHCURCLASS
-        class_<jd::Tilemap>("@Tilemap@"),
+        class_<jd::Tilemap, bases<sf::Drawable, sf::Transformable>>("@Tilemap@"),
 #   define LHCURCLASS GroupedDrawable<jd::Tilemap>
-        class_<LHCURCLASS, bases<sf::Drawable, sf::Transformable, jd::Tilemap>>("Tilemap")
+		class_<LHCURCLASS, bases<TransformGroup::AutoEntry, jd::Tilemap>>("Tilemap")
             .def(constructor<TransformGroup&>())
             .def("get", &Tilemap_get)
             .def("set", &Tilemap_set)

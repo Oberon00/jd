@@ -183,19 +183,24 @@ static void init(LuaVm& vm)
             .def(tostring(const_self)),
 #       undef LHCURCLASS
 
+#		define LHCURCLASS TransformGroup::AutoEntry
+		class_<LHCURCLASS>("TransformGroupEntry")
+			.LHPROPG(group)
+			.property("visible", &LHCURCLASS::visible, &LHCURCLASS::setVisible)
+			.LHMEMFN(release),
+#		undef LHCURCLASS
+
         cImage,
         cTexture,
         class_<TransformGroup, bases<Transformable, Drawable>>("@TranformGroup@"),
-        class_<GroupEntry, TransformGroup>("TransformGroup")
-            .def(constructor<>())
+		class_<GroupEntry, bases<TransformGroup, TransformGroup::AutoEntry>>("TransformGroup")
             .def(constructor<TransformGroup&>()),
 
+		class_<Sprite, bases<Drawable, Transformable>>("@Sprite@"),
 #       define LHCURCLASS SpriteEntry
-        class_<LHCURCLASS, bases<Transformable, Drawable>>("Sprite")
-            .def(constructor<>())
+        class_<LHCURCLASS, bases<Sprite, TransformGroup::AutoEntry>>("Sprite")
             .def(constructor<TransformGroup&>())
             .LHMEMFN(release)
-            .property("visible", &LHCURCLASS::visible, &LHCURCLASS::setVisible)
             .property("texture",
                 (LHCURCLASS::Ptr(LHCURCLASS::*)())&LHCURCLASS::resource,
                 &AutoSprite::setResource)
