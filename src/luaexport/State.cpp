@@ -23,7 +23,7 @@ public:
 
 } // anonymous namespace
 
-void init(LuaVm& vm)
+static void init(LuaVm& vm)
 {
     LHMODULE [
         class_<State, wrap_State>("State")
