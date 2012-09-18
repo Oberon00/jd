@@ -3,7 +3,6 @@
 #include "Logfile.hpp"
 #include <boost/foreach.hpp>
 
-
 Entity::Entity():
     m_state(created)
 {
