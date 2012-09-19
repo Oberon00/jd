@@ -41,6 +41,12 @@ inline sf::Vector2<T> bottomRight(sf::Rect<T> const& r)
 }
 
 template <typename T>
+inline sf::Vector2<T> size(sf::Rect<T> const& r)
+{
+    return sf::Vector2<T>(r.width, r.height);
+}
+
+template <typename T>
 inline sf::Vector2<T> center(sf::Rect<T> const& r)
 {
     return sf::Vector2<T>(r.left + r.width / 2, r.top + r.height / 2);
@@ -55,34 +61,46 @@ inline sf::Rect<T> pointsTorect(sf::Vector2<T> topLeft, sf::Vector2<T> bottomRig
 // sf::Vector utility //
 
 template <typename T>
+inline bool isZero(sf::Vector2<T> v)
+{
+    return v.x == 0 && v.y == 0;
+}
+
+template <typename T>
+inline bool isZero(sf::Vector3<T> v)
+{
+    return v.x == 0 && v.y == 0 && v.z == 0;
+}
+
+template <typename T>
 inline sf::Vector3<T> vec2to3(sf::Vector2<T> xy, T z = 0)
 {
-	return sf::Vector3<T>(xy.x, xy.y, z);
+    return sf::Vector3<T>(xy.x, xy.y, z);
 }
 
 template <typename T>
 inline sf::Vector2<T> vec3to2(sf::Vector3<T> xyz)
 {
-	return sf::Vector2<T>(xyz.x, xyz.y);
+    return sf::Vector2<T>(xyz.x, xyz.y);
 }
 
 template<typename Target, typename Source>
 inline sf::Vector2<Target> vec_cast(sf::Vector2<Source> source)
 {
-	return sf::Vector2<Target>(
-		static_cast<Target>(source.x),
-		static_cast<Target>(source.y)
-	);
+    return sf::Vector2<Target>(
+        static_cast<Target>(source.x),
+        static_cast<Target>(source.y)
+    );
 }
 
 template<typename Target, typename Source>
 inline sf::Vector3<Target> vec_cast(sf::Vector3<Source> source)
 {
-	return sf::Vector3<Target>(
-		static_cast<Target>(source.x),
-		static_cast<Target>(source.y),
-		static_cast<Target>(source.z)
-	);
+    return sf::Vector3<Target>(
+        static_cast<Target>(source.x),
+        static_cast<Target>(source.y),
+        static_cast<Target>(source.z)
+    );
 }
 
 // Clipping and line intersection //
@@ -166,19 +184,19 @@ namespace math
     template <typename T>
     inline T rad(T degval)
     {
-	    return degval * pi / 180;
+        return degval * pi / 180;
     }
 
     template <typename T>
     inline T deg(T radval)
     {
-	    return static_cast<T>(radval * 180 / pi);
+        return static_cast<T>(radval * 180 / pi);
     }
 
     template <typename T>
     inline T abs(sf::Vector2<T> v)
     {
-	    return std::sqrt(v.x * v.x + v.y * v.y);
+        return std::sqrt(v.x * v.x + v.y * v.y);
     }
 
     template <typename T>
@@ -196,13 +214,13 @@ namespace math
     template <typename T>
     inline T operator* (sf::Vector2<T> v1, sf::Vector2<T> v2)
     {
-	    return scalar_product(v1, v2);
+        return scalar_product(v1, v2);
     }
 
     template <typename T>
     inline T scalar_product (sf::Vector2<T> v1, sf::Vector2<T> v2)
     {
-	    return v1.x * v2.x + v1.y * v2.y;
+        return v1.x * v2.x + v1.y * v2.y;
     }
 } // namespace math
 
@@ -254,4 +272,3 @@ struct hash<sf::Vector3<T>>: public unary_function<sf::Vector3<T>, size_t> {
     }
 };
 } // namespace std
-

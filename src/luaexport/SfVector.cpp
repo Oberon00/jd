@@ -30,6 +30,14 @@ static int Vec_abs(lua_State* L)
 }
 
 template<typename T>
+static int Vec_isZero(lua_State* L)
+{
+    T* v = lgeo::to<T>(L, 1);
+    lua_pushboolean(L, jd::isZero(*v));
+    return 1;
+}
+
+template<typename T>
 static int geo_eq(lua_State* L)
 {
     T *v1 = lgeo::to<T>(L, 1),
@@ -132,6 +140,8 @@ static bool geo_attrib(lua_State* L, char const* n, LuaRect const* v)
         lua_pushnumber(L, jd::bottom(*v));
     else if (!cmp(n, "xy") || !cmp(n, "topLeft") || !cmp(n, "position"))
         lgeo::push(L, jd::topLeft(*v));
+    else if (!cmp(n, "size") || !cmp(n, "wh"))
+        lgeo::push(L, jd::size(*v));
     else if (!cmp(n, "bottomRight"))
         lgeo::push(L, jd::bottomRight(*v));
     else if (!cmp(n, "center"))
@@ -197,6 +207,10 @@ static bool geo_setattrib(lua_State* L, char const* n, LuaRect* v)
         LuaVec2 const* nv = lgeo::to<LuaVec2>(L, 3);
         v->left = nv->x;
         v->top  = nv->y;
+    } else if (!cmp(n, "size") || !cmp(n, "wh")) {
+        LuaVec2 const* nv = lgeo::to<LuaVec2>(L, 3);
+        v->width = nv->x;
+        v->height = nv->y;
     } else if (!cmp(n, "bottomRight")) {
         LuaVec2 const* nv = lgeo::to<LuaVec2>(L, 3);
         v->width  = nv->x - v->left;
@@ -347,6 +361,7 @@ void Vec_export(lua_State* L)
         {"__sub", &Vec_sub<T>},
         {"__mul", &Vec_mul<T>},
         {"__div", &Vec_div<T>},
+        {"__len", &Vec_abs<T>},
         {"__tostring", &geo_tostring<T>},
         // no __gc, because LuaVec is trivially destructible
         {nullptr, nullptr}
@@ -356,6 +371,7 @@ void Vec_export(lua_State* L)
 
     static luaL_Reg const mfns[] = {
         {"abs", &Vec_abs<T>},
+        {"isZero", &Vec_isZero<T>},
         {nullptr, nullptr}
     };
     lua_getglobal(L, "jd");
