@@ -17,7 +17,7 @@ void RectCollideableGroup::remove(PositionComponent& c)
 
 
 
-std::vector<Collision> const RectCollideableGroup::colliding(
+std::vector<Collision> RectCollideableGroup::colliding(
     sf::FloatRect const& r, Entity* e)
 {
     removePending();
@@ -71,7 +71,7 @@ void RectCollideableGroup::removePending()
     }
 }
 
-std::vector<Collision> const RectCollideableGroup::colliding(
+std::vector<Collision> RectCollideableGroup::colliding(
     sf::Vector2f p1, sf::Vector2f p2)
 {
     removePending();
@@ -82,4 +82,27 @@ std::vector<Collision> const RectCollideableGroup::colliding(
             result.push_back(Collision(item->parent(), item->rect()));
     }
     return result;
+}
+
+static void notifyEntity(PositionComponent& p, PositionComponent& p2)
+{
+    auto recv = p.parent()->get<RectCollisionComponent>();
+    if (recv)
+        recv->notifyCollision(p.rect(), *p2.parent(), p2.rect());
+}
+
+void RectCollideableGroup::collide()
+{
+    removePending();
+
+    for (auto it = begin(m_items); it != end(m_items); ++it) {
+        PositionComponent& p = **it;
+        for (auto it2 = std::next(it); it2 != end(m_items); ++it2) {
+            PositionComponent& p2 = **it2;
+            if (!p.rect().intersects(p2.rect())) 
+                continue;
+            notifyEntity(p, p2);
+            notifyEntity(p2, p);
+        }
+    }
 }

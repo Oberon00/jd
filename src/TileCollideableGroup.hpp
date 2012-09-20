@@ -19,15 +19,15 @@ public:
     void setColliding(Vector3u pos, TileCollisionComponent* c);
 
     // notify if e != nullptr
-    virtual std::vector<Collision> const colliding(
-        sf::FloatRect const&, Entity* e = nullptr);
+    virtual std::vector<Collision> colliding(
+        sf::FloatRect const&, Entity* e = nullptr) override;
 
-    virtual std::vector<Collision> const colliding(
-        sf::Vector2f lineStart, sf::Vector2f lineEnd);
+    virtual std::vector<Collision> colliding(
+        sf::Vector2f lineStart, sf::Vector2f lineEnd) override;
 
     jd::Tilemap& tilemap() { return m_tilemap; }
 
-    virtual void clear() { m_entities.clear(); m_proxyEntities.clear(); }
+    virtual void clear()  override { m_entities.clear(); m_proxyEntities.clear(); }
 
 private:
     void addCollisions(

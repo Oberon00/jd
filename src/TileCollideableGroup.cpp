@@ -61,7 +61,7 @@ void TileCollideableGroup::addCollisions(
     } // if no entity at pos registered
 }
 
-std::vector<Collision> const TileCollideableGroup::colliding(sf::FloatRect const& r, Entity* e)
+std::vector<Collision> TileCollideableGroup::colliding(sf::FloatRect const& r, Entity* e)
 {
     sf::Vector2u begin = static_cast<sf::Vector2u>(
         m_tilemap.tilePosFromGlobal(jd::topLeft(r)));
@@ -108,7 +108,7 @@ namespace {
     }
 }
 
-std::vector<Collision> const TileCollideableGroup::colliding(sf::Vector2f gp1, sf::Vector2f gp2)
+std::vector<Collision> TileCollideableGroup::colliding(sf::Vector2f gp1, sf::Vector2f gp2)
 {
     sf::Vector2u p1 = static_cast<sf::Vector2u>(
         m_tilemap.tilePosFromGlobal(gp1));
