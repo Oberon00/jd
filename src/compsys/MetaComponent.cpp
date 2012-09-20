@@ -122,6 +122,8 @@ static bool operator==(Component const& lhs, Component const* rhs)
 
 static void init(LuaVm& vm)
 {
+    LUAU_BALANCED_STACK_DBG(vm.L());
+
     LHMODULE [
         // Component class
         // Note: metaComponent() is left out and implemented in wrap_Component
@@ -142,6 +144,11 @@ static void init(LuaVm& vm)
             .def("getIsConnected", &ConnectionBase::isConnected)
             .property("isConnected", &ConnectionBase::isConnected)
     ];
+
+    lua_getglobal(vm.L(), "jd");
+    luabind::object(vm.L(), static_cast<Component*>(nullptr)).push(vm.L());
+    lua_setfield(vm.L(), -2, "NIL_COMPONENT");
+    lua_pop(vm.L(), 1);
 }
 
 

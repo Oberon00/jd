@@ -59,6 +59,8 @@ static bool operator==(Entity const& lhs, Entity const* rhs)
 
 void init(LuaVm& vm)
 {
+    LUAU_BALANCED_STACK_DBG(vm.L());
+
     typedef std::vector<luabind::object> ObjectVec;
     luabind::class_<ObjectVec> cObjectVec("ComponentList");
     exportRandomAccessContainer(cObjectVec);
@@ -82,4 +84,8 @@ void init(LuaVm& vm)
             .def(const_self == other<Entity*>())
 #       undef LHCURCLASS // avoid compiler warning
     ];
+    lua_getglobal(vm.L(), "jd");
+    luabind::object(vm.L(), static_cast<Entity*>(nullptr)).push(vm.L());
+    lua_setfield(vm.L(), -2, "NIL_ENTITY");
+    lua_pop(vm.L(), 1);
 }
