@@ -78,9 +78,9 @@ public:
         m_connection->unref();
     }
 
-    bool operator== (WeakRef const& rhs) { return rhs.getOpt() == getOpt(); }
+    bool operator== (WeakRef const& rhs) const { return rhs.getOpt() == getOpt(); }
 
-    bool operator!= (WeakRef const& rhs) { return rhs.getOpt() != getOpt(); }
+    bool operator!= (WeakRef const& rhs) const { return rhs.getOpt() != getOpt(); }
 
     T& operator* () { return *validate(); }
     T const& operator* () const { return *validate(); }
@@ -94,7 +94,7 @@ public:
     }
     
     bool operator! () const { return !valid(); }
-    bool valid() { return m_connection->referenced != nullptr; }
+    bool valid() const { return m_connection->referenced != nullptr; }
 
 private:
     T* deref() const
