@@ -1,7 +1,7 @@
 #include "Collisions.hpp"
-#include <boost/foreach.hpp>
 #include <algorithm>
 #include "Logfile.hpp"
+#include <boost/foreach.hpp>
 
 CollisionManager::CollisionManager():
     m_pairsModified(false)
@@ -75,7 +75,7 @@ void CollisionManager::updatePairings()
         return;
 
     m_pairs.clear();
-    BOOST_FOREACH (auto const& sPair, m_sPairs)
+    for (auto const& sPair : m_sPairs)
         m_pairs.push_back(std::make_pair(
             nonNull(m_groups[sPair.first]),
             nonNull(sPair.second)));
@@ -86,7 +86,7 @@ void CollisionManager::updatePairings()
 void CollisionManager::collide()
 {
     updatePairings();
-    BOOST_FOREACH (auto const& pair, m_pairs) {
+    for (auto const& pair : m_pairs) {
         pair.first->collideWith(*pair.second);
     }
 }
@@ -95,7 +95,7 @@ template <typename Range>
 std::vector<Collision> getColliding(Range const& range, sf::FloatRect const& rect)
 {
     std::vector<Collision> result;
-    BOOST_FOREACH(auto const& group, range) {
+    BOOST_FOREACH (auto const& group, range) {
         auto const colliding = group.second->colliding(rect);
         result.insert(colliding.end(), colliding.begin(), colliding.end());
     }
@@ -106,7 +106,7 @@ template <typename Range>
 std::vector<Collision> getColliding(Range const& range, sf::Vector2f p1, sf::Vector2f p2)
 {
     std::vector<Collision> result;
-    BOOST_FOREACH(auto const& group, range) {
+    BOOST_FOREACH (auto const& group, range) {
         auto const colliding = group.second->colliding(p1, p2);
         result.insert(colliding.end(), colliding.begin(), colliding.end());
     }

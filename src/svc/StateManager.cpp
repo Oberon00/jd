@@ -1,6 +1,5 @@
 #include "StateManager.hpp"
 #include "State.hpp"
-#include <boost/foreach.hpp>
 
 namespace {
 

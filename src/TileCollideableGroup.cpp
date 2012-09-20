@@ -5,7 +5,6 @@
 #include <unordered_set>
 #include <array>
 #include <algorithm>
-#include <boost/foreach.hpp>
 
 TileCollideableGroup::TileCollideableGroup(jd::Tilemap& tilemap):
     m_tilemap(tilemap)
@@ -137,7 +136,7 @@ std::vector<Collision> const TileCollideableGroup::colliding(sf::Vector2f gp1, s
 
         auto const surrounding(surroundingTiles(
             static_cast<sf::Vector2i>(pos)));
-        BOOST_FOREACH (sf::Vector2i next, surrounding) {
+        for (sf::Vector2i next : surrounding) {
             if (pos != lastPos &&
                 m_tilemap.isValidPosition(jd::vec2to3(next, 0)) &&
                 jd::intersection(

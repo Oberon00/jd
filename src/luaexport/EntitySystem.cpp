@@ -3,7 +3,6 @@
 #include <luabind/adopt_policy.hpp>
 #include "compsys/ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
-#include <boost/foreach.hpp>
 #include "LuaUtils.hpp"
 #include "container.hpp"
 
@@ -18,7 +17,7 @@ static std::vector<luabind::object> getComponents(Entity& this_, lua_State* L)
     LUAU_BALANCED_STACK_DBG(L);
     auto const& comps = this_.components();
     std::vector<luabind::object> result;
-    BOOST_FOREACH (Component const& c, comps) {
+    for (Component const& c : comps) {
         c.metaComponent().castUp(L, const_cast<Component*>(&c));
         result.push_back(luabind::object(luabind::from_stack(L, -1)));
         lua_pop(L, 1);
@@ -50,7 +49,7 @@ static std::ostream& operator<< (std::ostream& os, Entity const& e)
 {
     os << "jd.Entity ( @" << &e << "; ";
     auto const& comps = e.components();
-    BOOST_FOREACH (Component const& c, comps)
+    for (Component const& c : comps)
         os << c.metaComponent().name() << ' ';
     return os << ')';
 }

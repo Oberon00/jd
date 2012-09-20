@@ -1,7 +1,6 @@
 #include "Entity.hpp"
 #include "compsys/Component.hpp"
 #include "Logfile.hpp"
-#include <boost/foreach.hpp>
 
 Entity::Entity():
     m_state(created)
@@ -43,7 +42,7 @@ void Entity::finish()
     if (m_state != created)
         throw std::logic_error("attempt to finish an Entity in a wrong state");
     m_state = finished;
-    BOOST_FOREACH(Component& c, m_components)
+    for (Component& c : m_components)
         c.initComponent();
 }
     
@@ -63,6 +62,6 @@ void Entity::kill()
     if (m_state != finished)
         throw std::logic_error("attempt to kill an Entity in a wrong state");
     m_state = killed;
-    BOOST_FOREACH(Component& c, m_components)
+    for (Component& c : m_components)
         c.cleanupComponent();
 }

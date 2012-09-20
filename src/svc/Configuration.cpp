@@ -3,7 +3,7 @@
 #include "svc/ServiceLocator.hpp"
 #include "Logfile.hpp"
 #include <boost/algorithm/string/split.hpp>
-#include <boost/foreach.hpp>
+#include <boost/range/adaptor/reversed.hpp>
 #include <LuaUtils.hpp>
 
 extern "C" {
@@ -74,7 +74,7 @@ luabind::object Configuration::getObject(std::string const& p)
         throw Error(p, "Cannot reserve lua stack size. Path to long?");
     lua_pushcfunction(L, &getTable);
     m_conf.push(L);
-    BOOST_REVERSE_FOREACH (auto const& elem, pelems)
+    for (auto const& elem: boost::adaptors::reverse(pelems))
         lua_pushlstring(L, &*elem.begin(), elem.size());
     try { luaU::pcall(L, pelems.size() + 1, 1); }
     catch (luaU::Error const& e) {

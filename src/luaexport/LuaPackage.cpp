@@ -6,7 +6,6 @@ static char const libname[] = "LuaPackage";
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/foreach.hpp>
 #include <physfs.h>
 
 static std::string const searchPath(
@@ -26,7 +25,7 @@ static std::string const searchPath(
     //  it, this is not guaranted (or is it?) but any sane implementation of
     //  std::string will do it.
     path.c_str();
-    BOOST_FOREACH (auto& elem, pelems) {
+    for (auto& elem : pelems) {
         if (elem.end() != path.end()) 
             *elem.end() = '\0';
         char const* filename = &*elem.begin();

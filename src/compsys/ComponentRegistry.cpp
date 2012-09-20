@@ -1,7 +1,6 @@
 #include "ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
 #include <cassert>
-#include <boost/foreach.hpp>
 
 extern "C" {
 #include <lua.h>

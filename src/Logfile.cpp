@@ -7,7 +7,6 @@
 #include <sstream>
 #include <boost/format.hpp>
 #include <boost/exception/diagnostic_information.hpp>
-#include <boost/foreach.hpp>
 
 class Logfile::LineNotifier :public boost::iostreams::line_filter
 {
@@ -43,7 +42,7 @@ static const std::string filterHtml(std::string const& s)
 {
     std::string result;
     result.reserve(s.size() * 3 / 2);
-    BOOST_FOREACH(char const c, s) switch (c)
+    for (char const c : s) switch (c)
 	{
 		case '<':
 			result += "&lt;";
@@ -170,7 +169,7 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
 			msg2.pop_back();
 
 		// Add indentation to linebreaks
-		BOOST_FOREACH(const char c, msg2) switch (c)
+		for (const char c : msg2) switch (c)
 		{
 			case '\n':
 				real_msg += "\n" + std::string(24, ' ');

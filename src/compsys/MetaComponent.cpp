@@ -2,7 +2,6 @@
 #include "compsys/Component.hpp"
 #include "ComponentRegistry.hpp"
 #include <unordered_map>
-#include <boost/foreach.hpp>
 #include "LuaUtils.hpp"
 #include "svc/ServiceLocator.hpp"
 #include "svc/LuaVm.hpp"

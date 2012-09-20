@@ -2,7 +2,6 @@
 #include "compsys/BasicMetaComponent.hpp"
 #include "FileSystem.hpp"
 #include <array>
-#include <boost/foreach.hpp>
 #include <luabind/lua_include.hpp>
 extern "C" {
 #include <lualib.h>
@@ -167,7 +166,7 @@ void LuaVm::initLib(std::string const& libname)
 
 void LuaVm::initLibs()
 {
-    BOOST_FOREACH(auto& lib, libRegistry())
+    for (auto& lib : libRegistry())
         if (!lib.second.initialized) {
             ResetInit r(lib.second.initialized);
             lib.second.initFn(*this);

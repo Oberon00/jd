@@ -2,7 +2,6 @@
 #include "comp/PositionComponent.hpp"
 #include "comp/RectCollisionComponent.hpp"
 #include "compsys/Entity.hpp"
-#include <boost/foreach.hpp>
 #include "sfUtil.hpp"
 
 void RectCollideableGroup::add(PositionComponent& c)
@@ -24,7 +23,7 @@ std::vector<Collision> const RectCollideableGroup::colliding(
     removePending();
 
     std::vector<Collision> result;
-    BOOST_FOREACH(auto const& item, m_items) {
+    for (auto const& item : m_items) {
         if (!item->rect().intersects(r))
             continue;
 
@@ -46,7 +45,7 @@ void RectCollideableGroup::collideWith(
 {
     removePending();
 
-    BOOST_FOREACH(auto const& item, m_items) {
+    for (auto const& item : m_items) {
         std::vector<Collision> const collisions =
             other.colliding(item->rect(), item->parent());
 
@@ -58,7 +57,7 @@ void RectCollideableGroup::collideWith(
         if (!recv)
             continue;
 
-        BOOST_FOREACH(auto const& collision, collisions)
+        for (auto const& collision : collisions)
             recv->notifyCollision(
                 item->rect(), *collision.entity, collision.rect);
     }
@@ -78,7 +77,7 @@ std::vector<Collision> const RectCollideableGroup::colliding(
     removePending();
 
     std::vector<Collision> result;
-    BOOST_FOREACH(auto const& item, m_items) {
+    for (auto const& item : m_items) {
         if (jd::intersection(p1, p2, item->rect()))
             result.push_back(Collision(item->parent(), item->rect()));
     }

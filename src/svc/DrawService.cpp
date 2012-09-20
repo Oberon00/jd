@@ -1,5 +1,4 @@
 #include "DrawService.hpp"
-#include <boost/foreach.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 DrawService::Layer::Layer(Layer&& rhs):
@@ -26,7 +25,7 @@ void DrawService::clear()
 
 void DrawService::draw()
 {
-    BOOST_FOREACH(Layer& layer, m_layers) {
+    for (Layer& layer : m_layers) {
         m_window.setView(layer.view);
         m_window.draw(layer.group);
     }
@@ -44,6 +43,6 @@ sf::RenderTarget& DrawService::renderTarget()
 
 void DrawService::resetLayerViews()
 {
-    BOOST_FOREACH(Layer& layer, m_layers)
+    for (Layer& layer : m_layers)
         layer.view = m_window.getDefaultView();
 }

@@ -3,7 +3,6 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/iostreams/stream.hpp>
-#include <boost/foreach.hpp>
 #include <boost/range/algorithm/count_if.hpp>
 #include <sstream>
 #include <ResourceManager.hpp>
@@ -89,7 +88,7 @@ static ResourceTraits<sf::Texture>::Ptr loadTexture(pt::ptree const& dom, sf::Ve
 static PropertyMap loadProperties(pt::ptree const& dom)
 {
     PropertyMap result;
-    BOOST_FOREACH (auto const& propelem, dom) {
+    for (auto const& propelem : dom) {
         if (propelem.first != "property") {
             LOG_W("unknown tag in properties: \"" + propelem.first + '\"');
             continue;
@@ -126,7 +125,7 @@ static std::vector<PropertyMap> loadTileset(
     std::vector<PropertyMap> result(
         (imgsz.x / ts.size().x) * (imgsz.y / ts.size().y));
 
-    BOOST_FOREACH (auto const& tileelem, dom) {
+    for (auto const& tileelem : dom) {
         if (tileelem.first != "tile")
             continue;
 
@@ -208,13 +207,13 @@ MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename)
     result.layerProperties.resize(tm.size().z);
 
     unsigned z = 0;
-    BOOST_FOREACH (auto const& layer, map) {
+    for (auto const& layer : map) {
         if (layer.first == "objectgroup") {
             std::string const groupName =
                 layer.second.get<std::string>("<xmlattr>.name");
             MapObjectGroup& group = result.objectGroups[groupName];
             group.name = groupName;
-            BOOST_FOREACH (auto const& obj, layer.second) {
+            for (auto const& obj : layer.second) {
                 if (obj.first == "properties") {
                     group.properties = loadProperties(obj.second);
                 } else if (obj.first == "object") {
