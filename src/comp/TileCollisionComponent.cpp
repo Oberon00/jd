@@ -10,7 +10,8 @@ TileCollisionComponent::TileCollisionComponent(TileCollideableGroup& group):
     m_group(&group)
 { }
 
-TileCollisionComponent::TileCollisionComponent(Entity& parent)
+TileCollisionComponent::TileCollisionComponent(Entity& parent):
+    m_group(nullptr)
 {
     parent.add(*this);
 }
@@ -25,9 +26,9 @@ TileCollisionComponent::TileCollisionComponent(
 
 void TileCollisionComponent::cleanupComponent()
 {
-    m_con_positionChanged.disconnect();
     if (!m_group)
         return;
+    m_con_positionChanged.disconnect();
     m_group->setColliding(
         parent()->require<TilePositionComponent>().tilePosition(), nullptr);
 }
