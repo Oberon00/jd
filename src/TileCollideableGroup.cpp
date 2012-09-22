@@ -13,7 +13,12 @@ TileCollideableGroup::TileCollideableGroup(jd::Tilemap& tilemap):
 
 void TileCollideableGroup::setProxy(unsigned tileId, TileCollisionComponent* proxy)
 {
-    if (!m_proxyEntities.insert(std::make_pair(tileId, proxy)).second)
+    if (!proxy) {
+        std::size_t const erasedCount = m_proxyEntities.erase(tileId);
+        assert(erasedCount < 2);
+        if (!erasedCount)
+            LOG_W("Attempt to unset a proxy, which was not set.");
+    } else if (!m_proxyEntities.insert(std::make_pair(tileId, proxy)).second)
         throw std::logic_error(
             __FUNCTION__ ": cannot assign proxy entity: already assigned");
 }
