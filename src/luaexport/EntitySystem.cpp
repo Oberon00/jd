@@ -77,6 +77,11 @@ void init(LuaVm& vm)
             .LHMEMFN(finish)
             .LHMEMFN(kill)
             .LHPROPG(state)
+            .enum_("state") [
+                value("CREATED", Entity::created),
+                value("FINISHED", Entity::finished),
+                value("KILLED", Entity::killed)
+            ]
             .def("components", &getComponents, dependency(_1, result))
             .def("component", &getComponent)
             .def("require", &requireComponent)
