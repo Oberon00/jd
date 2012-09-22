@@ -27,7 +27,7 @@ static std::vector<luabind::object> getComponents(Entity& this_, lua_State* L)
 
 static luabind::object getComponent(Entity& this_, lua_State* L, std::string const& name)
 {
-    Component* c = this_[ComponentRegistry::metaComponent(name)];
+    Component* c = this_[ComponentRegistry::metaComponent(name, L)];
     if (!c)
         return luabind::object();
     c->metaComponent().castUp(L, c);
@@ -36,7 +36,7 @@ static luabind::object getComponent(Entity& this_, lua_State* L, std::string con
 
 static luabind::object requireComponent(Entity& this_, lua_State* L, std::string const& name)
 {
-    Component* c = this_[ComponentRegistry::metaComponent(name)];
+    Component* c = this_[ComponentRegistry::metaComponent(name, L)];
     if (!c) {
         throw std::runtime_error(
             "required component \"" + name + "\" not available!");
