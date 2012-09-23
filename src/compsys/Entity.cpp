@@ -25,7 +25,7 @@ Entity::~Entity()
 void Entity::add(Component& c)
 {
     if (c.m_parent)
-        throw std::invalid_argument("cannot add component: it already has a parent");
+        throw std::logic_error("cannot add component: it already has a parent");
     if (m_state != created)
         throw std::logic_error("attempt to add a component to an Entity in a wrong state");
     if ((*this)[c.metaComponent()])
