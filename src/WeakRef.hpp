@@ -82,16 +82,10 @@ public:
 
     bool operator!= (WeakRef const& rhs) const { return rhs.getOpt() != getOpt(); }
 
-    T& operator* () { return *validate(); }
-    T const& operator* () const { return *validate(); }
-    T* operator-> () { return validate(); }
-    T const* operator-> () const { return validate(); }
-    T* get() { return validate(); }
-    T const* get() const { return validate(); }
-    T* getOpt() {  return m_connection->referenced ? deref() : nullptr; }
-    T const* getOpt() const {
-        return m_connection->referenced ? deref() : nullptr;
-    }
+    T& operator* () const { return *validate(); }
+    T* operator-> () const { return validate(); }
+    T* get() const { return validate(); }
+    T* getOpt() const {  return m_connection->referenced ? deref() : nullptr; }
     
     bool operator! () const { return !valid(); }
     bool valid() const { return m_connection->referenced != nullptr; }
@@ -100,7 +94,7 @@ private:
     T* deref() const
     {
         return reinterpret_cast<T*>(
-            reinterpret_cast<char*>(m_connection->referenced) + m_offset);
+            reinterpret_cast<intptr_t>(m_connection->referenced) + m_offset);
     }
 
     T* validate() const
@@ -189,7 +183,7 @@ WeakRef<T>::WeakRef(EnableWeakRefFromThis<U>* u)
     m_connection = ::detail::getConnection(u);
     assert(m_connection->referenced == static_cast<U*>(u));
     T* t = static_cast<T*>(static_cast<U*>(u));
-    m_offset = (char*)t - (char*)m_connection->referenced;
+    m_offset = (intptr_t)t - (intptr_t)m_connection->referenced;
     if (u)
         assert(dynamic_cast<T*>(static_cast<U*>(u)));
     ++m_connection->refCount;
