@@ -74,7 +74,7 @@ public:
 
 private:
     template <typename F>
-    void forEachGroup(F& do_) {
+    void forEachGroup(F do_) {
         tidy();
         for (auto g: m_groups) {
             if (!g) {
