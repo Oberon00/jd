@@ -163,7 +163,7 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
 	}
 	else // if (m_style == logstyle::plain)
 	{
-		fmt = levelpreambles[level] + str(boost::format("%|-8|:") % levelnames[level]) + "%|10| %|-28| %||";
+		fmt = levelpreambles[level] + str(boost::format("%|-8|") % levelnames[level]) + "%|10| %|-28| %||";
 		std::string msg2 = msg;
 		if (msg.back() == '\n')
 			msg2.pop_back();
@@ -172,7 +172,7 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
 		for (const char c : msg2) switch (c)
 		{
 			case '\n':
-				real_msg += "\n" + std::string(24, ' ');
+				real_msg += "\n" + std::string(52, ' ');
 				break;
 			default:
 				real_msg += c;
