@@ -3,12 +3,16 @@
 #include "compsys/Entity.hpp"
 #include "TileCollideableGroup.hpp"
 #include "RectCollideableGroup.hpp"
+#include "comp/TileCollisionComponent.hpp"
 #include "container.hpp"
 #include "svc/ServiceLocator.hpp"
 #include "Tilemap.hpp"
+#include "LuaFunction.hpp"
 
 static char const libname[] = "Collisions";
 #include "ExportThis.hpp"
+#include <luabind/out_value_policy.hpp>
+
 
 namespace {
 
@@ -29,13 +33,23 @@ static std::vector<Collision> const CollideableGroup_colliding(
     return self.colliding(r);
 }
 
+static void TileStackCollideableGroup_setFilter(
+    TileStackCollideableGroup& this_, luabind::object filter)
+{
+    this_.setFilter(LuaFunction<void>(filter));
+}
+
 } // anonymous namespace
 
 static void init(LuaVm& vm)
 {
     typedef std::vector<Collision> CollisionVec;
+    typedef std::vector<Vector3u> PositionVec;
     luabind::class_<CollisionVec> cCollisionVec("CollisionList");
     exportRandomAccessContainer(cCollisionVec);
+
+    luabind::class_<PositionVec> cPositionVec("PositionList");
+    exportRandomAccessContainer(cPositionVec);
     LHMODULE [
 #       define LHCURCLASS Collision
         LHCLASS
@@ -43,7 +57,7 @@ static void init(LuaVm& vm)
             .LHPROPRW(rect),
 #       undef LHCURCLASS
         cCollisionVec,
-
+        cPositionVec,
 #       define LHCURCLASS CollideableGroup
         LHCLASS
             .def("colliding", &CollideableGroup_colliding)
@@ -58,12 +72,36 @@ static void init(LuaVm& vm)
             .LHMEMFN(clear),
 #       undef LHCURCLASS
 
-#       define LHCURCLASS TileCollideableGroup
-        class_<LHCURCLASS, CollideableGroup>("TileCollideableGroup")
+#       define LHCURCLASS TileCollideableInfo
+        LHCLASS
             .def(constructor<jd::Tilemap&>())
             .LHMEMFN(setProxy)
+            .LHMEMFN(proxy)
             .LHMEMFN(setColliding)
+            .def("colliding", 
+                (CollisionVec (LHCURCLASS::*)(sf::FloatRect const&, Entity* e, PositionVec*))
+                    &LHCURCLASS::colliding, pure_out_value(_4))
+            .def("colliding", 
+                (CollisionVec (LHCURCLASS::*)(sf::Vector2f, sf::Vector2f, PositionVec*))
+                    &LHCURCLASS::colliding, pure_out_value(_4))
+            .def("colliding", 
+                (TileCollisionComponent* (LHCURCLASS::*)(Vector3u))&LHCURCLASS::colliding)
             .LHPROPG(tilemap),
+#       undef LHCURCLASS
+
+#       define LHCURCLASS TileLayersCollideableGroup
+        class_<LHCURCLASS, CollideableGroup>("TileLayersCollideableGroup")
+            .def(constructor<TileCollideableInfo*, unsigned, unsigned>())
+            .property("firstLayer", &LHCURCLASS::firstLayer, &LHCURCLASS::setFirstLayer)
+            .property("endLayer", &LHCURCLASS::endLayer, &LHCURCLASS::setEndLayer)
+            .LHPROPG(data),
+#       undef LHCURCLASS
+
+#       define LHCURCLASS TileStackCollideableGroup
+        class_<LHCURCLASS, CollideableGroup>("TileStackCollideableGroup")
+            .def(constructor<TileCollideableInfo*>())
+            .def("setFilter", &TileStackCollideableGroup_setFilter)
+            .LHPROPG(data),
 #       undef LHCURCLASS
 
 #       define LHCURCLASS RectCollideableGroup

@@ -11,35 +11,129 @@ class TileCollisionComponent;
 namespace jd { class Tilemap; }
 typedef sf::Vector3<unsigned> Vector3u;
 
-class TileCollideableGroup: public CollideableGroup {
+class TileCollideableInfo: public EnableWeakRefFromThis<TileCollideableInfo> {
 public:
-    TileCollideableGroup(jd::Tilemap& tilemap);
+    TileCollideableInfo(jd::Tilemap& tilemap);
 
     void setProxy(unsigned tileId, TileCollisionComponent* proxy);
+    TileCollisionComponent* proxy(unsigned tileId);
+
     void setColliding(Vector3u pos, TileCollisionComponent* c);
+    TileCollisionComponent* colliding(Vector3u pos);
 
     // notify if e != nullptr
+    virtual std::vector<Collision> colliding(
+        sf::FloatRect const&,
+        Entity* e = nullptr,
+        std::vector<Vector3u>* positions = nullptr);
+
+    virtual std::vector<Collision> colliding(
+        sf::Vector2f lineStart,
+        sf::Vector2f lineEnd,
+        std::vector<Vector3u>* positions = nullptr);
+
+    jd::Tilemap& tilemap() { return m_tilemap; }
+    Vector3u mapsize() const;
+
+    virtual void clear() { m_entities.clear(); m_proxyEntities.clear(); }
+
+    Collision makeCollision(
+        Vector3u pos,
+        Entity* notified = nullptr,
+        sf::FloatRect const& foreignRect = sf::FloatRect());
+
+    bool clipToMap(
+        sf::Vector2f lineStart, sf::Vector2f lineEnd,
+        sf::Vector2u& clipStart, sf::Vector2u& clipEnd);
+    sf::Vector2u findNext(
+        sf::Vector2u pos, sf::Vector2u oldPos,
+        sf::Vector2u lineStart, sf::Vector2u lineEnd,
+        bool* found = nullptr);
+
+private:
+    TileCollideableInfo& operator= (TileCollideableInfo const&);
+
+    std::unordered_map<Vector3u, WeakRef<TileCollisionComponent>> m_entities;
+    std::unordered_map<unsigned, WeakRef<TileCollisionComponent>> m_proxyEntities;
+    jd::Tilemap& m_tilemap;
+};
+
+class TileLayersCollideableGroup: public CollideableGroup {
+public:
+    TileLayersCollideableGroup(
+        TileCollideableInfo* data,
+        unsigned firstLayer, unsigned endLayer);
+
+    WeakRef<TileCollideableInfo> data() { return m_data; }
+
+    unsigned firstLayer() const { return m_firstLayer; }
+    void setFirstLayer(unsigned layer);
+    unsigned endLayer() const { return m_endLayer; }
+    void setEndLayer(unsigned layer);
+
+
     virtual std::vector<Collision> colliding(
         sf::FloatRect const&, Entity* e = nullptr) override;
 
     virtual std::vector<Collision> colliding(
         sf::Vector2f lineStart, sf::Vector2f lineEnd) override;
 
-    jd::Tilemap& tilemap() { return m_tilemap; }
-
-    virtual void clear()  override { m_entities.clear(); m_proxyEntities.clear(); }
+    virtual void clear()  override { m_firstLayer = m_endLayer; }
 
 private:
-    void addCollisions(
-        Vector3u pos,
-        std::vector<Collision>& collisions,
-        Entity* notified = nullptr, 
-        sf::FloatRect const& foreignRect = sf::FloatRect());
-    TileCollideableGroup& operator= (TileCollideableGroup const&);
+    bool layerInRange(unsigned layer) const
+    {
+        return layer >= m_firstLayer && layer < m_endLayer;
+    }
 
-    std::unordered_map<Vector3u, WeakRef<TileCollisionComponent>> m_entities;
-    std::unordered_map<unsigned, WeakRef<TileCollisionComponent>> m_proxyEntities;
-    jd::Tilemap& m_tilemap;
+    bool isUnfiltered() const;
+
+    WeakRef<TileCollideableInfo> m_data;
+    unsigned m_firstLayer;
+    unsigned m_endLayer;
+};
+
+class TileStackCollideableGroup: public CollideableGroup {
+public:
+    struct Info {
+        Info(): tileId(0), discard(true) { }
+        Info(unsigned tileId, WeakRef<Entity> const& entity):
+            tileId(tileId), entity(entity), discard(false) { }
+
+	    unsigned tileId;
+	    WeakRef<Entity> entity;
+	    bool discard;
+    };
+
+    typedef std::function<void(sf::Vector2u, std::vector<Info>&)> FilterCallback;
+
+    TileStackCollideableGroup(
+        TileCollideableInfo* data,
+        FilterCallback filter = FilterCallback()
+    ):
+        m_data(data),
+        m_filter(filter)
+    { }
+
+    virtual std::vector<Collision> colliding(
+        sf::FloatRect const&, Entity* e = nullptr) override;
+
+    virtual std::vector<Collision> colliding(
+        sf::Vector2f lineStart, sf::Vector2f lineEnd) override;
+
+    virtual void clear() override { m_filter = FilterCallback(); }
+
+    WeakRef<TileCollideableInfo> data() { return m_data; }
+
+    FilterCallback setFilter(FilterCallback filter);
+
+private:
+    void processStack(
+        std::vector<Info>& stack, std::vector<Collision>& result,
+        sf::FloatRect const& r) const;
+
+    WeakRef<TileCollideableInfo> m_data;
+    FilterCallback m_filter;
 };
 
 #endif

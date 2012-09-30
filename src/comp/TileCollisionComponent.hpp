@@ -4,9 +4,10 @@
 #include "compsys/Component.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <WeakRef.hpp>
 #include <ssig.hpp>
 
-class TileCollideableGroup;
+class TileCollideableInfo;
 
 typedef sf::Vector3<unsigned> Vector3u;
 
@@ -18,8 +19,8 @@ class TileCollisionComponent: public Component {
 
 public:
     explicit TileCollisionComponent(Entity& parent);
-    explicit TileCollisionComponent(TileCollideableGroup& group);
-    TileCollisionComponent(Entity& parent, TileCollideableGroup& group);
+    explicit TileCollisionComponent(TileCollideableInfo& tileinfo);
+    TileCollisionComponent(Entity& parent, TileCollideableInfo& tileinfo);
 
     virtual void initComponent();
     virtual void cleanupComponent();
@@ -35,6 +36,8 @@ public:
         m_sig_overridden(p, c);
     }
 
+    TileCollideableInfo const* tileInfo() const { return m_tileinfo.getOpt(); }
+
 private:
     void on_tilePositionChanged(
         sf::Vector3<unsigned> oldPos, sf::Vector3<unsigned> newPos);
@@ -42,7 +45,7 @@ private:
     ScopedConnection<
         void(sf::Vector3<unsigned>, sf::Vector3<unsigned>)
     > m_con_positionChanged;
-    TileCollideableGroup* m_group;
+    WeakRef<TileCollideableInfo> m_tileinfo;
 };
 
 #endif

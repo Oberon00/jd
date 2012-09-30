@@ -5,13 +5,15 @@
 #include <unordered_set>
 #include <array>
 #include <algorithm>
+#include <functional>
+#include <compsys/Entity.hpp>
 
-TileCollideableGroup::TileCollideableGroup(jd::Tilemap& tilemap):
+TileCollideableInfo::TileCollideableInfo(jd::Tilemap& tilemap):
     m_tilemap(tilemap)
 {
 }
 
-void TileCollideableGroup::setProxy(unsigned tileId, TileCollisionComponent* proxy)
+void TileCollideableInfo::setProxy(unsigned tileId, TileCollisionComponent* proxy)
 {
     if (!proxy) {
         std::size_t const erasedCount = m_proxyEntities.erase(tileId);
@@ -23,7 +25,15 @@ void TileCollideableGroup::setProxy(unsigned tileId, TileCollisionComponent* pro
             __FUNCTION__ ": cannot assign proxy entity: already assigned");
 }
 
-void TileCollideableGroup::setColliding(Vector3u pos, TileCollisionComponent* e)
+TileCollisionComponent* TileCollideableInfo::proxy(unsigned tileId)
+{
+    auto const it = m_proxyEntities.find(tileId);
+    if (it != m_proxyEntities.end())
+        return it->second.get();
+    return nullptr;
+}
+
+void TileCollideableInfo::setColliding(Vector3u pos, TileCollisionComponent* e)
 {
     auto const it = m_entities.find(pos);
     bool const found = it != m_entities.end();
@@ -42,31 +52,45 @@ void TileCollideableGroup::setColliding(Vector3u pos, TileCollisionComponent* e)
     }
 }
 
-void TileCollideableGroup::addCollisions(
-    Vector3u pos, std::vector<Collision>& result,
-    Entity* e, sf::FloatRect const& r)
+TileCollisionComponent* TileCollideableInfo::colliding(Vector3u pos)
+{
+    auto const it = m_entities.find(pos);
+    if (it != m_entities.end())
+        return it->second.get();
+    return nullptr;
+}
+
+Vector3u TileCollideableInfo::mapsize() const
+{
+    return m_tilemap.size();
+}
+
+Collision TileCollideableInfo::makeCollision(
+    Vector3u pos, Entity* e, sf::FloatRect const& r)
 {
     auto const iEntity = m_entities.find(pos);
     if (iEntity != m_entities.end()) {
         if (e)
             iEntity->second->notifyCollision(pos, *e, r);
-        result.push_back(Collision(
+         return Collision(
             iEntity->second->parent(),
-            m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y))));
+            m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y)));
     } else {
         unsigned const tileId = m_tilemap[pos];
         auto const iProxy = m_proxyEntities.find(tileId);
         if (iProxy != m_proxyEntities.end()) {
             if (e)
                 iProxy->second->notifyCollision(pos, *e, r);
-            result.push_back(Collision(
+            return Collision(
                 iProxy->second->parent(),
-                m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y))));
+                m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y)));
         }
     } // if no entity at pos registered
+    return Collision();
 }
 
-std::vector<Collision> TileCollideableGroup::colliding(sf::FloatRect const& r, Entity* e)
+std::vector<Collision> TileCollideableInfo::colliding(
+    sf::FloatRect const& r, Entity* e, std::vector<Vector3u>* positions)
 {
     sf::Vector2u begin = static_cast<sf::Vector2u>(
         m_tilemap.tilePosFromGlobal(jd::topLeft(r)));
@@ -78,13 +102,18 @@ std::vector<Collision> TileCollideableGroup::colliding(sf::FloatRect const& r, E
     last.y = std::min(last.y, m_tilemap.size().y - 1);
 
     std::vector<Collision> result;
-    result.reserve((last.x - begin.x + 1) * (last.y - begin.y + 1));
+    result.reserve((last.x - begin.x + 1) * (last.y - begin.y + 1) * m_tilemap.size().z);
 
-    for (unsigned z = 0; z < m_tilemap.size().z; ++z) {
-        for (unsigned x = begin.x; x <= last.x; ++x) {
-            for (unsigned y = begin.y; y <= last.y; ++y) {
-                Vector3u const pos(x, y, z);
-                addCollisions(pos, result, e, r);
+    Vector3u pos;
+    for (pos.z = 0; pos.z < m_tilemap.size().z; ++pos.z) {
+        for (pos.x = begin.x; pos.x <= last.x; ++pos.x) {
+            for (pos.y = begin.y; pos.y <= last.y; ++pos.y) {
+                auto const c = makeCollision(pos, e, r);
+                if (c.entity) {
+                    if (positions)
+                        positions->push_back(pos);
+                    result.push_back(c);
+                }
             } // for y
         } // for x
     } // for z
@@ -113,50 +142,268 @@ namespace {
     }
 }
 
-std::vector<Collision> TileCollideableGroup::colliding(sf::Vector2f gp1, sf::Vector2f gp2)
+std::vector<Collision> TileCollideableInfo::colliding(
+    sf::Vector2f gp1, sf::Vector2f gp2, std::vector<Vector3u>* positions)
 {
-    sf::Vector2u p1 = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(gp1));
-    sf::Vector2u p2 = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(gp2));
+    sf::Vector2u p1;
+    sf::Vector2u p2;
 
     std::vector<Collision> result;
 
-    if (!jd::clipLine(p1, p2, sf::Rect<unsigned>(
-        0, 0, m_tilemap.size().x, m_tilemap.size().y)))
+    if (!clipToMap(gp1, gp2, p1, p2))
         return result;
 
-    sf::Vector2u const d = p2 - p1;
-
     result.reserve(static_cast<std::size_t>(
-        jd::math::abs(static_cast<sf::Vector2f>(d))));
+        jd::math::abs(static_cast<sf::Vector2f>(p2 - p1)) * mapsize().z));
 
     sf::Vector2u pos = p1;
-    sf::Vector2u lastPos = pos;
-    bool foundNext = false;
+    sf::Vector2u lastPos = p1;
     do {
         Vector3u idx(pos.x, pos.y, 0);
-        for (; idx.z < m_tilemap.size().z; ++idx.z)
-            addCollisions(idx, result);
-
-        auto const surrounding(surroundingTiles(
-            static_cast<sf::Vector2i>(pos)));
-        for (sf::Vector2i next : surrounding) {
-            if (pos != lastPos &&
-                m_tilemap.isValidPosition(jd::vec2to3(next, 0)) &&
-                jd::intersection(
-                    p1, p2,
-                    sf::Rect<unsigned>(
-                        static_cast<sf::Vector2u>(next),
-                        sf::Vector2u(1, 1)))
-            ) {
-                lastPos = pos;
-                pos = static_cast<sf::Vector2u>(next);
-                foundNext = true;
-                break;
+        for (; idx.z < m_tilemap.size().z; ++idx.z) {
+            auto const c = makeCollision(idx, nullptr, sf::FloatRect());
+            if (c.entity) {
+                if (positions)
+                    positions->push_back(idx);
+                result.push_back(c);
             }
         }
-        assert(foundNext);
+        bool found;
+        sf::Vector2u const nextPos = findNext(pos, lastPos, p1, p2, &found);
+        assert(found);
+        lastPos = pos;
+        pos = nextPos;
     } while (pos != p2);
     return result;
 }
+
+bool TileCollideableInfo::clipToMap(
+    sf::Vector2f lineStart, sf::Vector2f lineEnd,
+    sf::Vector2u& clipStart, sf::Vector2u& clipEnd)
+{
+    clipStart = static_cast<sf::Vector2u>(
+        m_tilemap.tilePosFromGlobal(lineStart));
+    clipEnd = static_cast<sf::Vector2u>(
+        m_tilemap.tilePosFromGlobal(lineEnd));
+
+    if (!jd::clipLine(clipStart, clipEnd, sf::Rect<unsigned>(
+        0, 0, m_tilemap.size().x, m_tilemap.size().y)))
+        return false;
+    return true;
+}
+
+sf::Vector2u TileCollideableInfo::findNext(
+    sf::Vector2u pos, sf::Vector2u oldPos_,
+    sf::Vector2u lineStart, sf::Vector2u lineEnd,
+    bool* found)
+{
+    sf::Vector2i const oldPos(oldPos_);
+    auto const surrounding(surroundingTiles(static_cast<sf::Vector2i>(pos)));
+    for (sf::Vector2i next : surrounding) {
+        if (next != oldPos &&
+            m_tilemap.isValidPosition(jd::vec2to3(next, 0)) &&
+            jd::intersection(
+                lineStart, lineEnd,
+                sf::Rect<unsigned>(
+                    static_cast<sf::Vector2u>(next),
+                    sf::Vector2u(1, 1)))
+        ) {
+            if (found)
+                *found = true;
+            return static_cast<sf::Vector2u>(next);
+        }
+    }
+    if (found)
+        *found = false;
+    return pos;
+}
+
+
+template <typename Pred>
+std::vector<Collision> filter(
+        std::vector<Collision>&& collisions,
+        std::vector<Vector3u>&& positions,
+        Pred pred)
+{
+    std::size_t i = 0;
+    while (i < collisions.size()) {
+        if (!pred(positions[i].z)) {
+            collisions.erase(collisions.begin() + i);
+            positions.erase(positions.begin() + i);
+        } else {
+            ++i;
+        }
+    }
+    return collisions;
+}
+
+TileLayersCollideableGroup::TileLayersCollideableGroup(
+    TileCollideableInfo* data,
+    unsigned firstLayer, unsigned endLayer):
+    m_data(data),
+    m_firstLayer(firstLayer),
+    m_endLayer(endLayer)
+{
+    // must call setEndLayer before setFirstLayer
+    // to check if map has enough layers
+    setEndLayer(endLayer);
+    setFirstLayer(firstLayer);
+}
+    
+
+
+void TileLayersCollideableGroup::setFirstLayer(unsigned layer)
+{
+    if (layer >= m_endLayer)
+        throw std::out_of_range("layer >= end-layer");
+    assert(layer < m_data->mapsize().z);
+    m_firstLayer = layer;
+}
+
+void TileLayersCollideableGroup::setEndLayer(unsigned layer)
+{
+    if (layer <= m_firstLayer)
+        throw std::out_of_range("layer <= first layer");
+    if (layer >= m_data->mapsize().z)
+        throw std::out_of_range("layer >= count of layers");
+    m_endLayer = layer;
+}
+
+
+std::vector<Collision> TileLayersCollideableGroup::colliding(
+    sf::FloatRect const& r, Entity* e)
+{
+    if (m_firstLayer == m_endLayer) // was clear() called?
+        return std::vector<Collision>();
+    if (isUnfiltered())
+        return m_data->colliding(r, e);
+
+    std::vector<Vector3u> positions;
+    return filter(
+        m_data->colliding(r, e, &positions),
+        std::move(positions),
+        std::bind(&TileLayersCollideableGroup::layerInRange, this, std::placeholders::_1));
+}
+
+std::vector<Collision> TileLayersCollideableGroup::colliding(
+    sf::Vector2f lineStart, sf::Vector2f lineEnd)
+{
+    if (m_firstLayer == m_endLayer) // was clear() called?
+        return std::vector<Collision>();
+    if (isUnfiltered())
+        return m_data->colliding(lineStart, lineEnd);
+
+    std::vector<Vector3u> positions;
+    return filter(
+        m_data->colliding(lineStart, lineEnd, &positions),
+        std::move(positions),
+        std::bind(&TileLayersCollideableGroup::layerInRange, this, std::placeholders::_1));
+}
+
+bool TileLayersCollideableGroup::isUnfiltered() const {
+    return m_firstLayer == 0 && m_endLayer == m_data->mapsize().z;
+}
+
+
+std::vector<Collision> TileStackCollideableGroup::colliding(
+    sf::FloatRect const& r, Entity* e)
+{
+    std::vector<Collision> result;
+
+    if (!m_filter)
+        return result;
+
+    sf::Vector2u begin = static_cast<sf::Vector2u>(
+        m_data->tilemap().tilePosFromGlobal(jd::topLeft(r)));
+    begin.x = std::max(begin.x, 0u);
+    begin.y = std::max(begin.y, 0u);
+    sf::Vector2u last = static_cast<sf::Vector2u>(
+        m_data->tilemap().tilePosFromGlobal(jd::bottomRight(r)));
+    last.x = std::min(last.x, m_data->mapsize().x - 1);
+    last.y = std::min(last.y, m_data->mapsize().y - 1);
+
+    result.reserve(
+        (last.x - begin.x + 1) * (last.y - begin.y + 1) *
+        m_data->mapsize().z);
+
+    Vector3u pos;
+    for (pos.x = begin.x; pos.x <= last.x; ++pos.x) {
+        for (pos.y = begin.y; pos.y <= last.y; ++pos.y) {
+            std::vector<Info> stack;
+            for (pos.z = 0; pos.z < m_data->mapsize().z; ++pos.z) {
+                auto c = m_data->makeCollision(pos, e, r);
+                if (c.entity)
+                    stack.emplace_back(m_data->tilemap()[pos], c.entity);
+                else
+                    stack.emplace_back();
+                m_filter(jd::vec3to2(pos), stack);
+                processStack(stack, result, r);
+            } // for z
+           
+        } // for y
+    } // for x
+    return result;
+}
+
+
+void TileStackCollideableGroup::processStack(
+    std::vector<Info>& stack, std::vector<Collision>& result,
+    sf::FloatRect const& r) const
+{
+    for (auto const& info: stack) {
+        if (!info.discard)
+            result.emplace_back(info.entity.getOpt(), r);
+    } // for info: stack
+}
+
+
+std::vector<Collision> TileStackCollideableGroup::colliding(
+    sf::Vector2f gp1, sf::Vector2f gp2)
+{
+    std::vector<Collision> result;
+
+    if (!m_filter)
+        return result;
+
+    sf::Vector2u p1;
+    sf::Vector2u p2;
+    if (!m_data->clipToMap(gp1, gp2, p1, p2))
+        return result;
+
+    result.reserve(static_cast<std::size_t>(
+        jd::math::abs(static_cast<sf::Vector2f>(p2 - p1)) * m_data->mapsize().z));
+
+    sf::Vector2u pos = p1;
+    sf::Vector2u lastPos = p1;
+    do {
+       std::vector<Info> stack;
+        Vector3u idx(pos.x, pos.y, 0);
+        for (; idx.z < m_data->mapsize().z; ++idx.z) {
+            auto const c = m_data->makeCollision(idx, nullptr, sf::FloatRect());
+            if (c.entity)
+                stack.emplace_back(m_data->tilemap()[idx], c.entity);
+            else
+                stack.emplace_back();
+        }
+        m_filter(pos, stack);
+        processStack(stack, result, sf::FloatRect());
+
+        bool found;
+        sf::Vector2u const nextPos = m_data->findNext(pos, lastPos, p1, p2, &found);
+        assert(found);
+        lastPos = pos;
+        pos = nextPos;
+    } while (pos != p2);
+    return result;
+}
+
+    
+    TileStackCollideableGroup::FilterCallback
+TileStackCollideableGroup::setFilter(FilterCallback filter)
+{
+    auto oldfilter = m_filter;
+    m_filter = filter;
+    return oldfilter;
+}
+
+

@@ -18,7 +18,7 @@ static void init(LuaVm& vm)
     LHMODULE [
 #       define LHCURCLASS TileCollisionComponent
         class_<LHCURCLASS, Component, WeakRef<Component>>("TileCollisionComponent")
-            .def(constructor<Entity&, TileCollideableGroup&>())
+            .def(constructor<Entity&, TileCollideableInfo&>())
 			.def(constructor<Entity&>())
             
 #       undef LHCURCLASS
