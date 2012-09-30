@@ -52,6 +52,7 @@ source_group("Component Sources" FILES ${COMP_SOURCES})
 set(LUAEXPORT_HEADERS
     luaexport/ExportThis.hpp
     luaexport/LuaExportMacros.hpp
+	luaexport/LuaFunction.hpp
     luaexport/LuaEventHelpers.hpp
     luaexport/Geometry.hpp
     luaexport/sharedPtrConverter.hpp
