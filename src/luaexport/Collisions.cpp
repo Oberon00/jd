@@ -101,7 +101,17 @@ static void init(LuaVm& vm)
         class_<LHCURCLASS, CollideableGroup>("TileStackCollideableGroup")
             .def(constructor<TileCollideableInfo*>())
             .def("setFilter", &TileStackCollideableGroup_setFilter)
-            .LHPROPG(data),
+            .LHPROPG(data)
+            .scope [
+#               undef LHCURCLASS // keep Visual Studio happy
+#               define LHCURCLASS TileStackCollideableGroup::Info
+                LHCLASS
+                    .def(constructor<>())
+                    .def(constructor<unsigned, WeakRef<Entity> const&>())
+                    .LHPROPRW(tileId)
+                    .LHPROPRW(entity)
+                    .LHPROPRW(discard)
+            ],
 #       undef LHCURCLASS
 
 #       define LHCURCLASS RectCollideableGroup
