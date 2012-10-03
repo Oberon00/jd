@@ -20,4 +20,7 @@
 
 #define LHVIRTSTUB0(f, r)     virtual r f() { return static_cast<r>(call<r>(BOOST_STRINGIZE(f))); }
 
+#define LHISREFVALID2(c) property("valid", &isValidWeakRef<c>)
+#define LHISREFVALID     LHISREFVALID2(LHCURCLASS)
+
 #endif

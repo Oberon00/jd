@@ -164,6 +164,12 @@ private:
     ::detail::WeakRefConnection* m_connection;
 };
 
+template <typename T>
+bool isValidWeakRef(WeakRef<T> ref)
+{
+    return ref.valid();
+}
+
 namespace detail {
 template <typename T>
 ::detail::WeakRefConnection* getConnection(EnableWeakRefFromThis<T>* r)

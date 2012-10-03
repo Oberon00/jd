@@ -135,7 +135,8 @@ static void init(LuaVm& vm)
             .property("componentName", &Component_componentName)
 			.def("_bindLuaPart", &wrap_Component::bindLuaPart)
             .def(const_self == other<Component*>())
-            .def(tostring(const_self)),
+            .def(tostring(const_self))
+            .LHISREFVALID2(Component),
         def("registerComponent", &registerMetaComponent),
         def("connect", &connectEvent, adopt(result)),
         class_<ConnectionBase, wrap_ConnectionBase>("ConnectionBase")

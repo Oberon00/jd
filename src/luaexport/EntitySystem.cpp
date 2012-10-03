@@ -77,6 +77,7 @@ void init(LuaVm& vm)
             .LHMEMFN(finish)
             .LHMEMFN(kill)
             .LHPROPG(state)
+            .LHISREFVALID
             .enum_("state") [
                 value("CREATED", Entity::created),
                 value("FINISHED", Entity::finished),
