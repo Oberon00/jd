@@ -336,8 +336,12 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
                     stack.emplace_back(m_data->tilemap()[pos], c.entity);
                 else
                     stack.emplace_back();
-                m_filter(jd::vec3to2(pos), stack);
-                processStack(stack, result, r);
+                auto const pos2 = jd::vec3to2(pos);
+                m_filter(pos2, stack);
+                processStack(
+                    stack,
+                    result,
+                    m_data->tilemap().globalTileRect(sf::Vector2i(pos2)));
             } // for z
            
         } // for y
