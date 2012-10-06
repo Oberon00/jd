@@ -1,6 +1,6 @@
 // No include guards
 //
-// #define E(name, value to something meaningful
+// #define E(name, value) to something meaningful
 
 #ifndef E
 #   error You have to provide a definiton for the macro E(name, value)
