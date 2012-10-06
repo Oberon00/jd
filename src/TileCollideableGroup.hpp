@@ -53,7 +53,6 @@ public:
         sf::FloatRect const& r,
         sf::Vector2u& begin,
         sf::Vector2u& last);
-
 private:
     TileCollideableInfo& operator= (TileCollideableInfo const&);
 

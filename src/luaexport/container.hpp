@@ -6,11 +6,19 @@
 #include <luabind/iterator_policy.hpp>
 #include <luabind/dependency_policy.hpp>
 #include <stdexcept>
+#include <boost/ref.hpp>
+#include <type_traits>
 
 
 struct lua_State;
 
 namespace containerexport_detail {
+
+template<bool ref, typename T>
+typename std::enable_if<ref, T*>::type makeRef(T& t) { return &t; }
+
+template<bool ref, typename T>
+typename std::enable_if<!ref, T&>::type makeRef(T& t) { return t; }
 
 template<typename C>
 void AssocContainer_set(C& c, typename C::key_type const& key, luabind::argument value)
@@ -21,21 +29,21 @@ void AssocContainer_set(C& c, typename C::key_type const& key, luabind::argument
         c[key] = luabind::object_cast<C::mapped_type>(value);
 }
 
-template<typename C>
+template<typename C, bool ref>
 luabind::object AssocContainer_get(C& c, lua_State* L, typename C::key_type const& key)
 {
    typename C::iterator it = c.find(key);
    if (it == c.end())
        return luabind::object();
-   return luabind::object(L, it->second);
+   return luabind::object(L, makeRef<ref>(it->second));
 }
 
-template<typename C>
+template<typename C, bool ref>
 luabind::object RandomAccessContainer_get(C& c, lua_State* L, typename C::size_type i)
 {
     if (i == 0)
         throw std::out_of_range("index starts at 1");
-    return luabind::object(L, c.at(i - 1));
+    return luabind::object(L, makeRef<ref>(c.at(i - 1)));
 }
 
 
@@ -76,19 +84,19 @@ void exportContainer(luabind::class_<C>& c)
             dependency(_1, result) + return_stl_iterator);
 }
 
-template <typename C>
+template <bool ref, typename C>
 void exportRandomAccessContainer(luabind::class_<C>& c)
 {
      exportContainer(c);
      c
          .def(luabind::constructor<typename C::size_type>())
-         .def("get", &containerexport_detail::RandomAccessContainer_get<C>)
+         .def("get", &containerexport_detail::RandomAccessContainer_get<C, ref>)
          .def("set", &containerexport_detail::RandomAccessContainer_set<C>)
          .def("add", (void(C::*)(typename C::const_reference))&C::push_back)
          .property("count", &C::size, (void(C::*)(typename C::size_type))&C::resize);
 }
 
-template <typename C>
+template <bool ref, typename C>
 void exportAssocContainer(luabind::class_<C>& c)
 {
     exportContainer(c);
@@ -99,7 +107,7 @@ void exportAssocContainer(luabind::class_<C>& c)
                 .def_readwrite("value", &C::value_type::second)
         ]
         .def("set", &containerexport_detail::AssocContainer_set<C>)
-        .def("get", &containerexport_detail::AssocContainer_get<C>)
+        .def("get", &containerexport_detail::AssocContainer_get<C, ref>)
         .property("count", &C::size);
 }
 

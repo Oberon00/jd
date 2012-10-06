@@ -33,23 +33,54 @@ static std::vector<Collision> const CollideableGroup_colliding(
     return self.colliding(r);
 }
 
+static void TileStackCollideableGroup_callFilter(
+    luabind::object& filter,
+    sf::Vector2u pos,
+    std::vector<TileStackCollideableGroup::Info>& stack)
+{
+    filter(pos, &stack);
+}
+
+
 static void TileStackCollideableGroup_setFilter(
     TileStackCollideableGroup& this_, luabind::object filter)
 {
-    this_.setFilter(LuaFunction<void>(filter));
+    this_.setFilter(boost::bind(
+        &TileStackCollideableGroup_callFilter, filter, _1, _2));
 }
+
+static void TileStackCollideableGroup_Info_setEntity(
+    TileStackCollideableGroup::Info& this_, WeakRef<Entity> e)
+{
+    this_.entity = e;
+}
+
+static luabind::object TileStackCollideableGroup_Info_entity(
+    TileStackCollideableGroup::Info const& this_, lua_State* L)
+{
+    if (!this_.entity)
+        return luabind::object();
+    return luabind::object(L, this_.entity);
+}
+
+
 
 } // anonymous namespace
 
 static void init(LuaVm& vm)
 {
     typedef std::vector<Collision> CollisionVec;
-    typedef std::vector<Vector3u> PositionVec;
     luabind::class_<CollisionVec> cCollisionVec("CollisionList");
-    exportRandomAccessContainer(cCollisionVec);
+    exportRandomAccessContainer<true>(cCollisionVec);
 
+    typedef std::vector<Vector3u> PositionVec;
     luabind::class_<PositionVec> cPositionVec("PositionList");
-    exportRandomAccessContainer(cPositionVec);
+    exportRandomAccessContainer<false>(cPositionVec);
+
+    typedef std::vector<TileStackCollideableGroup::Info> TileStackInfoVec;
+    luabind::class_<TileStackInfoVec> cTileStackInfoVec("TileStackCollisionVec");
+    exportRandomAccessContainer<true>(cTileStackInfoVec);
+
     LHMODULE [
 #       define LHCURCLASS Collision
         LHCLASS
@@ -103,13 +134,16 @@ static void init(LuaVm& vm)
             .def("setFilter", &TileStackCollideableGroup_setFilter)
             .LHPROPG(data)
             .scope [
+                cTileStackInfoVec,
 #               undef LHCURCLASS // keep Visual Studio happy
 #               define LHCURCLASS TileStackCollideableGroup::Info
-                LHCLASS
+                class_<LHCURCLASS>("TileStackCollideableInfo")
                     .def(constructor<>())
                     .def(constructor<unsigned, WeakRef<Entity> const&>())
                     .LHPROPRW(tileId)
-                    .LHPROPRW(entity)
+                    .property("entity",
+                        &TileStackCollideableGroup_Info_entity,
+                        &TileStackCollideableGroup_Info_setEntity)
                     .LHPROPRW(discard)
             ],
 #       undef LHCURCLASS

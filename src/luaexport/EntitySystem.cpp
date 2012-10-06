@@ -63,7 +63,7 @@ void init(LuaVm& vm)
 
     typedef std::vector<luabind::object> ObjectVec;
     luabind::class_<ObjectVec> cObjectVec("ComponentList");
-    exportRandomAccessContainer(cObjectVec);
+    exportRandomAccessContainer<false>(cObjectVec);
 
     vm.initLib("ComponentSystem");
     LHMODULE [

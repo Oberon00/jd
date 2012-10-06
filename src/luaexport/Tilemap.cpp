@@ -28,19 +28,19 @@ static void init(LuaVm& vm)
 
     using namespace luabind;
     class_<PropertyMap> cPropertyMap("StringTable");
-    exportAssocContainer(cPropertyMap);
+    exportAssocContainer<false>(cPropertyMap);
 
     class_<MapObjectGroup::Map> cObjectGroupMap("ObjectGroupTable");
-    exportAssocContainer(cObjectGroupMap);
+    exportAssocContainer<true>(cObjectGroupMap);
 
     class_<std::vector<PropertyMap>> cPropertyMapVec("StringTableList");
-    exportRandomAccessContainer(cPropertyMapVec);
+    exportRandomAccessContainer<true>(cPropertyMapVec);
 
     class_<std::vector<sf::Vector2f>> cPointVec("PointList");
-    exportRandomAccessContainer(cPointVec);
+    exportRandomAccessContainer<false>(cPointVec);
 
     class_<std::vector<MapObject>> cMapObjectVec("ObjectList");
-    exportRandomAccessContainer(cMapObjectVec);
+    exportRandomAccessContainer<true>(cMapObjectVec);
     
     LHMODULE [
         namespace_("mapInfo") [
