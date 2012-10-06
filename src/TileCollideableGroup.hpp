@@ -49,6 +49,10 @@ public:
         sf::Vector2u pos, sf::Vector2u oldPos,
         sf::Vector2u lineStart, sf::Vector2u lineEnd,
         bool* found = nullptr);
+    std::size_t mapCorners(
+        sf::FloatRect const& r,
+        sf::Vector2u& begin,
+        sf::Vector2u& last);
 
 private:
     TileCollideableInfo& operator= (TileCollideableInfo const&);
@@ -108,7 +112,7 @@ public:
     typedef std::function<void(sf::Vector2u, std::vector<Info>&)> FilterCallback;
 
     TileStackCollideableGroup(
-        TileCollideableInfo* data,
+        WeakRef<TileCollideableInfo> const& data,
         FilterCallback filter = FilterCallback()
     ):
         m_data(data),

@@ -92,17 +92,15 @@ Collision TileCollideableInfo::makeCollision(
 std::vector<Collision> TileCollideableInfo::colliding(
     sf::FloatRect const& r, Entity* e, std::vector<Vector3u>* positions)
 {
-    sf::Vector2u begin = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(jd::topLeft(r)));
-    begin.x = std::max(begin.x, 0u);
-    begin.y = std::max(begin.y, 0u);
-    sf::Vector2u last = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(jd::bottomRight(r)));
-    last.x = std::min(last.x, m_tilemap.size().x - 1);
-    last.y = std::min(last.y, m_tilemap.size().y - 1);
+    sf::Vector2u begin;
+    sf::Vector2u last;
+    std::size_t const intersectingCount = mapCorners(r, begin, last);
+
 
     std::vector<Collision> result;
-    result.reserve((last.x - begin.x + 1) * (last.y - begin.y + 1) * m_tilemap.size().z);
+    if (intersectingCount <= 0)
+        return result;
+    result.reserve(intersectingCount);
 
     Vector3u pos;
     for (pos.z = 0; pos.z < m_tilemap.size().z; ++pos.z) {
@@ -218,6 +216,28 @@ sf::Vector2u TileCollideableInfo::findNext(
     return pos;
 }
 
+std::size_t TileCollideableInfo::mapCorners(
+    sf::FloatRect const& r,
+    sf::Vector2u& begin,
+    sf::Vector2u& last)
+{
+    begin = static_cast<sf::Vector2u>(
+        m_tilemap.tilePosFromGlobal(jd::topLeft(r)));
+    begin.x = std::max(begin.x, 0u);
+    begin.y = std::max(begin.y, 0u);
+    last = static_cast<sf::Vector2u>(
+        m_tilemap.tilePosFromGlobal(jd::bottomRight(r)));
+    last.x = std::min(last.x, m_tilemap.size().x - 1);
+    last.y = std::min(last.y, m_tilemap.size().y - 1);
+
+    int intersectingPerLayer = (last.x - begin.x + 1) * (last.y - begin.y + 1);
+    if (intersectingPerLayer <= 0) {
+        return 0;
+    }
+
+    return intersectingPerLayer * m_tilemap.size().z;
+}
+
 
 template <typename Pred>
 std::vector<Collision> filter(
@@ -313,37 +333,32 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
     if (!m_filter)
         return result;
 
-    sf::Vector2u begin = static_cast<sf::Vector2u>(
-        m_data->tilemap().tilePosFromGlobal(jd::topLeft(r)));
-    begin.x = std::max(begin.x, 0u);
-    begin.y = std::max(begin.y, 0u);
-    sf::Vector2u last = static_cast<sf::Vector2u>(
-        m_data->tilemap().tilePosFromGlobal(jd::bottomRight(r)));
-    last.x = std::min(last.x, m_data->mapsize().x - 1);
-    last.y = std::min(last.y, m_data->mapsize().y - 1);
+     sf::Vector2u begin;
+    sf::Vector2u last;
+    std::size_t const intersectingCount = m_data->mapCorners(r, begin, last);
 
-    result.reserve(
-        (last.x - begin.x + 1) * (last.y - begin.y + 1) *
-        m_data->mapsize().z);
+    if (intersectingCount <= 0)
+        return result;
+    result.reserve(intersectingCount);
 
     Vector3u pos;
     for (pos.x = begin.x; pos.x <= last.x; ++pos.x) {
         for (pos.y = begin.y; pos.y <= last.y; ++pos.y) {
             std::vector<Info> stack;
+            auto const pos2 = jd::vec3to2(pos);
+
             for (pos.z = 0; pos.z < m_data->mapsize().z; ++pos.z) {
                 auto c = m_data->makeCollision(pos, e, r);
                 if (c.entity)
                     stack.emplace_back(m_data->tilemap()[pos], c.entity);
                 else
                     stack.emplace_back();
-                auto const pos2 = jd::vec3to2(pos);
-                m_filter(pos2, stack);
-                processStack(
-                    stack,
-                    result,
-                    m_data->tilemap().globalTileRect(sf::Vector2i(pos2)));
             } // for z
-           
+            m_filter(pos2, stack);
+            processStack(
+                stack,
+                result,
+                m_data->tilemap().globalTileRect(sf::Vector2i(pos2)));
         } // for y
     } // for x
     return result;
@@ -355,7 +370,7 @@ void TileStackCollideableGroup::processStack(
     sf::FloatRect const& r) const
 {
     for (auto const& info: stack) {
-        if (!info.discard)
+        if (!info.discard && info.entity.valid())
             result.emplace_back(info.entity.getOpt(), r);
     } // for info: stack
 }
