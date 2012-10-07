@@ -1,3 +1,6 @@
+#ifndef SFUTIL_HPP_INCLUDED
+#define SFUTIL_HPP_INCLUDED SFUTIL_HPP_INCLUDED
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
@@ -20,6 +23,56 @@ inline void hash_combine(
     seed ^= h(t) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 }
 
+// Various math functions //
+
+namespace math
+{
+    double const pi = 3.14159265;
+
+    template <typename T>
+    inline T rad(T degval)
+    {
+        return static_cast<T>(degval * pi / 180);
+    }
+
+    template <typename T>
+    inline T deg(T radval)
+    {
+        return static_cast<T>(radval * 180 / pi);
+    }
+
+    template <typename T>
+    inline T abs(sf::Vector2<T> v)
+    {
+        return std::sqrt(v.x * v.x + v.y * v.y);
+    }
+
+    template <typename T>
+    inline T abs(sf::Vector3<T> v)
+    {
+        return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    }
+
+    template <typename T>
+    inline T angle(sf::Vector2<T> a, sf::Vector2<T> b = sf::Vector2<T>(1, 0))
+    {
+        return atan2(a.y, a.x) - atan2(b.y, b.x);
+    }
+
+    template <typename T>
+    inline T operator* (sf::Vector2<T> v1, sf::Vector2<T> v2)
+    {
+        return scalar_product(v1, v2);
+    }
+
+    template <typename T>
+    inline T scalar_product (sf::Vector2<T> v1, sf::Vector2<T> v2)
+    {
+        return v1.x * v2.x + v1.y * v2.y;
+    }
+} // namespace math
+
+
 // sf::Rect utilty //
 
 template <typename T>
@@ -35,10 +88,24 @@ inline sf::Vector2<T> topLeft(sf::Rect<T> const& r)
 }
 
 template <typename T>
+inline sf::Vector2<T> topRight(sf::Rect<T> const& r)
+{
+    return sf::Vector2<T>(right(r), r.top);
+}
+
+
+template <typename T>
 inline sf::Vector2<T> bottomRight(sf::Rect<T> const& r)
 {
     return sf::Vector2<T>(right(r), bottom(r));
 }
+
+template <typename T>
+inline sf::Vector2<T> bottomLeft(sf::Rect<T> const& r)
+{
+    return sf::Vector2<T>(r.left, bottom(r));
+}
+
 
 template <typename T>
 inline sf::Vector2<T> size(sf::Rect<T> const& r)
@@ -53,7 +120,7 @@ inline sf::Vector2<T> center(sf::Rect<T> const& r)
 }
 
 template <typename T>
-inline sf::Rect<T> pointsTorect(sf::Vector2<T> topLeft, sf::Vector2<T> bottomRight)
+inline sf::Rect<T> pointsToRect(sf::Vector2<T> topLeft, sf::Vector2<T> bottomRight)
 {
     return sf::Rect<T>(topLeft, topLeft + bottomRight);
 }
@@ -102,6 +169,44 @@ inline sf::Vector3<Target> vec_cast(sf::Vector3<Source> source)
         static_cast<Target>(source.z)
     );
 }
+
+template <template<typename> class V, typename T>
+inline T distance(V<T> a, V<T> b)
+{
+    return math::abs(b - a);
+}
+
+
+template <template<typename> class V, typename T>
+inline T manhattanDistance(V<T> a, V<T> b)
+{
+    auto const d = b - a;
+    return std::abs(d.x) + std::abs(d.y);
+}
+
+template <typename T>
+sf::Vector2<T> nearestPoint(sf::Rect<T> in, sf::Vector2<T> to)
+{
+    sf::Vector2<T> result = to;
+    if (to.x < in.left)
+        result.x = in.left;
+    else if (to.x > right(in))
+        result.x = right(in);
+    if (to.y < in.top)
+        to.y = in.top;
+    else if (to.y > bottom(in))
+        to.y = bottom(in);
+    return result;
+}
+
+template <typename T>
+sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Vector2<T> from)
+{
+    return sf::Vector2<T>(
+        d.x == 0 ? from.x : d.x < 0 ? in.left    : right(in),
+        d.y == 0 ? from.y : d.y < 0 ? bottom(in) : in.top);
+}
+
 
 // Clipping and line intersection //
 // (using Cohen–Sutherland algorithm)
@@ -175,56 +280,6 @@ bool intersection(
     return clipLine(p1, p2, r);
 }
 
-// Various math functions //
-
-namespace math
-{
-    double const pi = 3.14159265;
-
-    template <typename T>
-    inline T rad(T degval)
-    {
-        return degval * pi / 180;
-    }
-
-    template <typename T>
-    inline T deg(T radval)
-    {
-        return static_cast<T>(radval * 180 / pi);
-    }
-
-    template <typename T>
-    inline T abs(sf::Vector2<T> v)
-    {
-        return std::sqrt(v.x * v.x + v.y * v.y);
-    }
-
-    template <typename T>
-    inline T abs(sf::Vector3<T> v)
-    {
-        return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-    }
-
-    template <typename T>
-    inline T angle(sf::Vector2<T> a, sf::Vector2<T> b = sf::Vector2<T>(1, 0))
-    {
-        return atan2(a.y, a.x) - atan2(b.y, b.x);
-    }
-
-    template <typename T>
-    inline T operator* (sf::Vector2<T> v1, sf::Vector2<T> v2)
-    {
-        return scalar_product(v1, v2);
-    }
-
-    template <typename T>
-    inline T scalar_product (sf::Vector2<T> v1, sf::Vector2<T> v2)
-    {
-        return v1.x * v2.x + v1.y * v2.y;
-    }
-} // namespace math
-
-
 // sf::View utility //
 
 sf::FloatRect viewRect(sf::View const& view);
@@ -271,4 +326,7 @@ struct hash<sf::Vector3<T>>: public unary_function<sf::Vector3<T>, size_t> {
         return result;
     }
 };
+
 } // namespace std
+
+#endif // include guard
