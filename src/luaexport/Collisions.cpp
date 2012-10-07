@@ -8,6 +8,8 @@
 #include "svc/ServiceLocator.hpp"
 #include "Tilemap.hpp"
 #include "LuaFunction.hpp"
+#include "sfUtil.hpp"
+#include <algorithm>
 
 static char const libname[] = "Collisions";
 #include "ExportThis.hpp"
@@ -63,6 +65,19 @@ static luabind::object TileStackCollideableGroup_Info_entity(
     return luabind::object(L, this_.entity);
 }
 
+static void CollisionVec_sortByDistance(
+    std::vector<Collision>& this_, sf::Vector2f to)
+{
+    std::sort(
+        begin(this_), end(this_),
+        [to](Collision const& c1, Collision const& c2) -> bool {
+            auto const c1next = jd::nearestPoint(c1.rect, to);
+            auto const c2next = jd::nearestPoint(c2.rect, to);
+            auto const c1d = jd::manhattanDistance(c1next, to);
+            auto const c2d = jd::manhattanDistance(c2next, to);
+            return c1d < c2d;
+    });
+}
 
 
 } // anonymous namespace
@@ -72,6 +87,7 @@ static void init(LuaVm& vm)
     typedef std::vector<Collision> CollisionVec;
     luabind::class_<CollisionVec> cCollisionVec("CollisionList");
     exportRandomAccessContainer<true>(cCollisionVec);
+    cCollisionVec.def("sortByDistance", &CollisionVec_sortByDistance);
 
     typedef std::vector<Vector3u> PositionVec;
     luabind::class_<PositionVec> cPositionVec("PositionList");
