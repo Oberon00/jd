@@ -38,6 +38,23 @@ static int Vec_isZero(lua_State* L)
 }
 
 template<typename T>
+static int Vec_distance(lua_State* L)
+{
+    T *v1 = lgeo::to<T>(L, 1), *v2 = lgeo::to<T>(L, 2);
+    lua_pushnumber(L, jd::distance(*v1, *v2));
+    return 1;
+}
+
+template<typename T>
+static int Vec_manhattanDistance(lua_State* L)
+{
+    T *v1 = lgeo::to<T>(L, 1), *v2 = lgeo::to<T>(L, 2);
+    lua_pushnumber(L, jd::manhattanDistance(*v1, *v2));
+    return 1;
+}
+
+
+template<typename T>
 static int geo_eq(lua_State* L)
 {
     T *v1 = lgeo::to<T>(L, 1),
@@ -345,6 +362,23 @@ static int Rect_contains(lua_State* L)
     return 1;
 }
 
+static int Rect_outermostPoint(lua_State* L)
+{
+    LuaRect const* in = lgeo::to<LuaRect>(L, 1);
+    LuaVec2 const *d = lgeo::to<LuaVec2>(L, 2);
+    LuaVec2 const& from(
+        lua_gettop(L) > 2 ? *lgeo::to<LuaVec2>(L, 3) : jd::center(*in));
+    lgeo::push(L, jd::outermostPoint(*in, *d, from));
+    return 1;
+}
+
+static int Rect_nearestPoint(lua_State* L)
+{
+    LuaRect const* in = lgeo::to<LuaRect>(L, 1);
+    LuaVec2 const *to = lgeo::to<LuaVec2>(L, 2);
+    lgeo::push(L, jd::nearestPoint(*in, *to));
+    return 1;
+}
 
 
 template <typename T>
@@ -372,6 +406,8 @@ void Vec_export(lua_State* L)
     static luaL_Reg const mfns[] = {
         {"abs", &Vec_abs<T>},
         {"isZero", &Vec_isZero<T>},
+        {"distance", &Vec_distance<T>},
+        {"manhattanDistance", &Vec_manhattanDistance<T>},
         {nullptr, nullptr}
     };
     lua_getglobal(L, "jd");
@@ -405,6 +441,8 @@ void Rect_export(lua_State* L)
     static luaL_Reg const mfns[] = {
         {"intersection", &Rect_intersection},
         {"contains", &Rect_contains},
+        {"outermostPoint", &Rect_outermostPoint},
+        {"nearestPoint", &Rect_nearestPoint},
         {nullptr, nullptr}
     };
 
