@@ -207,6 +207,15 @@ sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Vector2<T> f
         d.y == 0 ? from.y : d.y < 0 ? bottom(in) : in.top);
 }
 
+template <typename T>
+sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Rect<T> from)
+{
+    return sf::Vector2<T>(
+        d.x == 0 ? from.left : d.x < 0 ? in.left : right(in) - from.width,
+        d.y == 0 ? from.left : d.y < 0 ? bottom(in) - from.height : in.top);
+}
+
+
 
 // Clipping and line intersection //
 // (using Cohen–Sutherland algorithm)
