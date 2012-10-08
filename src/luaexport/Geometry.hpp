@@ -47,6 +47,12 @@ namespace luaSfGeo {
     }
 
     template <typename T>
+    T* optTo(lua_State* L, int idx)
+    {
+        return static_cast<T*>(luaL_testudata(L, idx, Traits<T>::mtName));
+    }
+
+    template <typename T>
     T* push(lua_State* L, T const& v)
     {
         T* newvec = static_cast<T*>(
