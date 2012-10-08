@@ -366,9 +366,16 @@ static int Rect_outermostPoint(lua_State* L)
 {
     LuaRect const* in = lgeo::to<LuaRect>(L, 1);
     LuaVec2 const *d = lgeo::to<LuaVec2>(L, 2);
-    LuaVec2 const& from(
-        lua_gettop(L) > 2 ? *lgeo::to<LuaVec2>(L, 3) : jd::center(*in));
-    lgeo::push(L, jd::outermostPoint(*in, *d, from));
+    if (lua_gettop(L) > 2) {
+        if (LuaVec2 const* from = lgeo::optTo<LuaVec2>(L, 3)) {
+            lgeo::push(L, jd::outermostPoint(*in, *d, *from));
+        } else {
+            lgeo::push(L, jd::outermostPoint(
+                *in, *d, *lgeo::to<LuaRect>(L, 3)));
+        }
+    } else {
+        lgeo::push(L, jd::outermostPoint(*in, *d, jd::center(*in)));
+    }
     return 1;
 }
 
