@@ -203,21 +203,21 @@ template <typename T>
 sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Vector2<T> from)
 {
     return sf::Vector2<T>(
-        d.x == 0 ? from.x : d.x < 0 ? in.left    : right(in),
-        d.y == 0 ? from.y : d.y < 0 ? bottom(in) : in.top);
+        d.x == 0 ? from.x : d.x < 0 ? in.left : right(in),
+        d.y == 0 ? from.y : d.y < 0 ? in.top  : bottom(in));
 }
 
 template <typename T>
 sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Rect<T> from)
 {
     return sf::Vector2<T>(
-        d.x == 0 ? from.left : d.x < 0 ? in.left : right(in) - from.width,
-        d.y == 0 ? from.left : d.y < 0 ? bottom(in) - from.height : in.top);
+        d.x == 0 ? from.left : d.x < 0 ? in.left : right(in)  - from.width,
+        d.y == 0 ? from.top  : d.y < 0 ? in.top  : bottom(in) - from.height);
 }
 
 
 
-// Clipping and line intersection //
+// Clipping and line-rectangle intersection //
 // (using Cohen–Sutherland algorithm)
 namespace clip {
     enum T {left  = 1, right = 2, lower = 4, upper = 8};
