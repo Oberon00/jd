@@ -156,7 +156,7 @@ std::vector<Collision> TileCollideableInfo::colliding(
 
     sf::Vector2u pos = p1;
     sf::Vector2u lastPos = p1;
-    do {
+    for (;;) {
         Vector3u idx(pos.x, pos.y, 0);
         for (; idx.z < m_tilemap.size().z; ++idx.z) {
             auto const c = makeCollision(idx, nullptr, sf::FloatRect());
@@ -168,10 +168,12 @@ std::vector<Collision> TileCollideableInfo::colliding(
         }
         bool found;
         sf::Vector2u const nextPos = findNext(pos, lastPos, p1, p2, &found);
-        assert(found);
+        if (!found)
+            break;
+
         lastPos = pos;
         pos = nextPos;
-    } while (pos != p2);
+    }
     return result;
 }
 
@@ -185,7 +187,7 @@ bool TileCollideableInfo::clipToMap(
         m_tilemap.tilePosFromGlobal(lineEnd));
 
     if (!jd::clipLine(clipStart, clipEnd, sf::Rect<unsigned>(
-        0, 0, m_tilemap.size().x, m_tilemap.size().y)))
+        0, 0, m_tilemap.size().x - 1, m_tilemap.size().y - 1)))
         return false;
     return true;
 }
@@ -198,13 +200,10 @@ sf::Vector2u TileCollideableInfo::findNext(
     sf::Vector2i const oldPos(oldPos_);
     auto const surrounding(surroundingTiles(static_cast<sf::Vector2i>(pos)));
     for (sf::Vector2i next : surrounding) {
+        using jd::vec_cast;
         if (next != oldPos &&
             m_tilemap.isValidPosition(jd::vec2to3(next, 0)) &&
-            jd::intersection(
-                lineStart, lineEnd,
-                sf::Rect<unsigned>(
-                    static_cast<sf::Vector2u>(next),
-                    sf::Vector2u(1, 1)))
+            jd::onLine(vec_cast<int>(lineStart), vec_cast<int>(lineEnd), next)
         ) {
             if (found)
                 *found = true;
@@ -333,7 +332,7 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
     if (!m_filter)
         return result;
 
-     sf::Vector2u begin;
+    sf::Vector2u begin;
     sf::Vector2u last;
     std::size_t const intersectingCount = m_data->mapCorners(r, begin, last);
 
@@ -390,12 +389,14 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
         return result;
 
     result.reserve(static_cast<std::size_t>(
-        jd::math::abs(static_cast<sf::Vector2f>(p2 - p1)) * m_data->mapsize().z));
+        jd::math::abs(
+            jd::vec_cast<float>(p2) - jd::vec_cast<float>(p1)
+        ) * m_data->mapsize().z));
 
     sf::Vector2u pos = p1;
     sf::Vector2u lastPos = p1;
-    do {
-       std::vector<Info> stack;
+    for (;;) {
+        std::vector<Info> stack;
         Vector3u idx(pos.x, pos.y, 0);
         for (; idx.z < m_data->mapsize().z; ++idx.z) {
             auto const c = m_data->makeCollision(idx, nullptr, sf::FloatRect());
@@ -405,14 +406,16 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
                 stack.emplace_back();
         }
         m_filter(pos, stack);
-        processStack(stack, result, sf::FloatRect());
+        processStack(
+            stack, result, m_data->tilemap().globalTileRect(sf::Vector2i(pos)));
 
         bool found;
         sf::Vector2u const nextPos = m_data->findNext(pos, lastPos, p1, p2, &found);
-        assert(found);
+        if (!found)
+            break;
         lastPos = pos;
         pos = nextPos;
-    } while (pos != p2);
+    }
     return result;
 }
 
