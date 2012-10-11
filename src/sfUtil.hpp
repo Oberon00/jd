@@ -184,6 +184,29 @@ inline T manhattanDistance(V<T> a, V<T> b)
     return std::abs(d.x) + std::abs(d.y);
 }
 
+// Is p on the line from a to b?
+template <typename T>
+bool onLine(sf::Vector2<T> a, sf::Vector2<T> b, sf::Vector2<T> p)
+{
+    sf::Vector2<T> d = b - a;
+    if (d.x == 0) {
+        return
+            p.x == a.x &&
+            p.y <= std::max(a.y, b.y) && p.y >= std::min(a.y, b.y);
+    }
+    if (d.y == 0) {
+        return
+            p.y == a.y &&
+            p.x <= std::max(a.x, b.x) && p.x >= std::min(a.x, b.x);
+    }
+    T const n = (p.x - a.x) / d.x;
+    if (n != (p.y - a.y) / d.y)
+        return false;
+    T const m = (b.x - a.x) / d.x;
+    assert((b.y - a.y) / d.y == m);
+    return (m >= 0 && (n >= 0 && n < m)) || (m < 0 && (n < 0 && n > m));
+}
+
 template <typename T>
 sf::Vector2<T> nearestPoint(sf::Rect<T> in, sf::Vector2<T> to)
 {
