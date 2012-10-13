@@ -137,7 +137,6 @@ static void init(LuaVm& vm)
     lua_State* L = vm.L();
     lua_getglobal(L, "jd");
     lua_getfield(L, -1, "kb");
-    std::string const d = luaU::dumpvar(L, -1);
     static luaU::ExportedEnumValue const keys[] = {
 #       define E(n, v) {n, Keyboard::v},
 #       include "sfKeyCodes.hpp"
