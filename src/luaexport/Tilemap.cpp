@@ -1,5 +1,4 @@
 #include "Tilemap.hpp"
-#include "Geometry.hpp"
 #include "TransformGroup.hpp" // GroupedDrawable
 #include "sharedPtrConverter.hpp"
 #include "container.hpp"
@@ -7,6 +6,7 @@
 
 static char const libname[] = "Tilemap";
 #include "ExportThis.hpp"
+#include "Geometry.hpp"
 
 static unsigned Tilemap_get(jd::Tilemap const& map, sf::Vector3i p)
 {
@@ -108,6 +108,8 @@ static void init(LuaVm& vm)
             .def("tilePos", &LHCURCLASS::globalTilePos)
             .LHMEMFN(tilePosFromLocal)
             .LHMEMFN(tilePosFromGlobal)
+            .def("tileRect", &LHCURCLASS::globalTileRect)
+            .LHMEMFN(localTileRect)
             .def("loadFromFile", &loadTilemap)
 #   undef LHCURCLASS
     ];
