@@ -6,7 +6,6 @@
 #include <luabind/iterator_policy.hpp>
 #include <luabind/dependency_policy.hpp>
 #include <stdexcept>
-#include <boost/ref.hpp>
 #include <type_traits>
 
 
@@ -18,7 +17,7 @@ template<bool ref, typename T>
 typename std::enable_if<ref, T*>::type makeRef(T& t) { return &t; }
 
 template<bool ref, typename T>
-typename std::enable_if<!ref, T&>::type makeRef(T& t) { return t; }
+typename std::enable_if<!ref, T>::type makeRef(T& t) { return t; }
 
 template<typename C>
 void AssocContainer_set(C& c, typename C::key_type const& key, luabind::argument value)
@@ -39,11 +38,12 @@ luabind::object AssocContainer_get(C& c, lua_State* L, typename C::key_type cons
 }
 
 template<typename C, bool ref>
-luabind::object RandomAccessContainer_get(C& c, lua_State* L, typename C::size_type i)
+auto RandomAccessContainer_get(C& c, typename C::size_type i)
+    -> decltype(makeRef<ref>(c.at(i - 1)))
 {
     if (i == 0)
         throw std::out_of_range("index starts at 1");
-    return luabind::object(L, makeRef<ref>(c.at(i - 1)));
+    return makeRef<ref>(c.at(i - 1));
 }
 
 
