@@ -30,7 +30,7 @@ void TilePositionComponent::initComponent()
 {
     assert(parent());
     PositionComponent& p = parent()->require<PositionComponent>();
-    p.connect_rectChanged(
+    m_con_positionChanged = p.connect_rectChanged(
         boost::bind(&TilePositionComponent::on_positionChanged, this, _1, _2));
     on_positionChanged(p.rect(), p.rect());
 }
