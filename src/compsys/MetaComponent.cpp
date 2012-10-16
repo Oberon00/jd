@@ -111,7 +111,7 @@ private:
 class wrap_ConnectionBase: public ConnectionBase, public luabind::wrap_base {
 public:
     virtual void disconnect() { call<void>("disconnect"); }
-    virtual bool isConnected() const { return call<bool>("isConnected"); }
+    virtual bool isConnected() const { return call<bool>("getIsConnected"); }
 };
 
 } // anonymous namespace
