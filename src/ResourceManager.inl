@@ -24,7 +24,8 @@ typename ResourceManager<ResT>::Ptr ResourceManager<ResT>::request(
 
 	WeakPtr& oldRes = m_resMap[name];
 	if (oldRes.expired()) {
-		LOG_D("Loading resource \"" + name + "\"...");
+        LOG_D("Loading resource[" +
+              std::string(typeid(ResT).name()) + "] \"" + name + "\"...");
         Ptr newRes(std::make_shared<ResT>());
 		try {
 			m_callback(*newRes, name);
