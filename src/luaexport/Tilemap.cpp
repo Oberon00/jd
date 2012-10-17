@@ -98,6 +98,7 @@ static void init(LuaVm& vm)
 #   define LHCURCLASS GroupedDrawable<jd::Tilemap>
 		class_<LHCURCLASS, bases<TransformGroup::AutoEntry, jd::Tilemap>>("Tilemap")
             .def(constructor<TransformGroup&>())
+            .LHMEMFN(isValidPosition)
             .def("get", &Tilemap_get)
             .def("set", &Tilemap_set)
             .property("bounds", &LHCURCLASS::getGlobalBounds)
