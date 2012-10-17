@@ -100,13 +100,28 @@ void Timer::cancelOrder(std::size_t id)
     it->callback.clear();
 }
 
-void Timer::CallOrder::cancel()
+bool Timer::hasOrder(std::size_t id)
+{
+    auto const it = std::find_if(
+        m_entries.begin(), m_entries.end(), [id](Entry const& e) {
+            return e.id == id;
+        });
+    return it != m_entries.end();
+}
+
+void Timer::CallOrder::disconnect()
 {
     if (!m_timer.valid())
         throw std::logic_error("attempt to cancel a CallOrder twice");
     m_timer->cancelOrder(m_id);
     m_timer = static_cast<Component*>(nullptr);
 }
+
+bool Timer::CallOrder::isConnected() const
+{
+    return m_timer.valid() && m_timer->hasOrder(m_id);
+}
+
 
 Timer::CallOrder::CallOrder(Timer& timer, std::size_t id):
     m_timer(timer.ref<Timer>()),

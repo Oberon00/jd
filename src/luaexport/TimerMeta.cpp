@@ -25,10 +25,6 @@ static void init(LuaVm& vm)
 {
     vm.initLib("ComponentSystem");
     LHMODULE [
-#       define LHCURCLASS Timer::CallOrder
-        class_<LHCURCLASS>("TimerCallOrder")
-            .LHMEMFN(cancel),
-#       undef LHCURCLASS
 
 #       define LHCURCLASS Timer
         class_<LHCURCLASS, Component>("Timer")
@@ -36,6 +32,10 @@ static void init(LuaVm& vm)
             .def("callAfter", &Timer_callAfter)
             .LHPROPG(frameDuration)
             .property("factor", &LHCURCLASS::factor, &LHCURCLASS::setFactor)
+            .scope [
+                class_<LHCURCLASS::CallOrder, ConnectionBase>("CallOrder")
+            ]
+
 #       undef LHCURCLASS
     ];
 }

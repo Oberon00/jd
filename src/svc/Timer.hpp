@@ -7,6 +7,7 @@
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
 #include <vector>
+#include "ssig.hpp"
 
 class Timer: public Component {
     JD_COMPONENT
@@ -23,9 +24,10 @@ private:
     };
 
 public:
-    class CallOrder {
+    class CallOrder: public ConnectionBase {
     public:
-        void cancel();
+        virtual void disconnect() override;
+        virtual bool isConnected() const override;
     private:
         friend Timer;
         CallOrder(Timer& timer, std::size_t id);
@@ -51,6 +53,7 @@ public:
 private:
     friend CallOrder;
     void cancelOrder(std::size_t id);
+    bool hasOrder(std::size_t id);
 
     std::vector<Entry> m_entries;
 
