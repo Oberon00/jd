@@ -115,6 +115,11 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
 
 LuaVm::~LuaVm()
 {
+    lua_createtable(m_L, 1, 0);
+    lua_pushboolean(m_L, true);
+    lua_setfield(m_L, -2, "CLOSING");
+    lua_setglobal(m_L, "jd");
+
     deinit();
     
     if (lua_gettop(m_L) != 0)
