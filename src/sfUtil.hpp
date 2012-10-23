@@ -226,16 +226,16 @@ template <typename T>
 sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Vector2<T> from)
 {
     return sf::Vector2<T>(
-        d.x == 0 ? from.x : d.x < 0 ? in.left : right(in),
-        d.y == 0 ? from.y : d.y < 0 ? in.top  : bottom(in));
+        d.x == 0 ? from.x : d.x < 0 ? in.left + 1 : right(in)  - 1,
+        d.y == 0 ? from.y : d.y < 0 ? in.top  + 1 : bottom(in) - 1);
 }
 
 template <typename T>
 sf::Vector2<T> outermostPoint(sf::Rect<T> in, sf::Vector2<T> d, sf::Rect<T> from)
 {
     return sf::Vector2<T>(
-        d.x == 0 ? from.left : d.x < 0 ? in.left : right(in)  - from.width,
-        d.y == 0 ? from.top  : d.y < 0 ? in.top  : bottom(in) - from.height);
+        d.x == 0 ? from.left : d.x < 0 ? in.left + 1 : right(in)  - from.width - 1,
+        d.y == 0 ? from.top  : d.y < 0 ? in.top  + 1 : bottom(in) - from.height - 1);
 }
 
 
