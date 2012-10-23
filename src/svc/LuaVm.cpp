@@ -11,15 +11,13 @@ extern "C" {
 #include "Logfile.hpp"
 #include "jdConfig.hpp"
 
-namespace {
-
-int pcallf(lua_State* L)
+static int pcallf(lua_State* L)
 {
     luaL_traceback(L, L, lua_tostring(L, -1), 1);
     return 1;
 }
 
-lua_CFunction oldpanicf = nullptr;
+static lua_CFunction oldpanicf = nullptr;
 
 int panicf(lua_State* L)
 {
@@ -28,18 +26,6 @@ int panicf(lua_State* L)
     return oldpanicf(L);
 }
 
-int doDumpVar(lua_State* L)
-{
-    std::string* const str = static_cast<std::string*>(lua_touserdata(L, 1));
-    assert(str);
-
-    std::size_t len;
-    char const* s = luaL_tolstring(L, 2, &len);
-    str->assign(s, len);
-    lua_pop(L, 1);
-    return 0;
-}
-} // anonymous namespace
 
 static char const registryKey = '\0';
 
