@@ -131,7 +131,7 @@ set(JD_SOURCES
     ${COMP_SOURCES}
     ${LUAEXPORT_SOURCES})
 
-set(COMP_DEFS "LUABIND_DYNAMIC_LINK")
+set(COMP_DEFS "")
 
 if (MSVC)
     add_definitions(
