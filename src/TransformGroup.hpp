@@ -44,8 +44,10 @@ public:
         ~AutoEntry() { release(); }
         void release()
         {
-            if (m_entry && m_group.valid())
+            if (m_entry && m_group.valid()) {
                 m_entry->drawable = nullptr;
+                m_entry = nullptr;
+            }
         }
 
         WeakRef<TransformGroup> group() const { return m_group; }
