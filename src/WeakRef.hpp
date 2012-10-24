@@ -59,7 +59,7 @@ public:
     WeakRef(EnableWeakRefFromThis<U>* u);
 
     WeakRef(WeakRef const& rhs):
-        m_offset(0),
+        m_offset(rhs.m_offset),
         m_connection(rhs.m_connection)
     {
         ++m_connection->refCount;
@@ -69,6 +69,7 @@ public:
     {
         m_connection->unref();
         m_connection = rhs.m_connection;
+        m_offset = rhs.m_offset;
         ++m_connection->refCount;
         return *this;
     }
@@ -190,6 +191,7 @@ WeakRef<T>::WeakRef(EnableWeakRefFromThis<U>* u)
     assert(m_connection->referenced == static_cast<U*>(u));
     T* t = static_cast<T*>(static_cast<U*>(u));
     m_offset = (intptr_t)t - (intptr_t)m_connection->referenced;
+    assert(m_offset == 0);
     if (u)
         assert(dynamic_cast<T*>(static_cast<U*>(u)));
     ++m_connection->refCount;
