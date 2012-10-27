@@ -97,7 +97,10 @@ static void init(LuaVm& vm)
         class_<jd::Tilemap, bases<sf::Drawable, sf::Transformable>>("@Tilemap@"),
 #   define LHCURCLASS GroupedDrawable<jd::Tilemap>
 		class_<LHCURCLASS, bases<TransformGroup::AutoEntry, jd::Tilemap>>("Tilemap")
+            .def(constructor<>())
             .def(constructor<TransformGroup&>())
+            .def(constructor<LHCURCLASS const&>())
+            .property("group", &LHCURCLASS::group, &LHCURCLASS::setGroup)
             .LHMEMFN(isValidPosition)
             .def("get", &Tilemap_get)
             .def("set", &Tilemap_set)
