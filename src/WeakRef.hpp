@@ -109,14 +109,9 @@ private:
     ::detail::WeakRefConnection* m_connection;
 };
 
-template <typename T>
-T* get_pointer(WeakRef<T>& r)
-{
-    return r.get();
-}
 
 template <typename T>
-T const* get_pointer(WeakRef<T> const& r)
+T* get_pointer(WeakRef<T> const& r)
 {
     return r.get();
 }
