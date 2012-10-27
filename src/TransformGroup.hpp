@@ -10,7 +10,7 @@
 
 #ifdef _MSC_VER
 #   pragma warning(push)
-#   pragma warning(disable:4355)
+#   pragma warning(disable:4355) // 'this' : used in base member initializer list
 #endif
 
 
@@ -23,42 +23,45 @@ class TransformGroup:
     public boost::noncopyable
 {
 public:
-    struct Item: private boost::noncopyable {
+    struct Item {
         Item(sf::Drawable* drawable, bool visible = true):
             drawable(drawable), visible(visible) { }
-        sf::Drawable* drawable;
-        bool visible;
 
         Item(Item&& rhs):
            drawable(rhs.drawable), visible(rhs.visible)
         { rhs.drawable = nullptr; }
+
+        Item& operator= (Item&& rhs)
+        {
+            drawable = rhs.drawable;
+            visible = rhs.visible;
+            rhs.drawable = nullptr;
+            return *this;
+        }
+
+        sf::Drawable* drawable;
+        bool visible;
     };
 
     class AutoEntry: private boost::noncopyable {
     public:
-        AutoEntry(TransformGroup& g, sf::Drawable* d, bool visible = true):
-          m_group(g.ref()),
-          m_entry(g.add(d, visible))
-        { }
-        AutoEntry(): m_entry(nullptr) { }
-        ~AutoEntry() { release(); }
-        void release()
-        {
-            if (m_entry && m_group.valid()) {
-                m_entry->drawable = nullptr;
-                m_entry = nullptr;
-            }
-        }
+        AutoEntry(TransformGroup& g, sf::Drawable* d, bool visible = true);
 
-        WeakRef<TransformGroup> group() const { return m_group; }
-        void setGroup(TransformGroup& g) { m_group = g.ref(); }
+        AutoEntry();
 
-        bool visible() const { return m_entry && m_entry->visible; }
-        void setVisible(bool visible) {
-            if (!m_entry)
-                throw jd::Exception("attemt to set visibility of NULL-AutoEntry");
-            m_entry->visible = visible;
-        }
+        ~AutoEntry();
+
+        void setDrawable(sf::Drawable* d);
+
+        sf::Drawable* drawable();
+
+        void release();
+
+        WeakRef<TransformGroup> group() const;
+        void setGroup(WeakRef<TransformGroup> g);
+
+        bool visible() const;
+        void setVisible(bool visible);
         
     private:
         WeakRef<TransformGroup> m_group;
@@ -84,8 +87,30 @@ template <typename drawableT>
 class GroupedDrawable: public drawableT, public TransformGroup::AutoEntry {
 public:
     GroupedDrawable() { }
+
     explicit GroupedDrawable(TransformGroup& g, bool visible = true):
         AutoEntry(g, this, visible) { }
+
+    GroupedDrawable(GroupedDrawable const& rhs):
+        drawableT(rhs)
+    {
+        setGroup(rhs.group());
+    }
+
+    GroupedDrawable& operator=(GroupedDrawable const& rhs)
+    {
+        drawableT::operator=(rhs);
+        setGroup(rhs.group());
+        return *this;
+    }
+
+    void setGroup(WeakRef<TransformGroup> g)
+    {
+        AutoEntry::setGroup(g);
+        if (g.valid())
+            setDrawable(this);
+    }
+
 };
 
 #ifdef _MSC_VER
