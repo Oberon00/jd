@@ -387,12 +387,33 @@ static int Rect_nearestPoint(lua_State* L)
     return 1;
 }
 
+static int Rect_intersectsLine(lua_State* L)
+{
+    LuaRect const* r = lgeo::to<LuaRect>(L, 1);
+    LuaVec2 const *p1 = lgeo::to<LuaVec2>(L, 2), *p2 = lgeo::to<LuaVec2>(L, 2);
+    lua_pushboolean(L, jd::intersection(*p1, *p2, *r));
+    return 1;
+}
+
+static int Rect_clipLine(lua_State* L)
+{
+    LuaRect const* r = lgeo::to<LuaRect>(L, 1);
+    LuaVec2 p1 = *lgeo::to<LuaVec2>(L, 2), p2 = *lgeo::to<LuaVec2>(L, 3);
+    bool const intersection = jd::clipLine(p1, p2, *r);
+    if (!intersection)
+        return 0;
+    lgeo::push(L, p1);
+    lgeo::push(L, p2);
+    return 2;
+}
+
 
 template <typename T>
 void Vec_export(lua_State* L)
 {
     int const success = luaL_newmetatable(L, lgeo::Traits<T>::mtName);
     assert(success);
+    (void)success;
     static luaL_Reg const fns[] = {
         {"__index", &geo_index<T>},
         {"__newindex", &geo_newindex<T>},
@@ -435,6 +456,7 @@ void Rect_export(lua_State* L)
 {
     int const success = luaL_newmetatable(L, lgeo::Traits<LuaRect>::mtName);
     assert(success);
+    (void)success;
     static luaL_Reg const fns[] = {
         {"__index", &geo_index<LuaRect>},
         {"__newindex", &geo_newindex<LuaRect>},
@@ -450,6 +472,8 @@ void Rect_export(lua_State* L)
         {"contains", &Rect_contains},
         {"outermostPoint", &Rect_outermostPoint},
         {"nearestPoint", &Rect_nearestPoint},
+        {"intersectsLine", &Rect_intersectsLine},
+        {"clipLine", &Rect_clipLine},
         {nullptr, nullptr}
     };
 
