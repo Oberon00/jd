@@ -96,16 +96,11 @@ int main(int argc, char* argv[])
     // First thing to do: get the logfile opened.
 
     // Create the directory for the logfile.
-#   ifdef NDEBUG
-#       define LOGFILE_NAME "log.html"
-#   else
-#       define LOGFILE_NAME "jd.log"
-#   endif
 #   ifdef _WIN32
     boost::filesystem::path const logpath(
-        std::string(getenv("APPDATA")) + "/JadeEngine/" LOGFILE_NAME);
+        std::string(getenv("APPDATA")) + "/JadeEngine/jd.log");
 #   else
-    boost::filesystem::path const logpath("~/.jade/" LOGFILE_NAME);
+    boost::filesystem::path const logpath("~/.jade/jd.log");
 #endif
     boost::filesystem::create_directories(logpath.parent_path());
 
