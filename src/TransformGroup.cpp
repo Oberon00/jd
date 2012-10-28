@@ -66,7 +66,7 @@ void TransformGroup::AutoEntry::setDrawable(sf::Drawable* d)
 {
     if (d) {
         if (!m_group.valid())
-            throw jd::Exception("attemt to set drawable of NULL-AutoEntry");
+            throw jd::Exception("attempt to set drawable of NULL-AutoEntry");
         if (m_entry)
             m_entry->drawable = d;
         else
@@ -121,6 +121,6 @@ bool TransformGroup::AutoEntry::visible() const
 void TransformGroup::AutoEntry::setVisible(bool visible)
 {
     if (!m_entry || !m_group)
-        throw jd::Exception("attemt to set visibility of NULL-AutoEntry");
+        throw jd::Exception("attempt to set visibility of NULL-AutoEntry");
     m_entry->visible = visible;
 }
