@@ -94,7 +94,7 @@ public:
     GroupedDrawable(GroupedDrawable const& rhs):
         drawableT(rhs)
     {
-        setGroup(rhs.group());
+        setGroup(rhs.group().getOpt());
     }
 
     GroupedDrawable& operator=(GroupedDrawable const& rhs)
@@ -104,10 +104,10 @@ public:
         return *this;
     }
 
-    void setGroup(WeakRef<TransformGroup> g)
+    void setGroup(TransformGroup* g)
     {
         AutoEntry::setGroup(g);
-        if (g.valid())
+        if (g)
             setDrawable(this);
     }
 
