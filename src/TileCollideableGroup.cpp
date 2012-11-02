@@ -225,7 +225,7 @@ std::size_t TileCollideableInfo::mapCorners(
     begin.x = std::max(begin.x, 0u);
     begin.y = std::max(begin.y, 0u);
     last = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(jd::bottomRight(r)));
+        m_tilemap.tilePosFromGlobal(jd::bottomRightIn(r)));
     last.x = std::min(last.x, m_tilemap.size().x - 1);
     last.y = std::min(last.y, m_tilemap.size().y - 1);
 
