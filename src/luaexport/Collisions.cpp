@@ -16,8 +16,6 @@ static char const libname[] = "Collisions";
 #include <luabind/out_value_policy.hpp>
 
 
-namespace {
-
 static WeakRef<Entity> Collision_getEntity(Collision const& c)
 {
     return c.entity->ref();
@@ -79,15 +77,45 @@ static void CollisionVec_sortByDistance(
     });
 }
 
-
-} // anonymous namespace
+static void CollisionVec_differenceTo(
+    std::vector<Collision> cv1, std::vector<Collision> cv2,
+    std::vector<Collision>& only1, std::vector<Collision>& only2)
+{
+    static auto const collisionLess = [](
+        Collision const& c1, Collision const& c2
+    ) -> bool {
+        auto const& r1 = c1.rect;
+        auto const& r2 = c2.rect;
+        return r1.left == r2.left ?
+                    r1.top == r2.top ?
+                        r1.width == r2.width ?
+                            r1.height < r2.height :
+                        r1.width < r2.width :
+                    r1.top < r2.top :
+               r1.left < r2.left;
+    };
+    only1.reserve(cv1.size());
+    only2.reserve(cv2.size());
+    std::sort(cv1.begin(), cv1.end(), collisionLess);
+    std::sort(cv2.begin(), cv2.end(), collisionLess);
+    std::set_difference(
+        cv1.begin(), cv1.end(), cv2.begin(), cv2.end(),
+        std::back_inserter(only1), collisionLess);
+     std::set_difference(
+        cv2.begin(), cv2.end(), cv1.begin(), cv1.end(),
+        std::back_inserter(only2), collisionLess);
+}
 
 static void init(LuaVm& vm)
 {
+    using namespace luabind;
     typedef std::vector<Collision> CollisionVec;
-    luabind::class_<CollisionVec> cCollisionVec("CollisionList");
+    class_<CollisionVec> cCollisionVec("CollisionList");
     exportRandomAccessContainer<true>(cCollisionVec);
-    cCollisionVec.def("sortByDistance", &CollisionVec_sortByDistance);
+    cCollisionVec
+        .def("sortByDistance", &CollisionVec_sortByDistance)
+        .def("differenceTo", &CollisionVec_differenceTo,
+            pure_out_value(_3) + pure_out_value(_4));
 
     typedef std::vector<Vector3u> PositionVec;
     luabind::class_<PositionVec> cPositionVec("PositionList");
