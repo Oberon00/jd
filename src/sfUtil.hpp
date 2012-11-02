@@ -80,6 +80,23 @@ inline T right(sf::Rect<T> const& r) { return r.left + r.width; }
 
 template <typename T>
 inline T bottom(sf::Rect<T> const& r) { return r.top + r.height; }
+
+
+// rightIn and bottomIn give incorrect results if the
+// rects height respective widht is less than zero.
+
+template <typename T>
+inline T rightIn(sf::Rect<T> const& r)
+{
+    return r.width == 0 ? r.left : r.left + r.width - 1;
+}
+
+template <typename T>
+inline T bottomIn(sf::Rect<T> const& r)
+{
+    return r.height == 0 ? r.top : r.top + r.height - 1;
+}
+
     
 template <typename T>
 inline sf::Vector2<T> topLeft(sf::Rect<T> const& r)
@@ -99,6 +116,13 @@ inline sf::Vector2<T> bottomRight(sf::Rect<T> const& r)
 {
     return sf::Vector2<T>(right(r), bottom(r));
 }
+
+template <typename T>
+inline sf::Vector2<T> bottomRightIn(sf::Rect<T> const& r)
+{
+    return sf::Vector2<T>(rightIn(r), bottomIn(r));
+}
+
 
 template <typename T>
 inline sf::Vector2<T> bottomLeft(sf::Rect<T> const& r)

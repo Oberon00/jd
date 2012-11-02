@@ -155,12 +155,18 @@ static bool geo_attrib(lua_State* L, char const* n, LuaRect const* v)
         lua_pushnumber(L, jd::right(*v));
     else if (!cmp(n, "bottom"))
         lua_pushnumber(L, jd::bottom(*v));
+    else if (!cmp(n, "right"))
+        lua_pushnumber(L, jd::rightIn(*v));
+    else if (!cmp(n, "bottom"))
+        lua_pushnumber(L, jd::bottomIn(*v));
     else if (!cmp(n, "xy") || !cmp(n, "topLeft") || !cmp(n, "position"))
         lgeo::push(L, jd::topLeft(*v));
     else if (!cmp(n, "size") || !cmp(n, "wh"))
         lgeo::push(L, jd::size(*v));
     else if (!cmp(n, "bottomRight"))
         lgeo::push(L, jd::bottomRight(*v));
+    else if (!cmp(n, "bottomRightIn"))
+        lgeo::push(L, jd::bottomRightIn(*v));
     else if (!cmp(n, "center"))
         lgeo::push(L, jd::center(*v));
     else
