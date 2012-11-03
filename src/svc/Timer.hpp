@@ -6,7 +6,7 @@
 #include <boost/function.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/System/Clock.hpp>
-#include <vector>
+#include <list>
 #include "ssig.hpp"
 
 class Timer: public Component {
@@ -55,7 +55,7 @@ private:
     void cancelOrder(std::size_t id);
     bool hasOrder(std::size_t id);
 
-    std::vector<Entry> m_entries;
+    std::list<Entry> m_entries;
 
     sf::Clock m_timer;
     sf::Time m_frameStart;
