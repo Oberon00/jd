@@ -233,9 +233,10 @@ static void init(LuaVm& vm)
 
     lua_State* L = vm.L();
     static int const colorCount = 9;
-    lua_createtable(L, 0, colorCount);
+    lua_getglobal(L, "jd");
+    lua_getfield(L, -1, "Color");
     object stdColors(from_stack(L, -1));
-    lua_pop(L, 1);
+    lua_pop(L, 2);
 
     stdColors["BLACK"]   = Color::Black;
     stdColors["WHITE"]   = Color::White;
@@ -246,6 +247,4 @@ static void init(LuaVm& vm)
     stdColors["MAGENTA"] = Color::Magenta;
     stdColors["CYAN"]    = Color::Cyan;
     stdColors["TRANSPARENT"] = Color::Transparent;
-
-    globals(L)[jd::moduleName]["colors"] = stdColors;
 }
