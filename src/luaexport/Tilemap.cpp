@@ -52,6 +52,7 @@ static void init(LuaVm& vm)
 
 #           define LHCURCLASS MapInfo
             class_<LHCURCLASS>("Map")
+                .def(constructor<LHCURCLASS const&>())
                 .LHPROPRW(tileProperties)
                 .LHPROPRW(layerProperties)
                 .LHPROPRW(objectGroups),
@@ -59,6 +60,7 @@ static void init(LuaVm& vm)
 
 #           define LHCURCLASS MapObject
             class_<LHCURCLASS>("Object")
+                .def(constructor<LHCURCLASS const&>())
                 .LHPROPRW(name)
                 .LHPROPRW(type)
                 .LHPROPRW(position)
@@ -77,6 +79,7 @@ static void init(LuaVm& vm)
 
 #           define LHCURCLASS MapObjectGroup
             class_<LHCURCLASS>("ObjectGroup")
+                .def(constructor<LHCURCLASS const&>())
                 .LHPROPRW(name)
                 .LHPROPRW(objects)
                 .LHPROPRW(properties)

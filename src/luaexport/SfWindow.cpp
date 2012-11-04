@@ -64,6 +64,7 @@ static void init(LuaVm& vm)
             .def(constructor<>())
             .def(constructor<unsigned, unsigned>())
             .def(constructor<unsigned, unsigned, unsigned>())
+            .def(constructor<LHCURCLASS const&>())
             .property("size", &VideoMode_size)
             .LHPROPG(isValid)
             .LHPROPRW(width)
@@ -84,6 +85,7 @@ static void init(LuaVm& vm)
 
 #       define LHCURCLASS Event::KeyEvent
         class_<LHCURCLASS>("KeyEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(code)
             .LHPROPRW(alt)
             .LHPROPRW(control)
@@ -93,11 +95,13 @@ static void init(LuaVm& vm)
 
 #       define LHCURCLASS Event::TextEvent
         class_<LHCURCLASS>("TextEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(unicode),
 #       undef LHCURCLASS
 
 #       define LHCURCLASS Event::SizeEvent
         class_<LHCURCLASS>("SizeEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(width)
             .LHPROPRW(height)
             .property("size", &SizeEvent_size),
@@ -105,6 +109,7 @@ static void init(LuaVm& vm)
 
 #       define LHCURCLASS Event::MouseMoveEvent
         class_<LHCURCLASS>("MouseMoveEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(x)
             .LHPROPRW(y)
             .property("position", &MouseEvent_position<LHCURCLASS>),
@@ -112,6 +117,7 @@ static void init(LuaVm& vm)
 
 #       define LHCURCLASS Event::MouseButtonEvent
         class_<LHCURCLASS>("MouseButtonEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(x)
             .LHPROPRW(y)
             .property("button", &MouseButtonEvent_button)
@@ -121,6 +127,7 @@ static void init(LuaVm& vm)
 
 #       define LHCURCLASS Event::MouseWheelEvent
         class_<LHCURCLASS>("MouseWheelEvent")
+            .def(constructor<LHCURCLASS const&>())
             .LHPROPRW(x)
             .LHPROPRW(y)
             .LHPROPRW(delta)

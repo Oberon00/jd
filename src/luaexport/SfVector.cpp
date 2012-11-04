@@ -270,10 +270,17 @@ static int geo_create<LuaVec2>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
-
-    lua_Number const x = luaL_optnumber(L, 1, 0),
-                     y = luaL_optnumber(L, 2, 0);
-    lgeo::push<LuaVec2>(L, LuaVec2(x, y));
+    if (lua_gettop(L) == 1) {
+        LuaVec3* v = lgeo::optTo<LuaVec3>(L, 1);
+        if (v)
+            lgeo::push(L, *v); // conversion Vec3 --> Vec2
+        else
+            lgeo::push(L, *lgeo::to<LuaVec2>(L, 1)); // copy ctor
+    } else {
+        lua_Number const x = luaL_optnumber(L, 1, 0),
+                         y = luaL_optnumber(L, 2, 0);
+        lgeo::push<LuaVec2>(L, LuaVec2(x, y));
+    }
     return 1;
 }
 
@@ -282,11 +289,14 @@ static int geo_create<LuaVec3>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
-
-    lua_Number const x = luaL_optnumber(L, 1, 0),
-                     y = luaL_optnumber(L, 2, 0),
-                     z = luaL_optnumber(L, 3, 0);
-    lgeo::push<LuaVec3>(L, LuaVec3(x, y, z));
+    if (lua_gettop(L) == 1) { // copy ctor
+        lgeo::push(L, *lgeo::to<LuaVec3>(L, 1));
+    } else {
+        lua_Number const x = luaL_optnumber(L, 1, 0),
+                         y = luaL_optnumber(L, 2, 0),
+                         z = luaL_optnumber(L, 3, 0);
+        lgeo::push<LuaVec3>(L, LuaVec3(x, y, z));
+    }
     return 1;
 }
 
@@ -296,8 +306,9 @@ static int geo_create<LuaRect>(lua_State* L)
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
 
-    // 2 args: LuaRect(LuaVec2 p, LuaVec2 
-    if (lua_gettop(L) == 2) {
+    if (lua_gettop(L) == 1) { // 1 arg: copy ctor
+        lgeo::push(L, *lgeo::to<LuaRect>(L, 1));
+    } else if (lua_gettop(L) == 2) { // 2 args: LuaRect(LuaVec2 p, LuaVec2
         LuaVec2 const *p  = lgeo::to<LuaVec2>(L, 1),
                       *sz = lgeo::to<LuaVec2>(L, 2);
         lgeo::push<LuaRect>(L, LuaRect(*p, *sz));

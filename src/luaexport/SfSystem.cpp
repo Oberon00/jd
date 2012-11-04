@@ -47,6 +47,7 @@ static void init(LuaVm& vm)
     LHMODULE [
 #       define LHCURCLASS Time
         LHCLASS
+            .def(constructor<LHCURCLASS const&>())
             .def("asSeconds", &Time_asSeconds)
             .LHMEMFN(asMilliseconds)
             .LHMEMFN(asMicroseconds)
