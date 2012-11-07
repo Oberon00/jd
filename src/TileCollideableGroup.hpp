@@ -16,10 +16,10 @@ public:
     TileCollideableInfo(jd::Tilemap& tilemap);
 
     void setProxy(unsigned tileId, TileCollisionComponent* proxy);
-    TileCollisionComponent* proxy(unsigned tileId);
+    WeakRef<TileCollisionComponent> proxy(unsigned tileId);
 
     void setColliding(Vector3u pos, TileCollisionComponent* c);
-    TileCollisionComponent* colliding(Vector3u pos);
+    WeakRef<TileCollisionComponent> colliding(Vector3u pos);
 
     // notify if e != nullptr
     virtual std::vector<Collision> colliding(

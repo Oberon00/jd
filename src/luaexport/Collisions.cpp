@@ -16,9 +16,26 @@ static char const libname[] = "Collisions";
 #include <luabind/out_value_policy.hpp>
 
 
-static WeakRef<Entity> Collision_getEntity(Collision const& c)
+static luabind::object TileCollideableInfo_colliding(
+    lua_State* L, TileCollideableInfo& this_, Vector3u pos)
 {
-    return c.entity->ref();
+    auto c = this_.colliding(pos);
+    return c.valid() ? luabind::object(L, c) : luabind::object();
+
+}
+
+static luabind::object TileCollideableInfo_proxy(
+    lua_State* L, TileCollideableInfo& this_, unsigned tid)
+{
+    auto p = this_.proxy(tid);
+    return p.valid() ? luabind::object(L, p) : luabind::object();
+}
+
+
+static luabind::object Collision_getEntity(lua_State* L, Collision const& c)
+{
+    return c.entity ?
+        luabind::object(L, c.entity->ref()) : luabind::object();
 }
 
 static void Collision_setEntity(Collision& c, WeakRef<Entity> e)
@@ -151,7 +168,7 @@ static void init(LuaVm& vm)
         LHCLASS
             .def(constructor<jd::Tilemap&>())
             .LHMEMFN(setProxy)
-            .LHMEMFN(proxy)
+            .def("proxy", &TileCollideableInfo_proxy)
             .LHMEMFN(setColliding)
             .def("colliding", 
                 (CollisionVec (LHCURCLASS::*)(sf::FloatRect const&, Entity* e, PositionVec*))
@@ -159,8 +176,7 @@ static void init(LuaVm& vm)
             .def("colliding", 
                 (CollisionVec (LHCURCLASS::*)(sf::Vector2f, sf::Vector2f, PositionVec*))
                     &LHCURCLASS::colliding, pure_out_value(_4))
-            .def("colliding", 
-                (TileCollisionComponent* (LHCURCLASS::*)(Vector3u))&LHCURCLASS::colliding)
+            .def("colliding", &TileCollideableInfo_colliding)
             .LHPROPG(tilemap),
 #       undef LHCURCLASS
 

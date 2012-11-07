@@ -25,12 +25,12 @@ void TileCollideableInfo::setProxy(unsigned tileId, TileCollisionComponent* prox
             __FUNCTION__ ": cannot assign proxy entity: already assigned");
 }
 
-TileCollisionComponent* TileCollideableInfo::proxy(unsigned tileId)
+ WeakRef<TileCollisionComponent> TileCollideableInfo::proxy(unsigned tileId)
 {
     auto const it = m_proxyEntities.find(tileId);
     if (it != m_proxyEntities.end())
-        return it->second.get();
-    return nullptr;
+        return it->second;
+    return static_cast<Component*>(nullptr);
 }
 
 void TileCollideableInfo::setColliding(Vector3u pos, TileCollisionComponent* e)
@@ -44,6 +44,7 @@ void TileCollideableInfo::setColliding(Vector3u pos, TileCollisionComponent* e)
         } else {
             bool const success = m_entities.insert(std::make_pair(pos, e)).second;
             assert(success);
+            (void)success;
         }
     } else if (found) {
         m_entities.erase(pos);
@@ -52,12 +53,12 @@ void TileCollideableInfo::setColliding(Vector3u pos, TileCollisionComponent* e)
     }
 }
 
-TileCollisionComponent* TileCollideableInfo::colliding(Vector3u pos)
+ WeakRef<TileCollisionComponent> TileCollideableInfo::colliding(Vector3u pos)
 {
     auto const it = m_entities.find(pos);
     if (it != m_entities.end())
-        return it->second.get();
-    return nullptr;
+        return it->second;
+    return static_cast<Component*>(nullptr);
 }
 
 Vector3u TileCollideableInfo::mapsize() const
