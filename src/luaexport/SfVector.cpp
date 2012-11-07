@@ -273,7 +273,7 @@ static int geo_create<LuaVec2>(lua_State* L)
     if (lua_gettop(L) == 1) {
         LuaVec3* v = lgeo::optTo<LuaVec3>(L, 1);
         if (v)
-            lgeo::push(L, *v); // conversion Vec3 --> Vec2
+            lgeo::push(L, jd::vec3to2(*v)); // conversion Vec3 --> Vec2
         else
             lgeo::push(L, *lgeo::to<LuaVec2>(L, 1)); // copy ctor
     } else {
