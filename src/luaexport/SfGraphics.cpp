@@ -2,14 +2,50 @@
 #include "ResourceManager.hpp"
 #include "Geometry.hpp"
 #include "AutoTexture.hpp"
+#include "AutoFont.hpp"
 #include "TransformGroup.hpp"
 #include "sfUtil.hpp"
+#include "VFileFont.hpp"
 
 static char const libname[] = "SfGraphics";
 #include "ExportThis.hpp"
 #include "sharedPtrConverter.hpp"
 #include <luabind/operator.hpp>
 #include <ostream>
+
+// sf::String <-> Lua converter (see luabind/detail/policy.hpp:741)
+namespace luabind {
+template <>
+    struct default_converter<sf::String>
+      : native_converter_base<sf::String>
+    {
+        static int compute_score(lua_State* L, int index)
+        {
+            return lua_type(L, index) == LUA_TSTRING ? 0 : -1;
+        }
+
+        sf::String from(lua_State* L, int index)
+        {
+            return sf::String(lua_tostring(L, index));
+        }
+
+        void to(lua_State* L, sf::String const& value)
+        {
+            std::string const s(value);
+            lua_pushlstring(L, s.data(), s.size());
+        }
+    };
+
+    template <>
+    struct default_converter<sf::String const>
+      : default_converter<sf::String>
+    {};
+
+    template <>
+    struct default_converter<sf::String const&>
+      : default_converter<sf::String>
+    {};
+} // namepace luabind
 
 #define RESMNG_METHOD(r, n, a, a2) \
     template <typename T>          \
@@ -36,8 +72,8 @@ RESMNG_METHOD(void, insert, \
 
 #undef RESMNG_METHOD
 
-template <typename T>
-static void addResMngMethods(luabind::class_<T, std::shared_ptr<T> >& c)
+template <typename T, typename B>
+static void addResMngMethods(luabind::class_<T, std::shared_ptr<T>, B >& c)
 {
 #define F(n) luabind::def(#n, &ResMng_##n<T>)
     c.scope [
@@ -97,10 +133,40 @@ static void Image_transparentMask(sf::Image& img, sf::Color const& c)
     img.createMaskFromColor(c);
 }
 
+#define TEXT_STYLE_PROP(name) \
+    static bool Text_is##name(sf::Text const& text)     \
+    {                                                   \
+        return (text.getStyle() & sf::Text::name) != 0; \
+    }                                                   \
+    static void Text_set##name(sf::Text& text, bool on) \
+    {                                                   \
+            text.setStyle(text.getStyle() & (on ?       \
+                sf::Text::name : ~sf::Text::name));     \
+    }
+
+TEXT_STYLE_PROP(Bold)
+TEXT_STYLE_PROP(Italic)
+TEXT_STYLE_PROP(Underlined)
+#undef TEXT_STYLE_PROP
+
+static bool Text_isRegular(sf::Text const& text)
+{
+    return text.getStyle() == sf::Text::Regular;
+}
+
+static void Text_resetStyle(sf::Text& text)
+{
+    text.setStyle(sf::Text::Regular);
+}
+
 typedef AutoResource<sf::Sprite, sf::Texture> AutoSprite;
 typedef GroupedDrawable<AutoSprite> SpriteEntry;
 
 typedef GroupedDrawable<TransformGroup> GroupEntry;
+
+typedef AutoResource<sf::Text, VFileFont> AutoText;
+typedef GroupedDrawable<AutoText> TextEntry;
+
 
 
 static void init(LuaVm& vm)
@@ -109,7 +175,7 @@ static void init(LuaVm& vm)
     using namespace luabind;
 
 #   define LHCURCLASS Image
-    class_<Image, std::shared_ptr<Image>> cImage("Image");
+    class_<LHCURCLASS, std::shared_ptr<LHCURCLASS>> cImage("Image");
     cImage
         .scope [
             def("create", &Image_create),
@@ -127,17 +193,24 @@ static void init(LuaVm& vm)
     addResMngMethods(cImage);
 
 #   define LHCURCLASS Texture
-    class_<Texture, std::shared_ptr<Texture>> cTexture("Texture");
+    class_<LHCURCLASS, std::shared_ptr<LHCURCLASS>> cTexture("Texture");
     cTexture
         .scope [
-            def("maxSize", &Texture::getMaximumSize)
+            def("maxSize", &LHCURCLASS::getMaximumSize)
         ]
-        .property("repeated", &Texture::isRepeated, &Texture::setRepeated)
-        .property("smooth", &Texture::isSmooth, &Texture::setSmooth)
+        .property("repeated", &LHCURCLASS::isRepeated, &LHCURCLASS::setRepeated)
+        .property("smooth", &LHCURCLASS::isSmooth, &LHCURCLASS::setSmooth)
         .LHMEMFN(copyToImage)
-        .property("size", &Texture::getSize);
+        .property("size", &LHCURCLASS::getSize);
 #   undef LHCURCLASS
     addResMngMethods(cTexture);
+
+#   define LHCURCLASS VFileFont
+    class_<LHCURCLASS, std::shared_ptr<LHCURCLASS>, sf::Font> cFont("Font");
+ 
+#   undef LHCURCLASS
+    addResMngMethods(cFont);
+
 
 #define XYPROP(n, N) \
     .property(BOOST_STRINGIZE(n), \
@@ -193,6 +266,8 @@ static void init(LuaVm& vm)
 
         cImage,
         cTexture,
+        class_<Font>("@Font@"),
+        cFont,
         class_<TransformGroup, bases<Transformable, Drawable>>("@TranformGroup@"),
 		class_<GroupEntry, bases<TransformGroup, TransformGroup::AutoEntry>>("TransformGroup")
             .def(constructor<TransformGroup&>()),
@@ -206,7 +281,7 @@ static void init(LuaVm& vm)
             .property("group", &LHCURCLASS::group, &LHCURCLASS::setGroup)
             .property("texture",
                 (LHCURCLASS::Ptr(LHCURCLASS::*)())&LHCURCLASS::resource,
-                &AutoSprite::setResource)
+                &LHCURCLASS::setResource)
             .property("textureRect",
                 &LHCURCLASS::getTextureRect, &LHCURCLASS::setTextureRect)
             .property("color",
@@ -214,6 +289,33 @@ static void init(LuaVm& vm)
             .property("localBounds", &LHCURCLASS::getLocalBounds)
             .property("bounds", &LHCURCLASS::getGlobalBounds),
 #       undef LHCURCLASS
+
+		class_<Text, bases<Drawable, Transformable>>("@Text@"),
+#       define LHCURCLASS TextEntry
+        class_<LHCURCLASS, bases<Text, TransformGroup::AutoEntry>>("Text")
+            .def(constructor<>())
+            .def(constructor<LHCURCLASS const&>())
+            .def(constructor<TransformGroup&>())
+            .property("group", &LHCURCLASS::group, &LHCURCLASS::setGroup)
+            .property("font",
+                (LHCURCLASS::Ptr(LHCURCLASS::*)())&LHCURCLASS::resource,
+                &LHCURCLASS::setResource)
+            .property("string",
+                &LHCURCLASS::getString, &LHCURCLASS::setString)
+            .property("characterSize",
+                &LHCURCLASS::getCharacterSize, &LHCURCLASS::setCharacterSize)
+            .property("bold", &Text_isBold, &Text_setBold)
+            .property("italic", &Text_isItalic, &Text_setItalic)
+            .property("underlined", &Text_isUnderlined, &Text_setUnderlined)
+            .def("isRegular", &Text_isRegular)
+            .def("resetStyle", &Text_resetStyle)
+            .LHMEMFN(findCharacterPos)
+            .property("color",
+                &LHCURCLASS::getColor, &LHCURCLASS::setColor)
+            .property("localBounds", &LHCURCLASS::getLocalBounds)
+            .property("bounds", &LHCURCLASS::getGlobalBounds),
+#       undef LHCURCLASS
+
 
 #       define LHCURCLASS View
         LHCLASS

@@ -91,6 +91,7 @@ set(JD_HEADERS
     resfwd.hpp
     AutoResource.hpp
     AutoTexture.hpp
+	AutoFont.hpp
     ResourceManager.hpp
     ResourceManager.inl
     sfKeyCodes.hpp
