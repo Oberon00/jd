@@ -107,6 +107,7 @@ set(JD_HEADERS
     State.hpp
     base64.hpp
     luaUtils.hpp
+	VFileFont.hpp
     ${SVC_HEADERS}
     ${COMPSYS_HEADERS}
     ${COMP_HEADERS}

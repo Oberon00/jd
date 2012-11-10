@@ -2,8 +2,10 @@
 #include "ResourceManager.hpp"
 #include "exceptions.hpp"
 #include <physfs.h>
-#include "SFML/Graphics/Image.hpp"
-#include "SFML/Graphics/Texture.hpp"
+#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include "VFileFont.hpp"
 
 std::string const findResource(
     std::string const& name,
@@ -37,6 +39,7 @@ std::string const findResource(
 
 LOAD_TRAITS(sf::Image,   "res/img/", 6, (".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"));
 LOAD_TRAITS(sf::Texture, "res/img/", 6, (".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"));
+LOAD_TRAITS(VFileFont,   "res/fnt/", 2, (".ttf", ".otf"));
 
 static void loadTextureResource(sf::Texture& tx, std::string const& name)
 {
@@ -50,17 +53,32 @@ static void loadTextureResource(sf::Texture& tx, std::string const& name)
     } else {
         loadSfmlResource(tx, name);
     }
+}
 
-
+static void loadFontResource(VFileFont& fnt, std::string const& name)
+{
+    std::string const filename = findResource(
+        name,
+        ResLoadTraits<VFileFont>::prefix,
+        &ResLoadTraits<VFileFont>::exts.front(),
+        ResLoadTraits<VFileFont>::exts.size());
+    fnt.stream.open(filename);
+    if (!fnt.loadFromStream(fnt.stream)) {
+        throw jd::ResourceLoadError(
+            "failed loading resource \"" + name +
+            "\" from file \"" + filename + "\"");
+    }
 }
 
 static bool initSfResources()
 {
     log(); // init logfile
+
     resMng<sf::Image>().setResourceNotFoundCallback(
         &loadSfmlResource<sf::Image>);
-
     resMng<sf::Texture>().setResourceNotFoundCallback(&loadTextureResource);
+
+    resMng<VFileFont>().setResourceNotFoundCallback(&loadFontResource);
 
     return bool();
 }
