@@ -229,6 +229,7 @@ MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename)
                     o.tileId = obj.second.get("<xmlattr>.gid", 0u);
                     if (o.tileId) {
                         o.objectType = MapObject::tile;
+                        o.position.y -= ts.size().y; // assuming map orientation is orthogonal.
                     } else if (auto const line = obj.second.get_child_optional("polyline")) {
                         o.objectType = MapObject::line;
                         o.relativePoints = loadPointsOptional(*line);
