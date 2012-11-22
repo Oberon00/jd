@@ -241,7 +241,8 @@ static void init(LuaVm& vm)
 
 #   define LHCURCLASS VFileFont
     class_<LHCURCLASS, std::shared_ptr<LHCURCLASS>, sf::Font> cFont("Font");
- 
+    cFont
+        .def("lineSpacing", &LHCURCLASS::getLineSpacing);
 #   undef LHCURCLASS
     addResMngMethods(cFont);
 
