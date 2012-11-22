@@ -28,6 +28,7 @@ public:
 
     // switchTo(s); <=~> pop(); push(s);
     void switchTo(State& s); 
+    void switchTo(std::string const& id);
     //}
         
     State* active();

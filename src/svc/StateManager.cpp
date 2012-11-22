@@ -24,21 +24,26 @@ private:
 
 //{ Transition functions
 
-void StateManager::pushAdditional(std::string const& id)
-{
-    State* s = stateForId(id);
-    if (s)
-        pushAdditional(*s);
-    else
-        throw std::runtime_error(__FUNCTION__ ": invalid state id");
-}
+#define STRINGID_WRAPPER(fname) \
+    void StateManager::fname(std::string const& id) \
+    {                                                        \
+        State* s = stateForId(id);                           \
+        if (s)                                               \
+            fname(*s);                              \
+        else                                                 \
+            throw std::runtime_error(__FUNCTION__ ": invalid state id"); \
+    }
+
+STRINGID_WRAPPER(push)
+STRINGID_WRAPPER(pushAdditional)
+STRINGID_WRAPPER(switchTo)
 
 void StateManager::pushAdditional(State& s)
 {
 #define MODIFYING Modify(m_modifying, __FUNCTION__);
-    MODIFYING
-
     s.initialize();
+
+    MODIFYING
     if (m_stack.empty())
         push(s);
     m_stack.back()->pause();
@@ -50,9 +55,9 @@ void StateManager::pushAdditional(State& s)
 
 void StateManager::push(State& s)
 {
-    MODIFYING
-
     s.initialize();
+
+    MODIFYING
     if (!m_stack.empty()) {
         m_stack.back()->pause();
         m_stack.back()->stop();
@@ -63,14 +68,6 @@ void StateManager::push(State& s)
     s.resume();
 }
 
-void StateManager::push(std::string const& id)
-{
-    State* s = stateForId(id);
-    if (s)
-        push(*s);
-    else
-        throw std::runtime_error(__FUNCTION__ ": invalid state id");
-}
         
 void StateManager::pop()
 {
