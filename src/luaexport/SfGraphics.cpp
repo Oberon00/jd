@@ -156,14 +156,14 @@ static void Image_transparentMask(sf::Image& img, sf::Color const& c)
 }
 
 #define TEXT_STYLE_PROP(name) \
-    static bool Text_is##name(sf::Text const& text)     \
-    {                                                   \
-        return (text.getStyle() & sf::Text::name) != 0; \
-    }                                                   \
-    static void Text_set##name(sf::Text& text, bool on) \
-    {                                                   \
-            text.setStyle(text.getStyle() & (on ?       \
-                sf::Text::name : ~sf::Text::name));     \
+    static bool Text_is##name(sf::Text const& text)                \
+    {                                                              \
+        return (text.getStyle() & sf::Text::name) != 0;            \
+    }                                                              \
+    static void Text_set##name(sf::Text& text, bool on)            \
+    {                                                              \
+            text.setStyle(on ? text.getStyle() | sf::Text::name    \
+                             : text.getStyle() & ~sf::Text::name); \
     }
 
 TEXT_STYLE_PROP(Bold)
