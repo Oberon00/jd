@@ -40,7 +40,7 @@ STRINGID_WRAPPER(switchTo)
 
 void StateManager::pushAdditional(State& s)
 {
-#define MODIFYING Modify(m_modifying, __FUNCTION__);
+#define MODIFYING Modify _detail_mod_##__LINE__(m_modifying, __FUNCTION__);
     s.initialize();
 
     MODIFYING
@@ -90,7 +90,6 @@ void StateManager::pop()
 void StateManager::popRunning()
 {
     MODIFYING
-#undef MODIFYING
 
     if (m_stack.empty())
         throw std::logic_error(__FUNCTION__ ": stack already empty.");
@@ -115,6 +114,8 @@ void StateManager::popRunning()
 
 void StateManager::switchTo(State& s)
 {
+#undef MODIFYING
+
     if (!m_stack.empty())
         popRunning();
     push(s);
