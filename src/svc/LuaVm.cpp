@@ -106,7 +106,11 @@ LuaVm::~LuaVm()
     lua_setfield(m_L, -2, "CLOSING");
     lua_setglobal(m_L, "jd");
 
-    deinit();
+    try { deinit(); }
+    catch (std::exception const& e) {
+        LOG_E("LuaVm::deinit() failed with following exception:");
+        LOG_EX(e);
+    }
     
     if (lua_gettop(m_L) != 0)
         LOG_W("Elements left on Lua stack: " + luaU::dumpstack(m_L));
@@ -171,7 +175,7 @@ static void clearTable(lua_State* L, int idx)
 	idx = lua_absindex(L, idx);
 	// see http://www.lua.org/manual/5.2/manual.html#lua_next
     lua_pushnil(L);
-    while (lua_next(L, idx) != 0) {
+    while (luaU::next(L, idx) != 0) {
 		lua_pop(L, 1); // remove value, keep key on stack for lua_next
 		lua_pushvalue(L, -1); // copy key
 		lua_pushnil(L); // new value
