@@ -87,6 +87,24 @@ void pcall(lua_State* L, int nargs, int nresults)
 
 }
 
+bool next(lua_State* L, int idx)
+{
+    idx = lua_absindex(L, idx);
+    lua_pushcfunction(L, [](lua_State* L) -> int {
+        return lua_next(L, 1) ? 2 : 0;
+    });
+    lua_pushvalue(L, idx);
+    lua_pushvalue(L, -3); // push previous top (key)
+    lua_remove(L, -4);
+    luaU::pcall(L, 2, 2);
+    if (lua_isnil(L, -2)) { // key is nil --> end
+        lua_pop(L, 2);
+        return false;
+    }
+    return true;
+}
+
+
 std::string const dumpstack(lua_State* L)
 {
     int const top = lua_gettop(L);

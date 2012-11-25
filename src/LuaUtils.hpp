@@ -34,6 +34,12 @@ void load(lua_State* L, std::string const& vfilename, char const* mode = nullptr
 // exec(L, n, m) = luaU::load(L, n, m); luaU::pcall(L, 0, 0)
 void exec(lua_State* L, std::string const& vfilename, char const* mode = nullptr);
 
+// Dumping //
+
+void dumpFunction(lua_State* L, VFile& f);
+void dumpFunction(lua_State* L, std::string const& vfilename);
+
+
 
 // exportenum //
 // Usage:
