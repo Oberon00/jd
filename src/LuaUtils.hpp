@@ -6,6 +6,7 @@
 #include <luabind/error.hpp>
 
 struct lua_State;
+class VFile;
 
 namespace luaU {
 
@@ -20,6 +21,8 @@ std::string const errstring(int luaerr);
 std::string const dumpvar(lua_State* L, int idx);
 std::string const dumpstack(lua_State* L);
 
+// safe variants of standard functions //
+bool next(lua_State* L, int idx);
 
 // Loading & execution //
 

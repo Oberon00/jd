@@ -137,6 +137,15 @@ static const char* loader(lua_State*, void* ud, std::size_t* sz)
     return nullptr;
 }
 
+static int dumper(lua_State*, const void* p, std::size_t sz, void* ud)
+{
+    assert(p);
+    assert(ud);
+    VFile& f = *static_cast<VFile*>(ud);
+    return f.write(p, sz) == sz ? 0 : -1;
+}
+
+
 } // anonymous namespace
 
 void load(lua_State* L, std::string const& vfilename, char const* mode)
@@ -154,7 +163,30 @@ void load(lua_State* L, std::string const& vfilename, char const* mode)
     }
 
     // chunk is now on top of the stack
-    assert(lua_type(L, -1) == LUA_TFUNCTION);
+    assert(lua_isfunction(L, -1));
+}
+
+void dumpFunction(lua_State* L, VFile& f)
+{
+    assert(lua_isfunction(L, -1));
+    assert(!lua_iscfunction(L, -1));
+
+    int const r = lua_dump(L, &dumper, &f);
+    if (r != LUA_OK) {
+        if (!f.lastError().empty()) {
+            throw luaU::Error(__FUNCTION__ " failed: I/O error: " + f.lastError());
+        } else {
+            throw luaU::Error(L, 
+                __FUNCTION__ " failed: lua_dump failed (" + luaU::errstring(r)
+                + ")");
+        }
+    }
+}
+
+void dumpFunction(lua_State* L, std::string const& vfilename)
+{
+    VFile f(vfilename, VFile::openW);
+    return dumpFunction(L, f);
 }
 
 void exec(lua_State* L, std::string const& vfilename, char const* mode)
