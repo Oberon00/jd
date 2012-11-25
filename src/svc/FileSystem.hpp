@@ -34,6 +34,7 @@ public:
     bool isOpen() const;
     bool eof();
     std::string const& lastError() const { return m_err; }
+    void clearLastError() { m_err.clear(); }
 
     PHYSFS_File* get() { return m_f; }
 
