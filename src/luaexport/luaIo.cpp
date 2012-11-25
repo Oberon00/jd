@@ -111,12 +111,20 @@ static std::string serializeTable(lua_State* L, int idx, unsigned depth)
     std::string r(1, '{');
 	// see http://www.lua.org/manual/5.2/manual.html#lua_next
     lua_pushnil(L);
+    unsigned nextSeqKey = 1;
     while (luaU::next(L, idx) != 0) {
-        lua_pushvalue(L, -2); // preserve key
-		r += '[';
-        r += serialize(L, -3, depth + 1);
-        r += "]=";
-        r += serialize(L, -2, depth + 1);
+        if (nextSeqKey > 0
+            && lua_isnumber(L, -2)
+            && lua_tonumber(L, -2) == nextSeqKey) {
+            ++nextSeqKey;
+        } else {
+            nextSeqKey = 0;
+            lua_pushvalue(L, -2); // preserve key
+		    r += '[';
+            r += serialize(L, -1, depth + 1);
+            r += "]=";
+        }
+        r += serialize(L, -1, depth + 1);
         r += ',';
     }
     r += '}';
