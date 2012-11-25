@@ -80,7 +80,8 @@ set(LUAEXPORT_SOURCES
     luaexport/LuaPackage.cpp
     luaexport/Tilemap.cpp
 	luaexport/TilePositionComponentMeta.cpp
-	luaexport/RectCollisionComponentMeta.cpp)
+	luaexport/RectCollisionComponentMeta.cpp
+	luaexport/luaIo.cpp)
 source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
 
