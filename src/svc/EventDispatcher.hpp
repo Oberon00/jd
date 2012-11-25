@@ -33,10 +33,7 @@ class EventDispatcher: public Component {
     SSIG_DEFINE_MEMBERSIGNAL(mouseLeft, void())
 
 public:
-    EventDispatcher(sf::Window& eventSource):
-        m_hasFocus(true), m_waitsForEvents(false),
-        m_eventSource(eventSource)
-        { }
+    EventDispatcher(sf::Window& eventSource);
 
     void setWaitsForEvents(bool wait = true) { m_waitsForEvents = wait; }
     bool waitsForEvents() const { return m_waitsForEvents; }

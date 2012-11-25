@@ -4,6 +4,13 @@
 #include <SFML/Window/Event.hpp>
 #include <boost/lexical_cast.hpp>
 
+
+EventDispatcher::EventDispatcher(sf::Window& eventSource):
+    m_hasFocus(true),
+    m_waitsForEvents(false),
+    m_eventSource(eventSource)
+{ }
+
 void EventDispatcher::dispatch()
 {
     sf::Event ev;
