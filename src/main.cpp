@@ -95,21 +95,21 @@ int main(int argc, char* argv[])
 {
     // First thing to do: get the logfile opened.
 
-    // Create the directory for the logfile.
+    // Create directory for log file
+    namespace fs = boost::filesystem;
 #   ifdef _WIN32
-    boost::filesystem::path const logpath(
-        std::string(getenv("APPDATA")) + "/JadeEngine/jd.log");
+    fs::path const basepath(std::string(getenv("APPDATA")) + "/JadeEngine/");
 #   else
-    boost::filesystem::path const logpath("~/.jade/jd.log");
+    fs::path const basepath("~/.jade/");
 #endif
-    boost::filesystem::create_directories(logpath.parent_path());
+    fs::create_directories(basepath);
 
     int r = EXIT_FAILURE;
     try {
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
-        log().open(logpath.string());
+        log().open((basepath / "jd.log").string());
 
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
@@ -127,6 +127,11 @@ int main(int argc, char* argv[])
         LOG_D("Initializing virtual filesystem...");
         FileSystem::Init fsinit;
         regSvc(FileSystem::get());
+        fs::path datapath(basepath / "data");
+        fs::create_directories(datapath);
+        if (!PHYSFS_setWriteDir(datapath.string().c_str()))
+            throw FileSystem::Error("failed setting write directory");
+
         LOG_D("Finished initializing virtual filesystem.");
         
         LOG_D("Initializing Lua...");
