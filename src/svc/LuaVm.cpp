@@ -101,9 +101,7 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
 
 LuaVm::~LuaVm()
 {
-    lua_createtable(m_L, 1, 0);
-    lua_pushboolean(m_L, true);
-    lua_setfield(m_L, -2, "CLOSING");
+    lua_pushnil(m_L);
     lua_setglobal(m_L, "jd");
 
     try { deinit(); }
@@ -191,9 +189,7 @@ void LuaVm::deinit()
 
 	lua_gc(m_L, LUA_GCCOLLECT, 0);
 
-    lua_createtable(m_L, 1, 0);
-    lua_pushboolean(m_L, true);
-    lua_setfield(m_L, -2, "CLOSING");
+    lua_pushnil(m_L);
     lua_setglobal(m_L, "jd");
     lua_gc(m_L, LUA_GCCOLLECT, 0);
 
