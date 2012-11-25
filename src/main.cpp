@@ -184,9 +184,7 @@ int main(int argc, char* argv[])
                    sf::Style::Close | sf::Style::Fullscreen : sf::Style::Default);
             window.setVerticalSyncEnabled(conf.get("video.vsync", true));
             window.setFramerateLimit(conf.get("video.framelimit", 0U));
-            // Workaround: Without the following line, the window "jumps"
-            // around when gaining focus after losing it.
-            window.setPosition(window.getPosition());
+            window.setKeyRepeatEnabled(false);
             LOG_D("Finished creating window.");
 
             drawService.resetLayerViews();
