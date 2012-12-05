@@ -37,9 +37,9 @@ std::string const findResource(
             path + "\" (also with usual extensions appended)");
 }
 
-LOAD_TRAITS(sf::Image,   "res/img/", 6, (".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"));
-LOAD_TRAITS(sf::Texture, "res/img/", 6, (".png", ".jpg", ".jpeg", ".gif", ".tga", ".bmp"));
-LOAD_TRAITS(VFileFont,   "res/fnt/", 2, (".ttf", ".otf"));
+LOAD_TRAITS(sf::Image,       "res/img/",  9, (".png", ".jpg", ".bmp", ".jpeg", ".tga", ".gif", ".psd", ".hdr", ".pic"));
+LOAD_TRAITS(sf::Texture,     "res/img/",  9, (".png", ".jpg", ".bmp", ".jpeg", ".tga", ".gif", ".psd", ".hdr", ".pic"));
+LOAD_TRAITS(VFileFont,       "res/fnt/",  2, (".ttf", ".otf"));
 
 static void loadTextureResource(sf::Texture& tx, std::string const& name)
 {
