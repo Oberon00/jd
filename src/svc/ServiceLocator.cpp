@@ -7,6 +7,7 @@
 #include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/Timer.hpp"
+#include "svc/SoundManager.hpp"
 
 /* static */ std::unordered_map<MetaComponent const*, Service*> ServiceLocator::registry;
 
@@ -25,6 +26,7 @@ DEFINE_SVC_GETTER(Mainloop, mainloop)
 DEFINE_SVC_GETTER(EventDispatcher, eventDispatcher)
 DEFINE_SVC_GETTER(DrawService, drawService)
 DEFINE_SVC_GETTER(Timer, timer)
+DEFINE_SVC_GETTER(SoundManager, soundManager)
 
 /* static */ void ServiceLocator::registerService(Service& s)
 {
@@ -40,6 +42,7 @@ DEFINE_SVC_GETTER(Timer, timer)
     else ENTRY(EventDispatcher, eventDispatcher)
     else ENTRY(DrawService, drawService)
     else ENTRY(Timer, timer)
+    else ENTRY(SoundManager, soundManager)
 
 #   undef ENTRY
 }

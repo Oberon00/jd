@@ -7,7 +7,8 @@ set(SVC_HEADERS
     svc/DrawService.hpp
     svc/Configuration.hpp
     svc/ServiceLocator.hpp
-	svc/Timer.hpp)    
+	svc/Timer.hpp
+    svc/SoundManager.hpp)    
 source_group("Service Headers" FILES ${SVC_HEADERS})
 
 set(SVC_SOURCES
@@ -19,7 +20,8 @@ set(SVC_SOURCES
     svc/DrawService.cpp
     svc/Configuration.cpp
     svc/ServiceLocator.cpp
-	svc/Timer.cpp)
+	svc/Timer.cpp
+    svc/SoundManager.cpp)
 source_group("Service Sources" FILES ${SVC_SOURCES})
 
 set(COMPSYS_HEADERS
@@ -81,7 +83,8 @@ set(LUAEXPORT_SOURCES
     luaexport/Tilemap.cpp
 	luaexport/TilePositionComponentMeta.cpp
 	luaexport/RectCollisionComponentMeta.cpp
-	luaexport/luaIo.cpp)
+	luaexport/luaIo.cpp
+    luaexport/SoundManagerMeta.cpp)
 source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
 
@@ -93,6 +96,7 @@ set(JD_HEADERS
     AutoResource.hpp
     AutoTexture.hpp
 	AutoFont.hpp
+    AutoSoundBuffer.hpp
     ResourceManager.hpp
     ResourceManager.inl
     sfKeyCodes.hpp
@@ -110,6 +114,7 @@ set(JD_HEADERS
     base64.hpp
     luaUtils.hpp
 	VFileFont.hpp
+    VFileMusic.hpp
     ${SVC_HEADERS}
     ${COMPSYS_HEADERS}
     ${COMP_HEADERS}
@@ -150,7 +155,7 @@ if (MSVC)
     list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
-find_package(SFML REQUIRED system graphics window)
+find_package(SFML REQUIRED system graphics window audio)
 find_package(PhysFs REQUIRED)
 find_package(zlib REQUIRED)
 include_directories(

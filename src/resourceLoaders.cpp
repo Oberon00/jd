@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include "VFileFont.hpp"
+#include <SFML/Audio/SoundBuffer.hpp>
 
 std::string const findResource(
     std::string const& name,
@@ -40,6 +41,9 @@ std::string const findResource(
 LOAD_TRAITS(sf::Image,       "res/img/",  9, (".png", ".jpg", ".bmp", ".jpeg", ".tga", ".gif", ".psd", ".hdr", ".pic"));
 LOAD_TRAITS(sf::Texture,     "res/img/",  9, (".png", ".jpg", ".bmp", ".jpeg", ".tga", ".gif", ".psd", ".hdr", ".pic"));
 LOAD_TRAITS(VFileFont,       "res/fnt/",  2, (".ttf", ".otf"));
+LOAD_TRAITS(sf::SoundBuffer, "res/snd/", 22, (".ogg", ".wav", ".flac", ".aiff", ".au", ".raw", ".paf", ".svx", ".nist",  \
+                                              ".voc", ".ircam", ".w64", ".mat4", ".mat5" ".pvf", ".htk", ".sds", ".avr", \
+                                              ".sd2", ".caf", ".wve", ".mpc2k", ".rf64"));
 
 static void loadTextureResource(sf::Texture& tx, std::string const& name)
 {
@@ -79,6 +83,7 @@ static bool initSfResources()
     resMng<sf::Texture>().setResourceNotFoundCallback(&loadTextureResource);
 
     resMng<VFileFont>().setResourceNotFoundCallback(&loadFontResource);
+    resMng<sf::SoundBuffer>().setResourceNotFoundCallback(&loadSfmlResource<sf::SoundBuffer>);
 
     return bool();
 }

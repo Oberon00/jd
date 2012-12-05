@@ -10,6 +10,7 @@ class Mainloop;
 class DrawService;
 class EventDispatcher;
 class Timer;
+class SoundManager;
 
 class Component;
 class MetaComponent;
@@ -39,6 +40,7 @@ public:
     static DrawService& drawService();
     static EventDispatcher& eventDispatcher();
     static Timer& timer();
+    static SoundManager& soundManager();
 
 private:
     static std::unordered_map<MetaComponent const*, Service*> registry;

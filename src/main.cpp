@@ -11,6 +11,7 @@
 #include "svc/Configuration.hpp"
 #include "svc/StateManager.hpp"
 #include "svc/Timer.hpp"
+#include "svc/SoundManager.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <boost/bind.hpp>
@@ -143,6 +144,7 @@ int main(int argc, char* argv[])
             ServiceEntry<Mainloop> mainloop;
             ServiceEntry<Configuration> conf;
             ServiceEntry<Timer> timer;
+            ServiceEntry<SoundManager> sound;
 
             // Create the RenderWindow now, because some services depend on it.
             LOG_D("Preparing window and SFML...");
@@ -168,10 +170,13 @@ int main(int argc, char* argv[])
             regSvc(drawService);
             mainloop.connect_preFrame(bind(&Timer::beginFrame, &timer));
             mainloop.connect_update(bind(&Timer::processCallbacks, &timer));
+            mainloop.connect_update(bind(&SoundManager::fade, &sound));
             mainloop.connect_preDraw(bind(&DrawService::clear, &drawService));
             mainloop.connect_draw(bind(&DrawService::draw, &drawService));
             mainloop.connect_postDraw(bind(&DrawService::display, &drawService));
             mainloop.connect_postFrame(bind(&Timer::endFrame, &timer));
+
+            timer.callEvery(sf::seconds(10), bind(&SoundManager::tidy, &sound));
 
 
             LOG_D("Creating window...");

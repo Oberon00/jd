@@ -7,6 +7,7 @@
 #include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/Timer.hpp"
+#include "svc/SoundManager.hpp"
 #include "Collisions.hpp"
 
 static char const libname[] = "ServiceLocator";
@@ -30,6 +31,7 @@ static void init(LuaVm& vm)
         LHMEMFN(drawService),
         LHMEMFN(eventDispatcher),
         LHMEMFN(timer),
+        LHMEMFN(soundManager),
         def("get", &getService)
     ] ];
 }
