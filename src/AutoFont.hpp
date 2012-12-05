@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Font.hpp>
 
-void updateAutoResourceMedia(sf::Text& t, ResourceTraits<sf::Font>::Ptr fnt)
+inline void updateAutoResourceMedia(sf::Text& t, ResourceTraits<sf::Font>::Ptr fnt)
 {
     t.setFont(*fnt);
 }
