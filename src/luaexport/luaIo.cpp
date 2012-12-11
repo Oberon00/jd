@@ -3,13 +3,10 @@ static char const libname[] = "LuaIo";
 #include "svc/FileSystem.hpp"
 #include "LuaUtils.hpp"
 #include <physfs.h>
-#include <boost/iostreams/stream.hpp>
+#include <zlib.h>
+#include <algorithm> // min
 
-namespace io = boost::iostreams;
-
-typedef io::stream<VFileDevice> VFileStream;
-
-static unsigned maxserializationdepth = 100;
+static unsigned const maxserializationdepth = 100;
 
 static std::string quoteLuaString(lua_State* L, int idx)
 {
@@ -171,7 +168,7 @@ static int readString(lua_State* L)
         sf::Int64 sz = f.getSize();
         f.throwError();
         assert(sz >= 0);
-        std::vector<char> buf(sz);
+        std::vector<char> buf(static_cast<std::size_t>(sz));
         f.read(&buf[0], buf.size());
         f.throwError();
         f.close();
@@ -199,6 +196,51 @@ static int createDirectory(lua_State* L)
     return 0;
 }
 
+static void throwZErr(int r)
+{
+    if (r != Z_OK)
+        throw std::runtime_error(zError(r));
+}
+
+static int compressString(lua_State* L)
+{
+    size_t srcLen;
+    char const* s = luaL_checklstring(L, 1, &srcLen);
+    try {
+        std::vector<char> buf(
+            std::max(compressBound(srcLen), 1ul) + sizeof(uLongf));
+        *reinterpret_cast<uLongf*>(&buf[0]) = srcLen;
+        uLongf dstLen = buf.size() - sizeof(uLongf);
+        throwZErr(compress(
+            reinterpret_cast<Bytef*>(&buf[sizeof(uLongf)]), &dstLen,
+            reinterpret_cast<Bytef const*>(s), srcLen));
+        lua_pushlstring(L, &buf[0], dstLen + sizeof(uLongf));
+        return 1;
+    } catch (std::exception const& e) {
+        return luaL_error(L, "could not compress data: %s", e.what());
+    }
+}
+
+static int uncompressString(lua_State* L)
+{
+    size_t srcLen;
+    char const* s = luaL_checklstring(L, 1, &srcLen);
+    luaL_argcheck(L, srcLen >= sizeof(uLongf), 1, "invalid data");
+    try {
+        std::vector<char> buf(std::max(
+            *reinterpret_cast<uLongf const*>(s), 1ul));
+        uLongf dstLen = buf.size();
+        throwZErr(uncompress(
+            reinterpret_cast<Bytef*>(&buf[0]), &dstLen,
+            reinterpret_cast<Bytef const*>(s + sizeof(uLongf)), srcLen - sizeof(uLongf)));
+        lua_pushlstring(L, &buf[0], dstLen);
+        return 1;
+    } catch (std::exception const& e) {
+        return luaL_error(L, "could not uncompress data: %s", e.what());
+    }
+}
+
+
 void init(LuaVm& vm)
 {
     lua_State* L = vm.L();
@@ -208,6 +250,8 @@ void init(LuaVm& vm)
         {"writeString", &writeString},
         {"readString",  &readString},
         {"createDirectory", &createDirectory},
+        {"compress",    &compressString},
+        {"uncompress",  &uncompressString},
         {nullptr, nullptr}
     };
 
