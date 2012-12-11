@@ -240,6 +240,12 @@ static int uncompressString(lua_State* L)
     }
 }
 
+static int fileExists(lua_State* L)
+{
+    lua_pushboolean(L, PHYSFS_exists(luaL_checkstring(L, 1)));
+    return 1;
+}
+
 
 void init(LuaVm& vm)
 {
@@ -250,6 +256,7 @@ void init(LuaVm& vm)
         {"writeString", &writeString},
         {"readString",  &readString},
         {"createDirectory", &createDirectory},
+        {"fileExists",  &fileExists},
         {"compress",    &compressString},
         {"uncompress",  &uncompressString},
         {nullptr, nullptr}
