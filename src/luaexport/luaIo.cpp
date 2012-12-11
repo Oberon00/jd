@@ -131,18 +131,71 @@ static std::string serializeTable(lua_State* L, int idx, unsigned depth)
     return r;
 }
 
-static int storeData(lua_State* L)
+static int serialize(lua_State* L)
 {
-    char const* vfilename = luaL_checkstring(L, 1);
-    luaL_checkany(L, 2);
     try {
-        VFile f(vfilename, VFile::openW);
-        std::string s = "return ";
-        s += serialize(L, 2, 0);
-        f.write(s.data(), s.size());
+        std::string result("return ");
+        while(int const top = lua_gettop(L)) {
+            result += serialize(L, 1, 0);
+            if (top > 1)
+                result += ',';
+
+        }
+        lua_pushlstring(L, result.c_str(), result.size());
+        return 1;
     } catch (std::exception const& e) {
-        luaL_error(L, "serialization failed: %s", e.what());
+        return luaL_error(L, "serialization failed: %s", e.what());
     }
+}
+
+static int writeString(lua_State* L)
+{
+    char const* filename = luaL_checkstring(L, 1);
+    size_t len;
+    char const* data = luaL_checklstring(L, 2, &len);
+    try {
+        VFile f(filename, VFile::openW);
+        f.write(data, len);
+        f.throwError();
+        return 0;
+    } catch (std::exception const& e) {
+        return luaL_error(L, "writing data failed: %s", e.what());
+    }
+}
+
+static int readString(lua_State* L)
+{
+    char const* filename = luaL_checkstring(L, 1);
+    try {
+        VFile f(filename);
+        sf::Int64 sz = f.getSize();
+        f.throwError();
+        assert(sz >= 0);
+        std::vector<char> buf(sz);
+        f.read(&buf[0], buf.size());
+        f.throwError();
+        f.close();
+
+        // push string using pcall: out of memory is not too unlikely here.
+        lua_pushcfunction(L, ([](lua_State* L) -> int {
+            std::vector<char> const& buf =
+                *static_cast<std::vector<char>*>(lua_touserdata(L, 1));
+            lua_pushlstring(L, &buf[0], buf.size());
+            return 1;
+        }));
+        lua_pushlightuserdata(L, &buf);
+        luaU::pcall(L, 1, 1);
+
+        return 1;
+    } catch (std::exception const& e) {
+        return luaL_error(L, "reading data failed: %s", e.what());
+    }
+}
+
+static int createDirectory(lua_State* L)
+{
+    if (!PHYSFS_mkdir(luaL_checkstring(L, 1)))
+        luaL_error(L, "could not create directory: %s", PHYSFS_getLastError());
     return 0;
 }
 
@@ -150,7 +203,14 @@ void init(LuaVm& vm)
 {
     lua_State* L = vm.L();
     LUAU_BALANCED_STACK(L);
+    static luaL_Reg const iofuncs[] = {
+        {"serialize",   &serialize},
+        {"writeString", &writeString},
+        {"readString",  &readString},
+        {"createDirectory", &createDirectory},
+        {nullptr, nullptr}
+    };
+
     lua_getglobal(L, "jd");
-    lua_pushcfunction(L, &storeData);
-    lua_setfield(L, -2, "storeData");
+    luaL_setfuncs(L, iofuncs, 0);
 }
