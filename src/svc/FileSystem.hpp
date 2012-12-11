@@ -35,6 +35,7 @@ public:
     bool eof();
     std::string const& lastError() const { return m_err; }
     void clearLastError() { m_err.clear(); }
+    void throwError() const;
 
     PHYSFS_File* get() { return m_f; }
 

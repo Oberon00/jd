@@ -121,6 +121,12 @@ sf::Int64 VFile::check(sf::Int64 r, sf::Int64 rq, std::string const& op)
     return r;
 }
 
+void VFile::throwError() const
+{
+    if (!m_err.empty())
+        throw FileSystem::Error(m_err, false);
+}
+
 
 //////////////////////////////////////////////////////////
 
