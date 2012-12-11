@@ -132,6 +132,8 @@ int main(int argc, char* argv[])
         fs::create_directories(datapath);
         if (!PHYSFS_setWriteDir(datapath.string().c_str()))
             throw FileSystem::Error("failed setting write directory");
+        if (!PHYSFS_mount(PHYSFS_getWriteDir(), nullptr, false /* prepend to path */))
+            throw FileSystem::Error("failed mounting write directory");
 
         LOG_D("Finished initializing virtual filesystem.");
         
