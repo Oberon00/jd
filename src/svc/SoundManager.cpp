@@ -1,14 +1,10 @@
 #include "SoundManager.hpp"
 #include "ResourceManager.hpp"
-#include <svc/Timer.hpp>
-#include <svc/ServiceLocator.hpp>
 #include <boost/bind.hpp>
 
 
 SoundManager::SoundManager()
 {
-    ServiceLocator::timer().callEvery(
-        sf::seconds(10), boost::bind(&SoundManager::tidy, this));
 }
 
 SoundManager::~SoundManager()
