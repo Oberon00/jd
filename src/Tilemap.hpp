@@ -7,7 +7,10 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Time.hpp>
+#include "sfUtil.hpp"
 #include <vector>
+#include <unordered_map>
 #include "resfwd.hpp"
 
 namespace jd {
@@ -64,13 +67,43 @@ public:
 
     bool isValidPosition(sf::Vector3i pos) const;
 
+    void addAnimation(std::size_t tid, std::size_t lastTid, float speed);
+    void addAnimation(Vector3u pos, std::size_t lastTid, float speed);
+    void removeAnimation(std::size_t tid);
+    void removeAnimation(Vector3u pos);
+    
+    void animate(sf::Time elapsedTime);
+
 protected:
     virtual void draw(
         sf::RenderTarget& target, sf::RenderStates states
     ) const;
 
 private:
+    class Animation {
+    public:
+        explicit Animation(
+            std::size_t firstTid = 0, std::size_t lastTid = 0, float speed = 0.f
+        ):
+            m_firstTid(firstTid), m_lastTid(lastTid),
+            m_speed(speed), m_currentFrame(static_cast<float>(firstTid))
+        { }
+        
+        void animate(sf::Time elapsedTime);
+        std::size_t currentFrame() const;
+
+    private:
+        std::size_t m_firstTid;
+        std::size_t m_lastTid;
+        float m_speed; // in frames per second
+        float m_currentFrame;
+    };
+    std::size_t maybeAnimated(std::size_t tid, Vector3u pos) const;
+
     std::size_t index(Vector3u pos) const;
+
+    std::unordered_map<std::size_t, Animation> m_tidAnimations;
+    std::unordered_map<Vector3u, Animation> m_posAnimations;
 
     Tileset m_tileset;
     

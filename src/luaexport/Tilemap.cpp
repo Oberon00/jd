@@ -113,6 +113,17 @@ static void init(LuaVm& vm)
             .property("tileset", &LHCURCLASS::tileset, &LHCURCLASS::setTileset)
             .property("size", &LHCURCLASS::size, &LHCURCLASS::setSize)
             .LHMEMFN(localTilePos)
+            .def("addAnimation",
+                (void(LHCURCLASS::*)(std::size_t, std::size_t, float))
+                &LHCURCLASS::addAnimation)
+            .def("addAnimation",
+                (void(LHCURCLASS::*)(jd::Vector3u, std::size_t, float))
+                &LHCURCLASS::addAnimation)
+            .def("removeAnimation",
+                (void(LHCURCLASS::*)(std::size_t))&LHCURCLASS::removeAnimation)
+            .def("removeAnimation",
+                (void(LHCURCLASS::*)(jd::Vector3u))&LHCURCLASS::removeAnimation)
+            .LHMEMFN(animate)
             .def("tilePos", &LHCURCLASS::globalTilePos)
             .LHMEMFN(tilePosFromLocal)
             .LHMEMFN(tilePosFromGlobal)

@@ -46,6 +46,24 @@ sf::Vector2u Tileset::position(unsigned index) const
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
+void Tilemap::Animation::animate(sf::Time elapsedTime)
+{
+    m_currentFrame += elapsedTime.asSeconds() * m_speed;
+    if (m_currentFrame > m_lastTid) {
+        m_currentFrame = static_cast<float>(
+            m_firstTid + std::fmod(
+                m_currentFrame - m_firstTid, m_lastTid - m_firstTid));
+    }
+}
+
+std::size_t Tilemap::Animation::currentFrame() const
+{
+    assert(m_currentFrame >= 0);
+    return static_cast<std::size_t>(m_currentFrame);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 void Tilemap::setTileset(Tileset const& ts)
 {
     m_tileset = ts;
@@ -144,6 +162,45 @@ sf::Vector2i Tilemap::tilePosFromGlobal(sf::Vector2f pos) const
     return tilePosFromLocal(getInverseTransform().transformPoint(pos));
 }
 
+static void checkSpeed(float speed)
+{
+    if (speed < 0)
+        throw std::out_of_range("negative animation speed not supported");
+}
+
+void Tilemap::addAnimation(std::size_t tid, std::size_t lastTid, float speed)
+{
+    checkSpeed(speed);
+    m_tidAnimations[tid] = Animation(tid, lastTid, speed);
+}
+
+void Tilemap::addAnimation(Vector3u pos, std::size_t lastTid, float speed)
+{
+    checkSpeed(speed);
+    m_posAnimations[pos] = Animation((*this)[pos], lastTid, speed);
+}
+
+void Tilemap::removeAnimation(std::size_t tid)
+{
+    m_tidAnimations.erase(tid);
+}
+
+void Tilemap::removeAnimation(Vector3u pos)
+{
+    m_posAnimations.erase(pos);
+}
+
+
+void Tilemap::animate(sf::Time elapsedTime)
+{
+    for (auto& a: m_tidAnimations)
+        a.second.animate(elapsedTime);
+    for (auto& a: m_posAnimations)
+        a.second.animate(elapsedTime);
+
+}
+
+
 void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     sf::FloatRect const viewRect(viewRect(target.getView()));
@@ -184,7 +241,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
                     iPos.x += tileSize.x;
                     continue;
                 }
-                sf::Vector2f texPos(m_tileset.position(tileId - 1));
+                sf::Vector2f texPos(m_tileset.position(maybeAnimated(tileId, Vector3u(x, y, z)) - 1));
                 vertices[iVertices].texCoords  = texPos;
                 vertices[iVertices++].position = iPos;
                 vertices[iVertices].texCoords  = sf::Vector2f(texPos.x, texPos.y + tileSize.y);
@@ -215,6 +272,19 @@ bool Tilemap::isValidPosition(sf::Vector3i pos) const
     return
         pos.x >= 0 && pos.y >= 0 && pos.z >= 0 &&
         pos.x < sz.x && pos.y < sz.y && pos.z < sz.z;
+}
+
+std::size_t Tilemap::maybeAnimated(std::size_t tid, Vector3u pos) const
+{
+    auto iPos = m_posAnimations.find(pos);
+    if (iPos != m_posAnimations.end())
+        return iPos->second.currentFrame();
+    
+    auto iTid = m_tidAnimations.find(tid);
+    if (iTid != m_tidAnimations.end())
+        return iTid->second.currentFrame();
+
+    return tid;
 }
 
 } // namespace jd
