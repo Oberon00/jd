@@ -98,7 +98,7 @@ public:
     bool mount(
         std::string const& path,
         std::string const& mountPoint = std::string(),
-        int flags = appendPath);
+        int flags = prependPath);
 
 private:
     FileSystem();
