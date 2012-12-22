@@ -1,6 +1,7 @@
 #include "cmdline.hpp"
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/FileSystem.hpp"
@@ -92,27 +93,46 @@ std::vector<std::string> const& commandLine() { return cmdLine; }
 
 int main(int argc, char* argv[])
 {
+    assert(argc > 0);
+    std::string const defaultGame = argv[0]; // Adjust if neccessary.
+    std::string game = defaultGame;
+    if (argc >= 2)
+        game = argv[1];
+    const boost::filesystem::path gamePath(game);
+    std::string gameName = (gamePath.has_stem() ?
+        gamePath.stem() : gamePath.has_filename() ?
+            gamePath.filename() : gamePath.parent_path().filename()).string();
+
+    bool gameNameFound = true;
+    if (gameName.empty() || gameName == ".") {
+        gameName = "JadeEngine";
+        gameNameFound = false;
+    }
+    
     // First thing to do: get the logfile opened.
 
     // Create directory for log file
-    namespace fs = boost::filesystem;
 #   ifdef _WIN32
-    fs::path const basepath(std::string(getenv("APPDATA")) + "/JadeEngine/");
+    std::string const basepath(std::string(getenv("APPDATA")) + '/' + gameName + '/');
 #   else
-    fs::path const basepath("~/.jade/");
+    std::string const basepath("~/." + gameName + "/");
 #endif
-    fs::create_directories(basepath);
+    boost::filesystem::create_directories(basepath);
 
     int r = EXIT_FAILURE;
     try {
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
-        log().open((basepath / "jd.log").string());
+        log().open(basepath + "jd.log");
 
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
 #endif
+        LOG_I("Game name is \"" + gameName + "\".");
+        if (!gameNameFound)
+            LOG_W("This is the fallback name: no proper one was found.");
+
         LOG_D("Initialization...");
 
         // setup commandline functions //
@@ -125,13 +145,33 @@ int main(int argc, char* argv[])
 
         LOG_D("Initializing virtual filesystem...");
         FileSystem::Init fsinit;
-        regSvc(FileSystem::get());
-        fs::path datapath(basepath / "data");
-        fs::create_directories(datapath);
-        if (!PHYSFS_setWriteDir(datapath.string().c_str()))
-            throw FileSystem::Error("failed setting write directory");
-        if (!PHYSFS_mount(PHYSFS_getWriteDir(), nullptr, false /* prepend to path */))
-            throw FileSystem::Error("failed mounting write directory");
+
+        FileSystem& fs = FileSystem::get();
+        regSvc(fs);
+
+        std::string programpath = PHYSFS_getBaseDir();
+        fs.mount(programpath + "/data", "/",
+            FileSystem::mountOptional);
+        std::string const baselib = programpath + "/base.jd";
+        if (!fs.mount(baselib, "/", FileSystem::mountOptional)) {
+            FileSystem::Error const err("Could not open \"" + baselib + '\"');
+            if (!fs.mount("./base.jd", "/", FileSystem::mountOptional)) {
+                LOG_W(err.what());
+                LOG_W(FileSystem::Error(
+                    "Could not open \"./base.jd\"").what());
+            }
+        }
+
+        if (!fs.mount(game, "/", FileSystem::mountOptional)) {
+            LOG_W(FileSystem::Error(
+                "Failed mounting game \"" + game + "\"").what());
+            LOG_W("Mounting working directory instead.");
+            fs.mount(".");
+        }
+
+        fs.mount(basepath + "data/", "/",
+            FileSystem::writeDirectory|FileSystem::prependPath);
+
 
         LOG_D("Finished initializing virtual filesystem.");
         
