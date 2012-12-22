@@ -97,8 +97,11 @@ int main(int argc, char* argv[])
     assert(argc > 0);
     std::string const defaultGame = argv[0]; // Adjust if neccessary.
     std::string game = defaultGame;
-    if (argc >= 2)
+    bool gameSpecified = false;
+    if (argc >= 2) {
         game = argv[1];
+        gameSpecified = true;
+    }
     const boost::filesystem::path gamePath(game);
     std::string gameName = (gamePath.has_stem() ?
         gamePath.stem() : gamePath.has_filename() ?
@@ -170,7 +173,9 @@ int main(int argc, char* argv[])
             }
         }
 
-        if (!fs.mount(game, "/", FileSystem::mountOptional)) {
+        if (!fs.mount(game, "/", gameSpecified ?
+            FileSystem::prependPath : FileSystem::mountOptional)
+        ) {
             LOG_W(FileSystem::Error(
                 "Failed mounting game \"" + game + "\"").what());
             LOG_W("Mounting working directory instead.");
