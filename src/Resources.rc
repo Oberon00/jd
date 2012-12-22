@@ -1,4 +1,4 @@
-#define APPN "FloodFill"
+#define APPN "Jade Engine"
 #define VERSION_ 0,9,0,0
 #define VERSION_STR "Beta 0.9"
 
@@ -13,12 +13,12 @@ BEGIN
         BLOCK "000704b0"
         BEGIN
             VALUE "CompanyName", "Christian Neumüller"
-            VALUE "FileDescription", APPN
+            VALUE "FileDescription", "Jade Game Engine"
             VALUE "FileVersion", VERSION_STR
             VALUE "InternalName", APPN
-            VALUE "LegalCopyright", "Copyright © 2011"
-            VALUE "OriginalFilename", APPN ".exe"
-            VALUE "ProductName", "DalliKlick"
+            VALUE "LegalCopyright", "Copyright © 2012"
+            VALUE "OriginalFilename", "jd.exe"
+            VALUE "ProductName", APPN
             VALUE "ProductVersion", VERSION_STR
         END
     END
