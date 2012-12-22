@@ -235,19 +235,24 @@ int main(int argc, char* argv[])
             LOG_D("Creating window...");
             std::string const title =
                 conf.get<std::string>("misc.title", "Jade");
+
+            std::string iconFilename = conf.get("misc.iconFilename", std::string());
+            sf::Image icon;
+            if (!iconFilename.empty())
+                icon = *resMng<sf::Image>().request(iconFilename);
+
             window.create(
                 conf.get("video.mode", sf::VideoMode(800, 600)),
                 title,
                 conf.get("video.fullscreen", false) ?
                    sf::Style::Close | sf::Style::Fullscreen : sf::Style::Default);
+
+            if (icon.getPixelsPtr())
+                window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
+            
             window.setVerticalSyncEnabled(conf.get("video.vsync", true));
             window.setFramerateLimit(conf.get("video.framelimit", 0U));
-            std::string iconFilename = conf.get("misc.iconFilename", std::string());
-            sf::Image icon;
-            if (!iconFilename.empty()) {
-                icon = *resMng<sf::Image>().request(iconFilename);
-                window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-            }
             window.setKeyRepeatEnabled(false);
             LOG_D("Finished creating window.");
 
