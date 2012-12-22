@@ -118,10 +118,10 @@ int main(int argc, char* argv[])
 #   else
     std::string const basepath("~/." + gameName + "/");
 #endif
-    boost::filesystem::create_directories(basepath);
 
     int r = EXIT_FAILURE;
     try {
+        boost::filesystem::create_directories(basepath);
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
