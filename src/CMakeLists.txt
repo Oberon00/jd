@@ -155,7 +155,7 @@ if (MSVC)
     list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
-find_package(SFML REQUIRED system graphics window audio)
+find_package(SFML REQUIRED system graphics window audio main)
 find_package(PhysFs REQUIRED)
 find_package(zlib REQUIRED)
 include_directories(
@@ -166,7 +166,7 @@ include_directories(
     ${PHYSFS_INCLUDE_DIR}
     ${SSIG_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR})
-add_executable(jd ${JD_HEADERS} ${JD_SOURCES})
+add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd
     ${SFML_LIBRARIES}

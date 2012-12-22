@@ -21,7 +21,6 @@
 #include "LuaUtils.hpp"
 
 #ifdef _WIN32
-#   include <cstdio>
 #   define WIN32_LEAN_AND_MEAN
 #   define NOMINMAX
 #   include <Windows.h>
@@ -139,6 +138,13 @@ int main(int argc, char* argv[])
         argc_ = argc;
         argv_ = argv;
         cmdLine.assign(argv, argv + argc);
+
+#ifdef _WIN32
+        if (!std::freopen((basepath + "stdout.txt").c_str(), "w", stdout))
+            LOG_W("Redirecting stdout to file failed.");
+        if (!std::freopen((basepath + "stderr.txt").c_str(), "w", stderr))
+            LOG_W("Redirecting stderr to file failed.");
+#endif
 
         // Construct and register services // 
         auto const regSvc = ServiceLocator::registerService;
