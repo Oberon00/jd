@@ -18,6 +18,8 @@
 #include <boost/bind.hpp>
 #include "Logfile.hpp"
 #include <physfs.h>
+#include <SFML/Graphics/Image.hpp>
+#include "ResourceManager.hpp"
 #include "LuaUtils.hpp"
 
 #ifdef _WIN32
@@ -235,6 +237,12 @@ int main(int argc, char* argv[])
                    sf::Style::Close | sf::Style::Fullscreen : sf::Style::Default);
             window.setVerticalSyncEnabled(conf.get("video.vsync", true));
             window.setFramerateLimit(conf.get("video.framelimit", 0U));
+            std::string iconFilename = conf.get("misc.iconFilename", std::string());
+            sf::Image icon;
+            if (!iconFilename.empty()) {
+                icon = *resMng<sf::Image>().request(iconFilename);
+                window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+            }
             window.setKeyRepeatEnabled(false);
             LOG_D("Finished creating window.");
 
