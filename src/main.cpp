@@ -17,12 +17,10 @@
 #include <boost/bind.hpp>
 #include "Logfile.hpp"
 #include <physfs.h>
-#include "base64.hpp"
 #include "LuaUtils.hpp"
-#include <array>
-#include <luabind/adopt_policy.hpp>
 
 #ifdef _WIN32
+#   include <cstdio>
 #   define WIN32_LEAN_AND_MEAN
 #   define NOMINMAX
 #   include <Windows.h>
