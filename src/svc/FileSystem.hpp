@@ -90,6 +90,16 @@ public:
 
     PHYSFS_File* openRaw(std::string const& name, VFile::OpenMode mode);
 
+    enum MountFlags {
+        prependPath = 0, appendPath = 1,
+        writeDirectory = 2,
+        mountOptional = 4};
+
+    bool mount(
+        std::string const& path,
+        std::string const& mountPoint = std::string(),
+        int flags = appendPath);
+
 private:
     FileSystem();
 };

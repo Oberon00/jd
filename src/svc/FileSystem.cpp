@@ -1,6 +1,7 @@
 #include "FileSystem.hpp"
 #include <physfs.h>
 #include <array>
+#include <boost/filesystem/operations.hpp>
 #include "cmdline.hpp"
 #include "Logfile.hpp"
 
@@ -187,10 +188,6 @@ void VFileDevice::throwErr()
 FileSystem::Init::Init()
 {
     CALL_PHYSFS(PHYSFS_init, argv()[0]);
-    LOG_D("Mounting base directory and working directory...");
-    CALL_PHYSFS(PHYSFS_mount, PHYSFS_getBaseDir(), nullptr, false);
-    CALL_PHYSFS(PHYSFS_mount, ".", nullptr, false);
-    LOG_D("Mounting base directory and working directory finished.");
 }
 
 FileSystem::Init::~Init()
@@ -203,6 +200,7 @@ FileSystem::Init::~Init()
 }
 
 
+//////////////////////////////////////////////////////////
 
 
 FileSystem::FileSystem()
@@ -228,4 +226,23 @@ PHYSFS_File* FileSystem::openRaw(std::string const& name, VFile::OpenMode mode)
         throw Error("opening file \"" + name + "\" failed");
     return f;
 }
+
+bool FileSystem::mount(
+    std::string const& path,
+    std::string const& mountPoint,
+    int flags)
+{
+    if (flags & writeDirectory) {
+        boost::filesystem::create_directories(path);
+        CALL_PHYSFS(PHYSFS_setWriteDir, path.c_str());
+    }
+
+    if (!PHYSFS_mount(path.c_str(), mountPoint.c_str(), flags & appendPath)) {
+        if (flags & mountOptional)
+            return false;
+        throw Error ("Mounting \"" + path + "\" failed");
+    }
+    return true;
+}
+
 
