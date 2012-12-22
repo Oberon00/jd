@@ -3,9 +3,14 @@
                     "..\..\VC\redist\x86\Microsoft.VC110.CRT"
 
 #define SFMLDIR AddBackslash(GetEnv("SFMLDIR")) + "bin"
-#define EXECUTABLE  AddBackslash(GetEnv("TMP")) + "FloodFill.exe"
+#define EXECUTABLE  "..\build11\src\Release\jd.exe"
 
-#if !FileExists(EXECUTABLE)
+#define tmp AddBackslash(GetEnv("TMP")) 
+#define GAMENAME "floodfill.jd"
+#define GAME tmp + GAMENAME
+#define BASEDATA tmp + "base.jd"
+
+#if !FileExists(GAME)
 #   error Run ..\buildInstaller.bat to create the installer.
 #endif
 
@@ -23,7 +28,7 @@ VersionInfoCompany        = "Christian Neumüller"
 VersionInfoDescription    = "{#APPN} Installer"
 VersionInfoTextVersion    = "{#VERSION}"
 VersionInfoProductName    = "{#APPN}"
-VersionInfoProductVersion ="{#VERSION}"
+VersionInfoProductVersion = "{#VERSION}"
 VersionInfoCopyright      = "© Christian Neumüller 2012"
 
 [Tasks]
@@ -39,13 +44,20 @@ Source: "{#EXECUTABLE}"; DestDir: "{app}"
 Source: "{#SFMLDIR}\libsndfile-1.dll"; DestDir: "{app}"
 Source: "{#SFMLDIR}\openal32.dll"; DestDir: "{app}"
 Source: "{#VCREDISTDIR}\msvc*.dll"; DestDir: "{app}"
+Source: "floodfill.ico"; DestDir: "{app}"
+Source: "{#GAME}"; DestDir: "{app}"
+Source: "{#BASEDATA}"; DestDir: "{app}"
 
+
+#define PARAMS 'Parameters: """{app}\' + GAMENAME + '"""'
 [Run]
-Filename: "{app}\{#APPN}.exe";   Flags: postinstall runasoriginaluser; \
-  Description: "FloodFill starten"
-
+Filename: "{app}\jd.exe";   Flags: postinstall runasoriginaluser; \
+  Description: "FloodFill starten"; {#PARAMS}
+  
+#define ICONSETTINGS 'Filename: "{app}\jd.exe"; WorkingDir: "{app}";' + \
+                     'IconFilename: "{app}\floodfill.ico"; ' + PARAMS
+                      
 [Icons]
-Name: "{group}\{#APPN}"; Filename: "{app}\{#APPN}.exe"; WorkingDir: "{app}"
-Name: "{commondesktop}\{#APPN}"; Filename: "{app}\{#APPN}.exe"; \
-  WorkingDir: "{app}"; Tasks: desktopicon
+Name: "{group}\{#APPN}"; {#ICONSETTINGS}
+Name: "{commondesktop}\{#APPN}"; {#ICONSETTINGS}; Tasks: desktopicon
 Name: "{group}\{#APPN} entfernen"; Filename: "{uninstallexe}"
