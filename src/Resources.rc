@@ -1,0 +1,27 @@
+#define APPN "FloodFill"
+#define VERSION_ 0,9,0,0
+#define VERSION_STR "Beta 0.9"
+
+1 VERSIONINFO
+ FILEVERSION VERSION_
+ PRODUCTVERSION VERSION_
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000704b0"
+        BEGIN
+            VALUE "CompanyName", "Christian Neumüller"
+            VALUE "FileDescription", APPN
+            VALUE "FileVersion", VERSION_STR
+            VALUE "InternalName", APPN
+            VALUE "LegalCopyright", "Copyright © 2011"
+            VALUE "OriginalFilename", APPN ".exe"
+            VALUE "ProductName", "DalliKlick"
+            VALUE "ProductVersion", VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x7, 1200
+    END
+END

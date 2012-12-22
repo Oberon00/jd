@@ -134,12 +134,13 @@ set(JD_SOURCES
     RectCollideableGroup.cpp
     base64.cpp
     sfUtil.cpp
+    Resources.rc
     ${SVC_SOURCES}
     ${COMPSYS_SOURCES}
     ${COMP_SOURCES}
     ${LUAEXPORT_SOURCES})
 
-set(COMP_DEFS "")
+set(COMP_DEFS "SFML_STATIC")
 
 if (MSVC)
     add_definitions(
@@ -155,7 +156,7 @@ if (MSVC)
     list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
-find_package(SFML REQUIRED system graphics window audio main)
+find_package(SFML REQUIRED system-s graphics-s window-s audio-s main)
 find_package(PhysFs REQUIRED)
 find_package(zlib REQUIRED)
 include_directories(
