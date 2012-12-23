@@ -9,6 +9,7 @@
 #define GAMENAME "floodfill.jd"
 #define GAME tmp + GAMENAME
 #define BASEDATA tmp + "base.jd"
+#define DOCDIR "..\doc"
 
 #if !FileExists(GAME)
 #   error Run ..\buildInstaller.bat to create the installer.
@@ -47,17 +48,24 @@ Source: "{#VCREDISTDIR}\msvc*.dll"; DestDir: "{app}"
 Source: "floodfill.ico"; DestDir: "{app}"
 Source: "{#GAME}"; DestDir: "{app}"
 Source: "{#BASEDATA}"; DestDir: "{app}"
+Source: "{#DOCDIR}\usermanual.pdf"; DestDir: "{app}"
 
 
 #define PARAMS 'Parameters: """{app}\' + GAMENAME + '"""'
 [Run]
-Filename: "{app}\jd.exe";   Flags: postinstall runasoriginaluser; \
-  Description: "FloodFill starten"; {#PARAMS}
-  
-#define ICONSETTINGS 'Filename: "{app}\jd.exe"; WorkingDir: "{app}";' + \
+Filename: "{app}\jd.exe"; \
+    Flags: nowait postinstall runasoriginaluser skipifsilent; \
+    Description: "FloodFill starten"
+    
+Filename: "{app}\usermanual.pdf"; \
+    Flags: postinstall shellexec runasoriginaluser skipifsilent; \
+    Description: "Benutzerhandbuch lesen"
+
+#define ICONSETTINGS 'Filename: "{app}\jd.exe"; WorkingDir: "{app}";' +  \
                      'IconFilename: "{app}\floodfill.ico"; ' + PARAMS
-                      
+
 [Icons]
 Name: "{group}\{#APPN}"; {#ICONSETTINGS}
 Name: "{commondesktop}\{#APPN}"; {#ICONSETTINGS}; Tasks: desktopicon
+Name: "{group}\{#APPN} Benutzerhandbuch"; Filename: "{app}\usermanual.pdf"
 Name: "{group}\{#APPN} entfernen"; Filename: "{uninstallexe}"
