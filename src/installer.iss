@@ -55,7 +55,7 @@ Source: "{#DOCDIR}\usermanual.pdf"; DestDir: "{app}"
 [Run]
 Filename: "{app}\jd.exe"; \
     Flags: nowait postinstall runasoriginaluser skipifsilent; \
-    Description: "FloodFill starten"
+    Description: "FloodFill starten"; {#PARAMS}
     
 Filename: "{app}\usermanual.pdf"; \
     Flags: postinstall shellexec runasoriginaluser skipifsilent; \
