@@ -165,7 +165,6 @@ include_directories(
     ${LUA_INCLUDE_DIR}
     ${LUABIND_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_DIR}
-    ${SSIG_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR})
 add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
