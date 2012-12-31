@@ -23,6 +23,11 @@ AppVersion          = "{#VERSION}"
 DefaultDirName      = "{pf}\{#APPN}"
 DefaultGroupName    = "{#APPN}"
 AppPublisher        = "Christian Neumüller"
+AppReadmeFile       = "{app}\usermanual.pdf"
+; Needs at least Windows Vista
+MinVersion          = 6.0 
+UninstallDisplayIcon= "{app}\{#APPN}.ico"
+AppCopyright        = "© Christian Neumüller 2012"
 
 VersionInfoVersion        = "{#VERSION}"
 VersionInfoCompany        = "Christian Neumüller"
@@ -30,7 +35,6 @@ VersionInfoDescription    = "{#APPN} Installer"
 VersionInfoTextVersion    = "{#VERSION}"
 VersionInfoProductName    = "{#APPN}"
 VersionInfoProductVersion = "{#VERSION}"
-VersionInfoCopyright      = "© Christian Neumüller 2012"
 
 [Tasks]
 Name: desktopicon; Description: "Desktopverknüpfung erstellen"; \
