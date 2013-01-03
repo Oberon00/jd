@@ -4,3 +4,20 @@ JadeEngine
 **JadeEngine** (or '**jd**' for short) is a game Engine written in *C++* for
 *Lua* with *SFML* for graphics and audio (not implemented yet), *PhysFS* as
 virtual file system and a custom *TMX-Loader* (Tiled Map Editor's format).
+
+For the libraries needed to build, see section 3
+"Verwendete Programmiersprachen, Bibliotheken und Tools" in FloodFill.pdf. The
+project will most likely only build on MSVC11 out of the box.
+
+Note that jd uses a patched version of luabind and lua (for the latter see
+http://www.lua.org/bugs.html, especially the GC bug
+http://www.lua.org/bugs.html#5.2.1-3).
+Patches to luabind:
+ * unset metatable of destroyed objects
+ * fix weak_ref
+   (http://lua.2524044.n2.nabble.com/weak-ref-issue-patch-td7581558.html)
+
+I know that the information provided makes it quite difficult to build the
+project. That's because I don't really believe that someone other than me wants
+to do that anytime soon. If you intend to do that, please contact me so that I
+can give more information or even prebuilt dependencies.
