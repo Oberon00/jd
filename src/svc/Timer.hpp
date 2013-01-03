@@ -2,12 +2,15 @@
 #define TIMER_HPP_INCLUDED TIMER_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
-#include <string>
-#include <boost/function.hpp>
-#include <SFML/System/Time.hpp>
-#include <SFML/System/Clock.hpp>
-#include <list>
 #include "ssig.hpp"
+
+#include <boost/function.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
+
+#include <list>
+#include <string>
+
 
 class Timer: public Component {
     JD_COMPONENT

@@ -2,8 +2,10 @@
 #define META_COMPONENT_HPP_INCLUDED META_COMPONENT_HPP_INCLUDED
 
 #include <boost/noncopyable.hpp>
+
 #include <cassert>
 #include <string>
+
 
 struct lua_State;
 class ConnectionBase;

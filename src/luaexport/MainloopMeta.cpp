@@ -1,10 +1,12 @@
 #define MAINLOOP_KEEP_CALLBACKS
 #include "svc/Mainloop.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
 #include "LuaEventHelpers.hpp"
 
 static char const libname[] = "Mainloop";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_EVT_COMPONENT_IMPL(Mainloop)
 

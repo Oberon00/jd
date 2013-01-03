@@ -1,17 +1,18 @@
-#include "svc/ServiceLocator.hpp"
+#include "Collisions.hpp"
+#include "compsys/Component.hpp"
 #include "compsys/ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
-#include "svc/StateManager.hpp"
-#include "compsys/Component.hpp"
-#include "svc/Mainloop.hpp"
-#include "svc/EventDispatcher.hpp"
 #include "svc/DrawService.hpp"
-#include "svc/Timer.hpp"
+#include "svc/EventDispatcher.hpp"
+#include "svc/Mainloop.hpp"
+#include "svc/ServiceLocator.hpp"
 #include "svc/SoundManager.hpp"
-#include "Collisions.hpp"
+#include "svc/StateManager.hpp"
+#include "svc/Timer.hpp"
 
 static char const libname[] = "ServiceLocator";
 #include "ExportThis.hpp"
+
 
 static luabind::object getService(lua_State* L, std::string const& name)
 {

@@ -1,11 +1,13 @@
 #include "svc/EventDispatcher.hpp"
-#include "svc/ServiceLocator.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
-#include "LuaEventHelpers.hpp"
 #include "Geometry.hpp"
+#include "LuaEventHelpers.hpp"
+#include "svc/ServiceLocator.hpp"
 
 static char const libname[] = "EventDispatcher";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_EVT_COMPONENT_IMPL(EventDispatcher)
 

@@ -1,9 +1,11 @@
+#include "luaexport/Geometry.hpp"
+
+#include <luabind/operator.hpp>
 #include <SFML/System.hpp>
 
 static char const libname[] = "SfSystem";
 #include "ExportThis.hpp"
-#include "luaexport/Geometry.hpp"
-#include <luabind/operator.hpp>
+
 
 static const lua_Number microsecondsPerSec = 1000000.0;
 

@@ -2,9 +2,10 @@
 #define CONTAINER_HPP_INCLUDED CONTAINER_HPP_INCLUDED
 
 #include <luabind/class.hpp>
-#include <luabind/object.hpp>
-#include <luabind/iterator_policy.hpp>
 #include <luabind/dependency_policy.hpp>
+#include <luabind/iterator_policy.hpp>
+#include <luabind/object.hpp>
+
 #include <stdexcept>
 #include <type_traits>
 

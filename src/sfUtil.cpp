@@ -1,6 +1,8 @@
 #include "sfUtil.hpp"
-#include <SFML/Window/Keyboard.hpp>
+
 #include <boost/lexical_cast.hpp>
+#include <SFML/Window/Keyboard.hpp>
+
 
 namespace jd {
 

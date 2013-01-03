@@ -1,12 +1,14 @@
 #ifndef TRANSFORM_GROUP_HPP_INCLUDED
 #define TRANSFORM_GROUP_HPP_INCLUDED TRANSFORM_GROUP_HPP_INCLUDED
 
-#include <SFML/Graphics/Transformable.hpp>
-#include <SFML/Graphics/Drawable.hpp>
-#include <boost/noncopyable.hpp>
-#include <list>
-#include "WeakRef.hpp"
 #include "exceptions.hpp"
+#include "WeakRef.hpp"
+
+#include <boost/noncopyable.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+
+#include <list>
 
 #ifdef _MSC_VER
 #   pragma warning(push)

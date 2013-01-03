@@ -1,8 +1,10 @@
 #include "svc/DrawService.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
 
 static char const libname[] = "DrawService";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_COMPONENT_IMPL(DrawService)
 

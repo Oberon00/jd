@@ -2,10 +2,13 @@
 #define TILE_COLLISION_COMPONENT_HPP_INCLUDED TILE_COLLISION_COMPONENT_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
+
+#include "ssig.hpp"
+#include "WeakRef.hpp"
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector3.hpp>
-#include <WeakRef.hpp>
-#include <ssig.hpp>
+
 
 class TileCollideableInfo;
 

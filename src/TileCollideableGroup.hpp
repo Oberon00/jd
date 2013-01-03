@@ -2,9 +2,11 @@
 #define TILE_COLLIDEABLE_GROUP_HPP_INCLUDED TILE_COLLIDEABLE_GROUP_HPP_INCLUDED
 
 #include "Collisions.hpp"
-#include "WeakRef.hpp"
-#include <unordered_map>
 #include "sfUtil.hpp" // std::hash<sf::Vector2<T>>
+#include "WeakRef.hpp"
+
+#include <unordered_map>
+
 
 class TileCollisionComponent;
 

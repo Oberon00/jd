@@ -1,13 +1,15 @@
 #include "svc/ServiceLocator.hpp"
-#include "svc/StateManager.hpp"
-#include "compsys/MetaComponent.hpp"
+
 #include "compsys/Component.hpp"
+#include "compsys/MetaComponent.hpp"
+#include "svc/DrawService.hpp"
+#include "svc/EventDispatcher.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/Mainloop.hpp"
-#include "svc/EventDispatcher.hpp"
-#include "svc/DrawService.hpp"
-#include "svc/Timer.hpp"
 #include "svc/SoundManager.hpp"
+#include "svc/StateManager.hpp"
+#include "svc/Timer.hpp"
+
 
 /* static */ std::unordered_map<MetaComponent const*, Service*> ServiceLocator::registry;
 

@@ -1,10 +1,13 @@
 #ifndef ENTITY_HPP_INCLUDED
 #define ENTITY_HPP_INCLUDED ENTITY_HPP_INCLUDED
 
-#include <boost/ptr_container/ptr_vector.hpp>
-#include <boost/noncopyable.hpp>
 #include "WeakRef.hpp"
+
+#include <boost/noncopyable.hpp>
+#include <boost/ptr_container/ptr_vector.hpp>
+
 #include <string>
+
 
 class Component;
 class MetaComponent;

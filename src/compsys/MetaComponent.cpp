@@ -1,21 +1,25 @@
 #include "compsys/MetaComponent.hpp"
-#include "compsys/Component.hpp"
+
 #include "ComponentRegistry.hpp"
-#include <unordered_map>
+#include "compsys/Component.hpp"
+#include "Entity.hpp"
+#include "Logfile.hpp"
 #include "LuaUtils.hpp"
+#include "ssig.hpp"
 #include "svc/ServiceLocator.hpp"
 #include "svc/LuaVm.hpp"
-#include "Logfile.hpp"
+
 #include <boost/format.hpp>
+#include <luabind/adopt_policy.hpp>
+#include <luabind/class_info.hpp>
+#include <luabind/operator.hpp>
+#include <luabind/raw_policy.hpp>
+
+#include <unordered_map>
 
 static char const libname[] = "ComponentSystem";
 #include "luaexport/ExportThis.hpp"
-#include <luabind/class_info.hpp>
-#include <luabind/raw_policy.hpp>
-#include <luabind/adopt_policy.hpp>
-#include <luabind/operator.hpp>
-#include <ssig.hpp>
-#include "Entity.hpp"
+
 
 namespace {
 

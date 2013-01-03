@@ -1,5 +1,7 @@
 #include "TransformGroup.hpp"
+
 #include <SFML/Graphics/RenderTarget.hpp>
+
 
 TransformGroup::TransformGroup()
 {

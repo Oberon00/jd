@@ -3,8 +3,10 @@
 
 #include "Collisions.hpp"
 #include "WeakRef.hpp"
-#include <list>
+
 #include <forward_list>
+#include <list>
+
 
 class PositionComponent;
 

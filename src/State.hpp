@@ -3,6 +3,7 @@
 
 #include <boost/noncopyable.hpp>
 
+
 /* abstract */ class State: private boost::noncopyable {
 public:
     virtual ~State() { }

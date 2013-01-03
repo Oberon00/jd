@@ -1,9 +1,11 @@
 #ifndef RESOURCE_LOADERS_HPP_INCLUDED
 #define RESOURCE_LOADERS_HPP_INCLUDED RESOURCE_LOADERS_HPP_INCLUDED
 
+#include "svc/FileSystem.hpp"
+
 #include <array>
 #include <string>
-#include "svc/FileSystem.hpp"
+
 
 template <typename ResT>
 struct ResLoadTraits;

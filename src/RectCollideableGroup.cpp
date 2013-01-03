@@ -1,8 +1,10 @@
 #include "RectCollideableGroup.hpp"
+
 #include "comp/PositionComponent.hpp"
 #include "comp/RectCollisionComponent.hpp"
 #include "compsys/Entity.hpp"
 #include "sfUtil.hpp"
+
 
 void RectCollideableGroup::add(PositionComponent& c)
 {

@@ -5,6 +5,7 @@
 
 #include <stdexcept>
 
+
 namespace jd {
 
 /// \brief Base-class for various jd-exceptions

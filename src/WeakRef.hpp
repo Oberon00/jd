@@ -2,9 +2,11 @@
 #define WEAK_REF_HPP_INCLUDED WEAK_REF_HPP_INCLUDED
 
 #include <boost/noncopyable.hpp>
+
 #include <cassert>
 #include <stdexcept>
 #include <type_traits>
+
 
 class InvalidWeakReferenceError: public std::logic_error
 {

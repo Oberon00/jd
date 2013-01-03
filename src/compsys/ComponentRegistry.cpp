@@ -1,14 +1,17 @@
 #include "ComponentRegistry.hpp"
+
 #include "compsys/MetaComponent.hpp"
-#include <cassert>
 
 extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
+#   include <lauxlib.h>
+#   include <lua.h>
 }
+
+#include <cassert>
 
 static char const* libname = "ComponentRegistry";
 #include "luaexport/ExportThis.hpp"
+
 
 void ComponentRegistry::registerComponent(MetaComponent const* meta)
 {

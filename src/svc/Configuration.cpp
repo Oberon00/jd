@@ -1,14 +1,16 @@
 #include "Configuration.hpp"
+
 #include "compsys/MetaComponent.hpp"
-#include "svc/ServiceLocator.hpp"
 #include "Logfile.hpp"
+extern "C" {
+#   include "lua.h"
+}
+#include "LuaUtils.hpp"
+#include "svc/ServiceLocator.hpp"
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <LuaUtils.hpp>
 
-extern "C" {
-#include "lua.h"
-}
 
 namespace {
 

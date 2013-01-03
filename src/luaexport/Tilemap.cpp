@@ -1,12 +1,13 @@
+#include "container.hpp"
+#include "Geometry.hpp"
+#include "MapInfo.hpp"
+#include "sharedPtrConverter.hpp"
 #include "Tilemap.hpp"
 #include "TransformGroup.hpp" // GroupedDrawable
-#include "sharedPtrConverter.hpp"
-#include "container.hpp"
-#include "MapInfo.hpp"
 
 static char const libname[] = "Tilemap";
 #include "ExportThis.hpp"
-#include "Geometry.hpp"
+
 
 static unsigned Tilemap_get(jd::Tilemap const& map, sf::Vector3i p)
 {

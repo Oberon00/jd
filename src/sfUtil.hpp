@@ -2,12 +2,13 @@
 #define SFUTIL_HPP_INCLUDED SFUTIL_HPP_INCLUDED
 
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/View.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
-#include <SFML/Graphics/View.hpp>
 
 #include <functional> // std::hash
 #include <string>
+
 
 namespace jd {
 

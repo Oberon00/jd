@@ -1,8 +1,10 @@
 #include "EventDispatcher.hpp"
+
 #include "Logfile.hpp"
-#include <SFML/Window/Window.hpp>
-#include <SFML/Window/Event.hpp>
+
 #include <boost/lexical_cast.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Window.hpp>
 
 
 EventDispatcher::EventDispatcher(sf::Window& eventSource):

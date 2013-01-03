@@ -1,12 +1,15 @@
 #include "resourceLoaders.hpp"
-#include "ResourceManager.hpp"
+
 #include "exceptions.hpp"
+#include "ResourceManager.hpp"
+#include "VFileFont.hpp"
+
 #include <physfs.h>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include "VFileFont.hpp"
-#include <SFML/Audio/SoundBuffer.hpp>
+
 
 std::string const findResource(
     std::string const& name,

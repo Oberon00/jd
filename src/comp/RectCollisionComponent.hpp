@@ -2,10 +2,14 @@
 #define RECTCOLLISIONCOMPONENT_HPP_INCLUDED RECTCOLLISIONCOMPONENT_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
+
 #include "compsys/Entity.hpp"
-#include <string>
+#include "ssig.hpp"
+
 #include <SFML/Graphics/Rect.hpp>
-#include <ssig.hpp>
+
+#include <string>
+
 
 class RectCollisionComponent: public Component {
     JD_COMPONENT

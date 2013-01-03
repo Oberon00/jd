@@ -1,10 +1,12 @@
 #pragma once
 
+#include <boost/format/format_fwd.hpp>
+#include <boost/iostreams/filtering_stream.hpp>
+#include <SFML/System/Clock.hpp>
+
 #include <string>
 #include <fstream>
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/format/format_fwd.hpp>
-#include <SFML/System/Clock.hpp>
+
 
 namespace loglevel { enum T { debug, info, warning, error, fatal,  max  }; }
 namespace logstyle { enum T { html, plain, like_extension,  max }; }

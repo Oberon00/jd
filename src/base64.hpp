@@ -1,10 +1,10 @@
 #ifndef BASE64_HPP_INCLUDED
 #define BASE64_HPP_INCLUDED BASE64_HPP_INCLUDED
 
-#include <vector>
-#include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <vector>
+
 
 namespace base64 {
     class Error: public std::runtime_error {

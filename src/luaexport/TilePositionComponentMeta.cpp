@@ -1,10 +1,12 @@
 #include "comp/TilePositionComponent.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
-#include "LuaEventHelpers.hpp"
 #include "Geometry.hpp"
+#include "LuaEventHelpers.hpp"
 
 static char const libname[] = "TilePositionComponent";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_EVT_COMPONENT_IMPL(TilePositionComponent)
 

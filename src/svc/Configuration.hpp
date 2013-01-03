@@ -4,8 +4,11 @@
 #include "compsys/Component.hpp"
 #include "jdConfig.hpp"
 #include "LuaVm.hpp"
-#include <string>
+
 #include <luabind/object.hpp>
+
+#include <string>
+
 
 class Configuration: public Component {
     JD_COMPONENT

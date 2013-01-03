@@ -1,6 +1,9 @@
 #ifndef SHAREDPTR_CONVERTER_HPP_INCLUDED
 #define SHAREDPTR_CONVERTER_HPP_INCLUDED SHAREDPTR_CONVERTER_HPP_INCLUDED
 
+#include <memory>
+
+
 // Non standard conforming: add function to ::std::tr1
 namespace std {
 #if defined(_MSC_VER) && _MSC_VER < 1700

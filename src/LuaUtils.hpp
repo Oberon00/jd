@@ -1,9 +1,11 @@
 #ifndef LUA_UTILS_HPP_INCLUDED
 #define LUA_UTILS_HPP_INCLUDED LUA_UTILS_HPP_INCLUDED
 
+#include <luabind/error.hpp>
+
 #include <stdexcept>
 #include <string>
-#include <luabind/error.hpp>
+
 
 struct lua_State;
 class VFile;

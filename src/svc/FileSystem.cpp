@@ -1,9 +1,13 @@
 #include "FileSystem.hpp"
-#include <physfs.h>
-#include <array>
-#include <boost/filesystem/operations.hpp>
+
 #include "cmdline.hpp"
 #include "Logfile.hpp"
+
+#include <boost/filesystem/operations.hpp>
+#include <physfs.h>
+
+#include <array>
+
 
 FileSystem::Error::Error(std::string const& msg, bool getLastError):
     std::runtime_error(msg + (

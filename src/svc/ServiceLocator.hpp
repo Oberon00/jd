@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <unordered_map>
 
+
 class StateManager;
 class LuaVm;
 class Mainloop;

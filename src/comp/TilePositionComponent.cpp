@@ -1,9 +1,12 @@
 #include "TilePositionComponent.hpp"
-#include "PositionComponent.hpp"
+
 #include "compsys/Entity.hpp"
+#include "PositionComponent.hpp"
 #include "sfUtil.hpp"
 #include "Tilemap.hpp"
+
 #include <boost/bind.hpp>
+
 
 TilePositionComponent::TilePositionComponent(jd::Tilemap const& tilemap, unsigned layer):
     m_tilePosition(0, 0, layer),

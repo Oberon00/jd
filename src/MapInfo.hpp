@@ -2,11 +2,13 @@
 #define MAP_INFO_HPP_INCLUDED MAP_INFO_HPP_INCLUDED
 
 #include "Tilemap.hpp"
-#include <vector>
-#include <string>
+
 #include <SFML/System/Vector2.hpp>
+
+#include <string>
 #include <unordered_map>
 #include <vector>
+
 
 typedef std::unordered_map<std::string, std::string> PropertyMap;
 

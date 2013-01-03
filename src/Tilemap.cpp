@@ -1,11 +1,14 @@
 #include "Tilemap.hpp"
 
 #include "sfUtil.hpp"
+
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+
 #include <cassert>
 #include <iomanip>
 #include <iostream>
+
 
 namespace jd {
 

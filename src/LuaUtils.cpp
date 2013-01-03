@@ -1,8 +1,12 @@
 #include "LuaUtils.hpp"
-#include <luabind/lua_include.hpp>
-#include <boost/lexical_cast.hpp>
+
 #include "svc/FileSystem.hpp"
+
+#include <boost/lexical_cast.hpp>
+#include <luabind/lua_include.hpp>
+
 #include <array>
+
 
 namespace {
 static int doDumpVar(lua_State* L)

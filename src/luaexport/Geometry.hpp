@@ -6,6 +6,7 @@
 #include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/Rect.hpp>
 
+
 typedef sf::Vector2<lua_Number>   LuaVec2;
 typedef sf::Vector3<lua_Number>   LuaVec3;
 typedef sf::Rect<lua_Number> LuaRect;

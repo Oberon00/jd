@@ -1,7 +1,8 @@
 #include "cmdline.hpp"
-#include <boost/lexical_cast.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+
+#include "Logfile.hpp"
+#include "LuaUtils.hpp"
+#include "ResourceManager.hpp"
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/FileSystem.hpp"
@@ -13,14 +14,19 @@
 #include "svc/StateManager.hpp"
 #include "svc/Timer.hpp"
 #include "svc/SoundManager.hpp"
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
+
 #include <boost/bind.hpp>
-#include "Logfile.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <physfs.h>
 #include <SFML/Graphics/Image.hpp>
-#include "ResourceManager.hpp"
-#include "LuaUtils.hpp"
+#include <SFML/Graphics/RenderWindow.hpp>
+
+#if defined(BOOST_MSVC) && defined(_DEBUG) && defined(JD_HAS_VLD)
+#   include <vld.h>
+#endif
 
 #ifdef _WIN32
 #   define WIN32_LEAN_AND_MEAN
@@ -28,9 +34,6 @@
 #   include <Windows.h>
 #   endif
 
-#if defined(BOOST_MSVC) && defined(_DEBUG) && defined(JD_HAS_VLD)
-#   include <vld.h>
-#endif
 
 namespace {
 

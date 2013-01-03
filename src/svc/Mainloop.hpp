@@ -4,8 +4,11 @@
 namespace sf { class RenderWindow; }
 
 #include "compsys/Component.hpp"
+#include "ssig.hpp"
+
 #include <cstdlib>
-#include <ssig.hpp>
+
+
 class MetaComponent;
 
 class Mainloop: public Component {

@@ -1,11 +1,14 @@
 #ifndef BASIC_META_COMPONENT_HPP_INCLUDED
 #define BASIC_META_COMPONENT_HPP_INCLUDED BASIC_META_COMPONENT_HPP_INCLUDED
 
-#include <string>
-#include "compsys/MetaComponent.hpp"
 #include "ComponentRegistry.hpp"
-#include <luabind/object.hpp>
+#include "compsys/MetaComponent.hpp"
+
 #include <luabind/back_reference.hpp> // for WeakRef (linking errors)
+#include <luabind/object.hpp>
+
+#include <string>
+
 
 template <typename T>
 class BasicSingletonMetaComponent: public MetaComponent {

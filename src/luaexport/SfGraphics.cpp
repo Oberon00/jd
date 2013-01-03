@@ -1,18 +1,20 @@
-#include <SFML/Graphics.hpp>
-#include "ResourceManager.hpp"
-#include "Geometry.hpp"
-#include "AutoTexture.hpp"
 #include "AutoFont.hpp"
-#include "TransformGroup.hpp"
+#include "AutoTexture.hpp"
+#include "Geometry.hpp"
+#include "ResourceManager.hpp"
+#include "sharedPtrConverter.hpp"
 #include "sfUtil.hpp"
+#include "TransformGroup.hpp"
 #include "VFileFont.hpp"
+
+#include <luabind/copy_policy.hpp>
+#include <luabind/operator.hpp>
+#include <SFML/Graphics.hpp>
+
+#include <ostream>
 
 static char const libname[] = "SfGraphics";
 #include "ExportThis.hpp"
-#include "sharedPtrConverter.hpp"
-#include <luabind/operator.hpp>
-#include <luabind/copy_policy.hpp>
-#include <ostream>
 
 // sf::String <-> Lua converter (see luabind/detail/policy.hpp:741)
 namespace luabind {

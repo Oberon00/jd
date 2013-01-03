@@ -1,8 +1,10 @@
 #include "svc/SoundManager.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
 
 static char const libname[] = "SoundManager";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_COMPONENT_IMPL(SoundManager)
 

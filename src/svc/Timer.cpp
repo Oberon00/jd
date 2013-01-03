@@ -1,5 +1,7 @@
 #include "Timer.hpp"
+
 #include "Logfile.hpp"
+
 
 Timer::Timer():
     m_frameTime(sf::seconds(1/60.f)),

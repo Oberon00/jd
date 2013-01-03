@@ -1,8 +1,10 @@
 #include "base64.hpp"
+
 #include <array>
-#include <cstdint>
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
+
 
 namespace {
 static base64::byte charToByte(base64::byte c)

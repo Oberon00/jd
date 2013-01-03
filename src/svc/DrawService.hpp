@@ -1,12 +1,15 @@
 #ifndef DRAW_SERVICE_HPP_INCLUDED
 #define DRAW_SERVICE_HPP_INCLUDED DRAW_SERVICE_HPP_INCLUDED
 
+#include "compsys/Component.hpp"
+#include "TransformGroup.hpp"
+
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/View.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include "TransformGroup.hpp"
-#include "compsys/Component.hpp"
+
 #include <vector>
+
 
 namespace sf { class RenderWindow; class RenderTarget; }
 

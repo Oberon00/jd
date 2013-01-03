@@ -2,11 +2,14 @@
 #define FILESYSTEM_HPP_INCLUDED FILESYSTEM_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
-#include <string>
-#include <SFML/System/InputStream.hpp>
+
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/positioning.hpp>
+#include <SFML/System/InputStream.hpp>
+
 #include <iosfwd>
+#include <string>
+
 
 struct PHYSFS_File;
 

@@ -1,22 +1,26 @@
 #include "MapInfo.hpp"
+
+#include "base64.hpp"
+#include "Logfile.hpp"
+#include "ResourceManager.hpp"
 #include "svc/FileSystem.hpp"
+
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/format.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/iostreams/stream.hpp>
 #include <boost/range/algorithm/count_if.hpp>
-#include <sstream>
-#include <ResourceManager.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include "Logfile.hpp"
-#include <boost/format.hpp>
-#include "base64.hpp"
-#include <zlib.h>
 #include <boost/range/iterator_range.hpp>
 #include <boost/range/algorithm/transform.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include <SFML/Graphics/Image.hpp>
+#include <zlib.h>
+
+#include <sstream>
+
 
 namespace io = boost::iostreams;
 namespace pt = boost::property_tree;

@@ -1,5 +1,7 @@
 #include "DrawService.hpp"
+
 #include <SFML/Graphics/RenderWindow.hpp>
+
 
 DrawService::Layer::Layer(Layer&& rhs):
     group(std::move(rhs.group)),

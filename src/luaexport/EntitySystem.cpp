@@ -1,16 +1,18 @@
-#include "compsys/Entity.hpp"
 #include "compsys/Component.hpp"
-#include <luabind/adopt_policy.hpp>
 #include "compsys/ComponentRegistry.hpp"
+#include "compsys/Entity.hpp"
 #include "compsys/MetaComponent.hpp"
-#include "LuaUtils.hpp"
 #include "container.hpp"
+#include "LuaUtils.hpp"
+
+#include <luabind/adopt_policy.hpp>
+#include <luabind/dependency_policy.hpp>
+#include <luabind/iterator_policy.hpp>
+#include <luabind/operator.hpp>
 
 char const libname[] = "EntitySystem";
 #include "ExportThis.hpp"
-#include <luabind/operator.hpp>
-#include <luabind/dependency_policy.hpp>
-#include <luabind/iterator_policy.hpp>
+
 
 static std::vector<luabind::object> getComponents(Entity& this_, lua_State* L)
 {

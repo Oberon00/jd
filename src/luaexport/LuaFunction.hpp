@@ -3,13 +3,13 @@
 #ifndef LUA_FUNCTION_HPP_INCLUDED
 #define LUA_FUNCTION_HPP_INCLUDED LUA_FUNCTION_HPP_INCLUDED
 
-#include <luabind/object.hpp>
-#include <luabind/function.hpp>
-
 #include <boost/preprocessor/enum.hpp>
-#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing.hpp>
+#include <boost/preprocessor/repetition/enum_trailing_params.hpp>
+#include <luabind/function.hpp>
+#include <luabind/object.hpp>
+
 
 #ifndef LUA_FUNCTION_MAX_ARGS
 #   define LUA_FUNCTION_MAX_ARGS 5

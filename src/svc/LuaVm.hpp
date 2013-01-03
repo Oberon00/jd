@@ -2,11 +2,14 @@
 #define LUA_VM_HPP_INCLUDED LUA_VM_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
+
 #include <boost/function.hpp>
-#include <string>
-#include <stdexcept>
 #include <luabind/error.hpp>
+
+#include <stdexcept>
+#include <string>
 #include <unordered_map>
+
 
 class MetaComponent;
 struct lua_State;

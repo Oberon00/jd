@@ -1,14 +1,14 @@
-#include <SFML/Window.hpp>
-#include "sfUtil.hpp"
-
-#include "LuaUtils.hpp"
 #include "Geometry.hpp"
+#include "sfUtil.hpp"
+#include "LuaUtils.hpp"
+
+#include <luabind/iterator_policy.hpp>
+#include <luabind/operator.hpp>
+#include <SFML/Window.hpp>
 
 char const libname[] = "SfWindow";
 #include "ExportThis.hpp"
 
-#include <luabind/iterator_policy.hpp>
-#include <luabind/operator.hpp>
 
 static sf::VideoMode getFullscreenMode(std::size_t i)
 {

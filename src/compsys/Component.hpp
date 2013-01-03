@@ -1,9 +1,12 @@
 #ifndef COMPONENT_HPP_INCLUDED
 #define COMPONENT_HPP_INCLUDED COMPONENT_HPP_INCLUDED
 
-#include <boost/noncopyable.hpp>
-#include <cassert>
 #include "WeakRef.hpp"
+
+#include <boost/noncopyable.hpp>
+
+#include <cassert>
+
 
 class MetaComponent;
 class Entity;

@@ -1,6 +1,8 @@
+#include "LuaUtils.hpp"
+
 static char const libname[] = "LuaExtra";
 #include "ExportThis.hpp"
-#include "LuaUtils.hpp"
+
 
 static int debugId(lua_State* L)
 {

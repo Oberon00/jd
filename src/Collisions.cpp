@@ -1,6 +1,9 @@
 #include "Collisions.hpp"
-#include <algorithm>
+
 #include "Logfile.hpp"
+
+#include <algorithm>
+
 
 void CollideableGroupGroup::add(CollideableGroup& g)
 {

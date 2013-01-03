@@ -1,7 +1,8 @@
 #ifndef LUA_EXPORT_MACROS_HPP_INCLUDED
 #define LUA_EXPORT_MACROS_HPP_INCLUDED LUA_EXPORT_MACROS_HPP_INCLUDED
 
-#include <boost/config.hpp>
+#include <boost/config.hpp> // BOOST_STRINGIZE
+
 
 #define LHMODULE  using namespace luabind; module(L, ::jd::moduleName)
 #define LHARGS(x) BOOST_STRINGIZE(x), &x

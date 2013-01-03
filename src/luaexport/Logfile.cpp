@@ -1,6 +1,8 @@
 #include "Logfile.hpp"
+
 char const libname[] = "Logfile";
 #include "ExportThis.hpp"
+
 
 static void writelog(lua_State* L, std::string const& msg, loglevel::T lv)
 {

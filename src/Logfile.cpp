@@ -1,12 +1,15 @@
 #include "Logfile.hpp"
-#include <boost/iostreams/filter/line.hpp>
-#include <iomanip>
-#include <array>
-#include <SFML/System/Err.hpp>
-#include <boost/iostreams/device/file.hpp>
-#include <sstream>
-#include <boost/format.hpp>
+
 #include <boost/exception/diagnostic_information.hpp>
+#include <boost/format.hpp>
+#include <boost/iostreams/device/file.hpp>
+#include <boost/iostreams/filter/line.hpp>
+#include <SFML/System/Err.hpp>
+
+#include <array>
+#include <iomanip>
+#include <sstream>
+
 
 class Logfile::LineNotifier :public boost::iostreams::line_filter
 {

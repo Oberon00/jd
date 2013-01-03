@@ -1,17 +1,19 @@
 #ifndef TILEMAP_HPP_INCLUDED
 #define TILEMAP_HPP_INCLUDED TILEMAP_HPP_INCLUDED
 
+#include "resfwd.hpp"
+#include "sfUtil.hpp"
+
 #include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/System/Time.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
-#include <SFML/Graphics/Rect.hpp>
-#include <SFML/System/Time.hpp>
-#include "sfUtil.hpp"
-#include <vector>
+
 #include <unordered_map>
-#include "resfwd.hpp"
+#include <vector>
 
 namespace jd {
 

@@ -1,9 +1,10 @@
 #ifndef LUA_EVENT_HELPERS_HPP_INCLUDED
 #define LUA_EVENT_HELPERS_HPP_INCLUDED LUA_EVENT_HELPERS_HPP_INCLUDED
 
-#include <ssig.hpp>
-#include <boost/bind.hpp>
 #include "LuaFunction.hpp"
+#include "ssig.hpp"
+
+#include <boost/bind.hpp>
 
 
 #define LUA_EVENT_HELPERS_MAX_ARGS SSIG_MAX_ARGS

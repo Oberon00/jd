@@ -1,5 +1,7 @@
 #include "SoundManager.hpp"
+
 #include "ResourceManager.hpp"
+
 #include <boost/bind.hpp>
 
 

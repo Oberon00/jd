@@ -1,7 +1,9 @@
 #include "svc/StateManager.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
-#include "State.hpp" // State class must be defined to make binding compile
 #include "jdConfig.hpp"
+#include "State.hpp" // State class must be defined to make binding compile
+
 #include <luabind/class.hpp>
 #include <luabind/iterator_policy.hpp>
 

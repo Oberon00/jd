@@ -1,19 +1,22 @@
 #include "Collisions.hpp"
-#include "Geometry.hpp"
-#include "compsys/Entity.hpp"
-#include "TileCollideableGroup.hpp"
-#include "RectCollideableGroup.hpp"
+
 #include "comp/TileCollisionComponent.hpp"
+#include "compsys/Entity.hpp"
 #include "container.hpp"
-#include "svc/ServiceLocator.hpp"
-#include "Tilemap.hpp"
+#include "Geometry.hpp"
 #include "LuaFunction.hpp"
+#include "RectCollideableGroup.hpp"
 #include "sfUtil.hpp"
+#include "svc/ServiceLocator.hpp"
+#include "TileCollideableGroup.hpp"
+#include "Tilemap.hpp"
+
+#include <luabind/out_value_policy.hpp>
+
 #include <algorithm>
 
 static char const libname[] = "Collisions";
 #include "ExportThis.hpp"
-#include <luabind/out_value_policy.hpp>
 
 
 static luabind::object TileCollideableInfo_colliding(

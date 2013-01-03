@@ -1,10 +1,12 @@
 #include "TileCollisionComponent.hpp"
 
-#include "TileCollideableGroup.hpp"
 #include "compsys/Entity.hpp"
-#include "TilePositionComponent.hpp"
-#include <boost/bind.hpp>
+#include "TileCollideableGroup.hpp"
 #include "Tilemap.hpp"
+#include "TilePositionComponent.hpp"
+
+#include <boost/bind.hpp>
+
 
 TileCollisionComponent::TileCollisionComponent(TileCollideableInfo& tileinfo):
     m_tileinfo(&tileinfo)

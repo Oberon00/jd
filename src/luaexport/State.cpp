@@ -3,6 +3,7 @@
 static char const libname[] = "State";
 #include "ExportThis.hpp"
 
+
 namespace {
 
 #define STATE_METHODS(m) \

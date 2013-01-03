@@ -1,15 +1,18 @@
 #include "LuaVm.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
 #include "FileSystem.hpp"
-#include <array>
-#include <luabind/lua_include.hpp>
-extern "C" {
-#include <lualib.h>
-}
+#include "jdConfig.hpp"
+#include "Logfile.hpp"
 #include "LuaUtils.hpp"
 
-#include "Logfile.hpp"
-#include "jdConfig.hpp"
+#include <luabind/lua_include.hpp>
+extern "C" {
+#   include <lualib.h>
+}
+
+#include <array>
+
 
 static int pcallf(lua_State* L)
 {

@@ -1,13 +1,16 @@
 #ifndef SOUNDMANAGER_HPP_INCLUDED
 #define SOUNDMANAGER_HPP_INCLUDED SOUNDMANAGER_HPP_INCLUDED
 
-#include <memory>
-#include <boost/ptr_container/ptr_vector.hpp>
 #include "AutoResource.hpp"
 #include "AutoSoundBuffer.hpp"
-#include "VFileMusic.hpp"
 #include "compsys/Component.hpp"
+#include "VFileMusic.hpp"
+
+#include <boost/ptr_container/ptr_vector.hpp>
+
+#include <memory>
 #include <string>
+
 
 typedef AutoResource<sf::Sound, sf::SoundBuffer> AutoSound;
 

@@ -1,9 +1,11 @@
 #include "comp/RectCollisionComponent.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
 #include "LuaEventHelpers.hpp"
 
 static char const libname[] = "RectCollisionComponent";
 #include "ExportThis.hpp"
+
 
 JD_SINGLETON_EVT_COMPONENT_IMPL(RectCollisionComponent)
 

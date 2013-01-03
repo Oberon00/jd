@@ -1,11 +1,13 @@
 #include "PositionComponent.hpp"
-#include "compsys/Entity.hpp"
+
 #include "compsys/BasicMetaComponent.hpp"
-#include "luaexport/LuaEventHelpers.hpp"
+#include "compsys/Entity.hpp"
 #include "luaexport/Geometry.hpp"
+#include "luaexport/LuaEventHelpers.hpp"
 
 static char const libname[] = "PositionComponent";
 #include "luaexport/ExportThis.hpp"
+
 
 JD_BASIC_EVT_COMPONENT_IMPL(PositionComponent)
 

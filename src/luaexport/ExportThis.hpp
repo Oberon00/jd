@@ -4,10 +4,12 @@
 
 #define LUA_EXPORT_HELPERS_HPP_INCLUDED LUA_EXPORT_HELPERS_HPP_INCLUDED
 
-#include <luabind/luabind.hpp>
-#include "svc/LuaVm.hpp"
 #include "jdConfig.hpp"
 #include "LuaExportMacros.hpp"
+#include "svc/LuaVm.hpp"
+
+#include <luabind/luabind.hpp>
+
 
 #undef  LHMODULE
 #define LHMODULE using namespace luabind; module(vm.L(), ::jd::moduleName)

@@ -1,11 +1,14 @@
 #ifndef STATE_MANAGER_HPP_INCLUDED
 #define STATE_MANAGER_HPP_INCLUDED STATE_MANAGER_HPP_INCLUDED
 
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <boost/function.hpp>
 #include "compsys/Component.hpp"
+
+#include <boost/function.hpp>
+
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 
 class State;
 

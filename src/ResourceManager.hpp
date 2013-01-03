@@ -3,14 +3,15 @@
 
 /// \file ResourceManager.hpp Defines ResourceManager and the function-template loadResource()
 
+#include "exceptions.hpp"
 #include "Logfile.hpp"
+#include "resfwd.hpp"
 
-#include <unordered_map>
-#include <string>
 #include <boost/function.hpp>
 #include <boost/noncopyable.hpp>
-#include "resfwd.hpp"
-#include "exceptions.hpp"
+
+#include <string>
+#include <unordered_map>
 
 
 /// \brief Manages resources and ensures that they are loaded only once.

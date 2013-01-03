@@ -1,12 +1,15 @@
-static char const libname[] = "LuaPackage";
-#include "ExportThis.hpp"
-#include "svc/FileSystem.hpp"
 #include "Logfile.hpp"
 #include "LuaUtils.hpp"
+#include "svc/FileSystem.hpp"
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <physfs.h>
+
+static char const libname[] = "LuaPackage";
+#include "ExportThis.hpp"
+
 
 static std::string const searchPath(
     std::string name, std::string path,

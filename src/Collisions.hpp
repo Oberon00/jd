@@ -1,10 +1,13 @@
 #ifndef COLLISIONS_HPP_INCLUDED
 #define COLLISIONS_HPP_INCLUDED COLLISIONS_HPP_INCLUDED
 
-#include <vector>
-#include <SFML/Graphics/Rect.hpp>
-#include <string>
 #include "WeakRef.hpp"
+
+#include <SFML/Graphics/Rect.hpp>
+
+#include <string>
+#include <vector>
+
 
 class Entity;
 

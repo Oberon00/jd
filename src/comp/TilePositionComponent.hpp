@@ -2,10 +2,13 @@
 #define TILEPOSITION_HPP_INCLUDED TILEPOSITION_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
+
 #include "ssig.hpp"
-#include <string>
+
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <string>
+
 
 namespace jd { class Tilemap; }
 typedef sf::Vector3<unsigned> Vector3u;

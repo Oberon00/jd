@@ -3,6 +3,7 @@
 
 #include "resfwd.hpp"
 
+
 // Provide a function of the following form to use AutoResource<mediaT, resT>:
 // 
 // void updateAutoResourceMedia(mediaT& m, typename ResourceTraits<resT>::Ptr p)

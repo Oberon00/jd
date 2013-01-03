@@ -1,10 +1,14 @@
-static char const libname[] = "LuaIo";
-#include "ExportThis.hpp"
-#include "svc/FileSystem.hpp"
 #include "LuaUtils.hpp"
+#include "svc/FileSystem.hpp"
+
 #include <physfs.h>
 #include <zlib.h>
+
 #include <algorithm> // min
+
+static char const libname[] = "LuaIo";
+#include "ExportThis.hpp"
+
 
 static unsigned const maxserializationdepth = 100;
 
