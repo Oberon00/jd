@@ -159,13 +159,15 @@ endif()
 find_package(SFML REQUIRED system-s graphics-s window-s audio-s main)
 find_package(PhysFs REQUIRED)
 find_package(zlib REQUIRED)
+find_package(boost REQUIRED)
 include_directories(
     "${CMAKE_SOURCE_DIR}/src"
     ${SFML_INCLUDE_DIR}
     ${LUA_INCLUDE_DIR}
     ${LUABIND_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR})
+    ${ZLIB_INCLUDE_DIR}
+    ${BOOST_INCLUDE_DIR})
 add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd
