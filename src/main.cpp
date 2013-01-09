@@ -29,10 +29,12 @@
 #endif
 
 #ifdef _WIN32
+#   include <fcntl.h>
+#   include <io.h>
 #   define WIN32_LEAN_AND_MEAN
 #   define NOMINMAX
 #   include <Windows.h>
-#   endif
+#endif
 
 
 namespace {
@@ -89,6 +91,53 @@ static State* loadStateFromLua(std::string const& name)
     return s;
 }
 
+#ifdef _WIN32
+static int openOfsStdHandle(DWORD nStdHandle, int flags = _O_TEXT)
+{
+    HANDLE const handle = GetStdHandle(nStdHandle);
+    if (!handle || handle  == INVALID_HANDLE_VALUE)
+        return -1;
+    return _open_osfhandle(
+        reinterpret_cast<intptr_t>(handle),
+        flags);
+}
+
+static void redirectHandle(DWORD nStdHandle, FILE* stdfile, char const* name)
+{
+    int const handleFileNo = openOfsStdHandle(nStdHandle);
+    if (handleFileNo == -1)
+        LOG_W("Opening " + std::string(name) + " from Win32 STD_HANDLE failed.");
+    else if (_dup2(handleFileNo, _fileno(stdfile)) != 0)
+        LOG_W("Redirecting " + std::string(name) + " to Win32 STD_HANDLE failed.");
+}
+
+static bool attachToConsole()
+{
+    // ERROR_ACCESS_DENIED: Already owns console.
+    return AttachConsole(ATTACH_PARENT_PROCESS) != 0 || GetLastError() == ERROR_ACCESS_DENIED;
+}
+
+static void initializeStdStreams(std::string const& basepath)
+{
+    if (attachToConsole()) {
+        LOG_D("Attaching to console.");
+        redirectHandle(STD_OUTPUT_HANDLE, stdout, "stdout");
+        redirectHandle(STD_ERROR_HANDLE, stderr, "stderr");
+        redirectHandle(STD_INPUT_HANDLE, stdin, "stdin");
+    } else {
+        if (!std::freopen((basepath + "/stdout.txt").c_str(), "w", stdout))
+            LOG_W("Redirecting stdout to file failed.");
+        if (!std::freopen((basepath + "/stderr.txt").c_str(), "w", stderr))
+            LOG_W("Redirecting stderr to file failed.");
+    }
+}
+#else
+inline void initializeStdStreams(std::string const&)
+{
+    // Not needed: do nothing.
+}
+#endif
+
 } // anonymous namespace
 
 int argc() { return argc_; }
@@ -141,18 +190,12 @@ int main(int argc, char* argv[])
             LOG_W("This is the fallback name: no proper one was found.");
 
         LOG_D("Initialization...");
+        initializeStdStreams(basepath);
 
         // setup commandline functions //
         argc_ = argc;
         argv_ = argv;
         cmdLine.assign(argv, argv + argc);
-
-#ifdef _WIN32
-        if (!std::freopen((basepath + "stdout.txt").c_str(), "w", stdout))
-            LOG_W("Redirecting stdout to file failed.");
-        if (!std::freopen((basepath + "stderr.txt").c_str(), "w", stderr))
-            LOG_W("Redirecting stderr to file failed.");
-#endif
 
         // Construct and register services // 
         auto const regSvc = ServiceLocator::registerService;
