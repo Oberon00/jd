@@ -1,6 +1,6 @@
 #define APPN "Jade Engine"
-#define VERSION_ 0,9,0,0
-#define VERSION_STR "Beta 0.9"
+#define VERSION_ 0,10,0,0
+#define VERSION_STR "Beta 0.10"
 
 0 ICON DISCARDABLE jd.ico
 

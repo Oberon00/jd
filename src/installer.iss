@@ -16,25 +16,31 @@
 #endif
 
 #define VERSION GetFileVersion(EXECUTABLE)
+#define VERSIONSTR GetStringFileInfo(EXECUTABLE, PRODUCT_VERSION)
+#define AUTHOR GetStringFileInfo(EXECUTABLE, COMPANY_NAME)
+#define COPYRIGHT GetStringFileInfo(EXECUTABLE, LEGAL_COPYRIGHT)
 
 [Setup]
 AppName             = "{#APPN}"
-AppVersion          = "{#VERSION}"
+AppVersion          = "{#VERSIONSTR}"
+; Version Beta 0.x sounds odd. Just display Beta 0.x instead.
+AppVerName          = "{#APPN} {#VERSIONSTR}"
 DefaultDirName      = "{pf}\{#APPN}"
 DefaultGroupName    = "{#APPN}"
-AppPublisher        = "Christian Neumüller"
+AppPublisher        = "{#AUTHOR}"
 AppReadmeFile       = "{app}\usermanual.pdf"
 ; Needs at least Windows Vista
 MinVersion          = 6.0 
 UninstallDisplayIcon= "{app}\{#APPN}.ico"
-AppCopyright        = "© Christian Neumüller 2012"
+AppCopyright        = "{#COPYRIGHT}"
 
 VersionInfoVersion        = "{#VERSION}"
-VersionInfoCompany        = "Christian Neumüller"
+VersionInfoCompany        = "{#AUTHOR}"
 VersionInfoDescription    = "{#APPN} Installer"
-VersionInfoTextVersion    = "{#VERSION}"
+VersionInfoTextVersion    = "{#VERSIONSTR}"
 VersionInfoProductName    = "{#APPN}"
 VersionInfoProductVersion = "{#VERSION}"
+VersionInfoProductTextVersion = "{#VERSIONSTR}"
 
 [Tasks]
 Name: desktopicon; Description: "Desktopverknüpfung erstellen"; \
