@@ -26,6 +26,7 @@ static void init(LuaVm& vm)
             .LHPROPRW(view),
 #       undef LHCURCLASS
         class_<DrawService, Component>("DrawService")
+            .def("resetLayerViews", &DrawService::resetLayerViews)
             .def("layer", &getLayer)
             .property("layerCount", &DrawService::layerCount)
             .property("backgroundColor",
