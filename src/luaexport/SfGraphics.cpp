@@ -207,6 +207,7 @@ typedef GroupedDrawable<AutoCircleShape> CircleShapeEntry;
 
 static void init(LuaVm& vm)
 {
+    vm.initLib("SfWindow"); // RenderWindow derives from Window
     using namespace sf;
     using namespace luabind;
 
@@ -314,6 +315,15 @@ static void init(LuaVm& vm)
 #define XYMEMFN(n) XYMEMFN2(n, n)
 
     LHMODULE [
+#       define LHCURCLASS RenderWindow
+        class_<LHCURCLASS, Window>("RenderWindow")
+            .def(constructor<>())
+            .def(constructor<VideoMode, std::string const&>())
+            .def(constructor<VideoMode, std::string const&, Uint32>())
+            .def(constructor<VideoMode, std::string const&, Uint32,
+                ContextSettings const&>()),
+#       undef LHCURCLASS
+
         LHCLASS2(Drawable),
 #       define LHCURCLASS Transformable
         LHCLASS

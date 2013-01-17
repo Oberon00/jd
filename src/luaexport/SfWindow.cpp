@@ -5,6 +5,7 @@
 #include <luabind/iterator_policy.hpp>
 #include <luabind/operator.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics/Image.hpp> // for Window_setIcon
 
 char const libname[] = "SfWindow";
 #include "ExportThis.hpp"
@@ -52,6 +53,26 @@ static LuaVec2 VideoMode_size(sf::VideoMode const& mode)
         static_cast<lua_Number>(mode.height));
 }
 
+static void Window_create2(sf::Window& w,
+    sf::VideoMode mode, std::string const& title)
+{
+    w.create(mode, title);
+}
+
+static void Window_create3(sf::Window& w,
+     sf::VideoMode mode, std::string const& title, sf::Uint32 style)
+{
+    w.create(mode, title, style);
+}
+
+static void Window_setIcon(sf::Window& w, sf::Image const& icon)
+{
+    if (!icon.getPixelsPtr())
+        throw std::invalid_argument("Cannot set an empty window-icon.");
+    w.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+}
+
+
 
 static void init(LuaVm& vm)
 {
@@ -82,6 +103,48 @@ static void init(LuaVm& vm)
                 def("count", &getFullscreenModeCount)
             ],
 #       undef LHCURCLASS
+
+#       define LHCURCLASS ContextSettings
+        LHCLASS
+            .def(constructor<>())
+            .def(constructor<LHCURCLASS const&>())
+            .LHPROPRW(depthBits)
+            .LHPROPRW(stencilBits)
+            .LHPROPRW(antialiasingLevel)
+            .LHPROPRW(majorVersion)
+            .LHPROPRW(minorVersion),
+#       undef LHCURCLASS
+
+
+#       define LHCURCLASS Window
+        LHCLASS
+            .def("create",
+                (void (LHCURCLASS::*)(VideoMode, std::string const&, Uint32,
+                      ContextSettings const&))&LHCURCLASS::create)
+            .def("create", &Window_create2)
+            .def("create", &Window_create3)
+            .property("position",
+                &LHCURCLASS::getPosition, &LHCURCLASS::setPosition)
+            .property("size", &LHCURCLASS::getSize, &LHCURCLASS::setSize)
+            .def("setIcon", &Window_setIcon)
+            .def("setTitle", &LHCURCLASS::setTitle)
+            .def("setMouseCursorVisible", &LHCURCLASS::setMouseCursorVisible)
+            .def("setFramerateLimit", &LHCURCLASS::setFramerateLimit)
+            .property("contextSettings", &LHCURCLASS::getSettings)
+            .LHMEMFN(close)
+            .property("isOpen", &LHCURCLASS::isOpen)
+            .def("setVSyncEnabled", &LHCURCLASS::setVerticalSyncEnabled)
+            .enum_("Style") [
+                value("STYLE_NONE", sf::Style::None),
+                value("STYLE_TITLEBAR", sf::Style::Titlebar),
+                value("STYLE_RESIZE", sf::Style::Resize),
+                value("STYLE_CLOSE", sf::Style::Close),
+                value("STYLE_FULLSCREEN", sf::Style::Fullscreen),
+                value("STYLE_DEFAULT", sf::Style::Default)
+            ],
+#       undef LHCURCLASS
+
+
 
 #       define LHCURCLASS Event::KeyEvent
         class_<LHCURCLASS>("KeyEvent")
