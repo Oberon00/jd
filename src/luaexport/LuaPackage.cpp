@@ -108,6 +108,7 @@ static int dofilecont (lua_State *L) {
     int oldtop;
     int const r = lua_getctx(L, &oldtop);
     assert(r == LUA_YIELD);
+    (void)r;
     return lua_gettop(L) - oldtop;
 }
 
