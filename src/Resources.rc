@@ -16,7 +16,7 @@ BEGIN
             VALUE "FileDescription", "Jade Game Engine"
             VALUE "FileVersion", VERSION_STR
             VALUE "InternalName", APPN
-            VALUE "LegalCopyright", "Copyright © 2012"
+            VALUE "LegalCopyright", "Copyright © 2013"
             VALUE "OriginalFilename", "jd.exe"
             VALUE "ProductName", APPN
             VALUE "ProductVersion", VERSION_STR
