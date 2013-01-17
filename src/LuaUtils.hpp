@@ -33,8 +33,11 @@ void pcall(lua_State* L, int nargs, int nresults);
 // load: pushes the loaded chunk onto the stack, throws exception in case of errors
 void load(lua_State* L, std::string const& vfilename, char const* mode = nullptr);
 
-// exec(L, n, m) = luaU::load(L, n, m); luaU::pcall(L, 0, 0)
-void exec(lua_State* L, std::string const& vfilename, char const* mode = nullptr);
+// exec(L, n, m, na, nr) = luaU::load(L, n, m); luaU::pcall(L, na, nr)
+void exec(
+    lua_State* L,
+    std::string const& vfilename, char const* mode = nullptr,
+    int nargs = 0, int nresults = 0);
 
 // Dumping //
 

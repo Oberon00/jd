@@ -211,10 +211,13 @@ void dumpFunction(lua_State* L, std::string const& vfilename)
     return dumpFunction(L, f);
 }
 
-void exec(lua_State* L, std::string const& vfilename, char const* mode)
+void exec(
+    lua_State* L,
+    std::string const& vfilename, char const* mode,
+    int nargs, int nresults)
 {
     load(L, vfilename, mode);
-    pcall(L, 0, 0);
+    pcall(L, nargs, nresults);
 }
 
 StackBalance::StackBalance(lua_State* L, int diff, Action action):
