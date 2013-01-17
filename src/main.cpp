@@ -19,6 +19,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
+#include <luabind/adopt_policy.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <physfs.h>
 #include <SFML/Graphics/Image.hpp>
@@ -244,14 +245,29 @@ int main(int argc, char* argv[])
             ServiceEntry<Configuration> conf;
             ServiceEntry<Timer> timer;
             ServiceEntry<SoundManager> sound;
+            ServiceEntry<StateManager> stateManager;
+
+            LOG_D("Loading configuration...");
+            conf.load();
+            LOG_D("Finished loading configuration.");
+
 
             // Create the RenderWindow now, because some services depend on it.
-            LOG_D("Preparing window and SFML...");
-            sf::RenderWindow window;
-            LOG_D("Finished preparing window and SFML.");
+            LOG_D("Creating Window and preparing SFML...");
+            std::unique_ptr<sf::RenderWindow> window;
+            luaU::load(luaVm.L(), "initwindow.lua");
+            { // Scope for chunk.
+                luabind::object chunk(luabind::from_stack(luaVm.L(), -1));
+                lua_pop(luaVm.L(), 1);
+                window.reset(luabind::call_function<sf::RenderWindow*>(chunk)
+                    [luabind::adopt(luabind::result)]);
+            }
+            if (!window)
+                throw std::runtime_error("Got a NULL-window.");
+            window->setKeyRepeatEnabled(false);
+            LOG_D("Finished creating Window and preparing SFML.");
 
-            ServiceEntry<StateManager> stateManager;
-            EventDispatcher eventDispatcher(window);
+            EventDispatcher eventDispatcher(*window);
             regSvc(eventDispatcher);
 
             using boost::bind;
@@ -261,11 +277,7 @@ int main(int argc, char* argv[])
             // Various other initializations //
             ServiceLocator::stateManager().setStateNotFoundCallback(&loadStateFromLua);
 
-            LOG_D("Loading configuration...");
-            conf.load();
-            LOG_D("Finished loading configuration.");
-
-            DrawService drawService(window, conf.get<std::size_t>("misc.layerCount", 1UL));
+            DrawService drawService(*window, conf.get<std::size_t>("misc.layerCount", 1UL));
             regSvc(drawService);
             mainloop.connect_preFrame(bind(&Timer::beginFrame, &timer));
             mainloop.connect_update(bind(&Timer::processCallbacks, &timer));
@@ -276,39 +288,6 @@ int main(int argc, char* argv[])
             mainloop.connect_postFrame(bind(&Timer::endFrame, &timer));
 
             timer.callEvery(sf::seconds(10), bind(&SoundManager::tidy, &sound));
-
-
-            LOG_D("Creating window...");
-            std::string const title =
-                conf.get<std::string>("misc.title", "Jade");
-
-            std::string iconFilename = conf.get("misc.iconFilename", std::string());
-            sf::Image icon;
-            if (!iconFilename.empty())
-                icon = *resMng<sf::Image>().request(iconFilename);
-
-            window.create(
-                conf.get("video.mode", sf::VideoMode(800, 600)),
-                title,
-                conf.get("video.fullscreen", false) ?
-                   sf::Style::Close | sf::Style::Fullscreen : sf::Style::Default);
-
-            if (icon.getPixelsPtr())
-                window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-            
-            window.setVerticalSyncEnabled(conf.get("video.vsync", true));
-            window.setFramerateLimit(conf.get("video.framelimit", 0U));
-            window.setKeyRepeatEnabled(false);
-            LOG_D("Finished creating window.");
-
-            drawService.resetLayerViews();
-
-            timer.callEvery(sf::milliseconds(600), [&timer, &window, &title]() {
-                std::string const fps = boost::lexical_cast<std::string>(
-                    1.f / timer.frameDuration().asSeconds());
-                window.setTitle(title + " [" + fps + " fps]");
-            });
 
             timer.callEvery(sf::seconds(60), [&timer]() {
                 std::string const fps = boost::lexical_cast<std::string>(
