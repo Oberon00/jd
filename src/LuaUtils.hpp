@@ -96,6 +96,16 @@ private:
 
 void cleartable(lua_State* L, int idx);
 
+// Serializes the lua value at idx. Tables are walked up to depth layers.
+// Functions and circular tables not supported.
+// The return value is a lua expression (not a (return) statement!) which
+// evaluates to the original value.
+// For tables/userdata:
+//  If available the __serialize metamethod is used otherwise __tostring.
+//  If none is available then a table constructor expression is emmited for
+//  tables. For userdata, an std::runtime_error will be thrown in this case.
+std::string serialize(lua_State* L, int idx, unsigned depth = 0);
+
 } // namespace luaU
 
 
