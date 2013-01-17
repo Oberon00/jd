@@ -124,6 +124,7 @@ LuaVm::~LuaVm()
 /* static */ void LuaVm::registerLib(std::string const& libname, LibInitFn const& initFn)
 {
    bool const success = libRegistry().insert(std::make_pair(libname, LibInfo(initFn))).second;
+   (void)success;
    assert(success);
 }
 
@@ -171,20 +172,6 @@ void LuaVm::initLibs()
 }
 
 
-static void clearTable(lua_State* L, int idx)
-{
-	idx = lua_absindex(L, idx);
-	// see http://www.lua.org/manual/5.2/manual.html#lua_next
-    lua_pushnil(L);
-    while (luaU::next(L, idx) != 0) {
-		lua_pop(L, 1); // remove value, keep key on stack for lua_next
-		lua_pushvalue(L, -1); // copy key
-		lua_pushnil(L); // new value
-		lua_rawset(L, idx);
-    }
-	lua_pop(L, 1);
-}
-
 void LuaVm::deinit()
 {
 	// Try to avoid crashes caused by the undefined order
@@ -211,17 +198,17 @@ void LuaVm::deinit()
 	lua_pushliteral(m_L, "loaded");
 	lua_rawget(m_L, -2);
 
-	clearTable(m_L, -1);
+	luaU::cleartable(m_L, -1);
 
 	lua_pushliteral(m_L, "preload");
 	lua_rawget(m_L, -2);
-	clearTable(m_L, -1);
+	luaU::cleartable(m_L, -1);
 
 	lua_pop(m_L, 1); // pop package table
 
 
 	// clear globals table //
-	clearTable(m_L, -1);
+	luaU::cleartable(m_L, -1);
 
 	lua_gc(m_L, LUA_GCCOLLECT, 0);
 }

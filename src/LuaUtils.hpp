@@ -92,6 +92,9 @@ private:
 #define LUAU_BALANCED_STACK2(L, n) LUAU_BALANCED_STACK_A(L, n, pop)
 #define LUAU_BALANCED_STACK(L) LUAU_BALANCED_STACK2(L, 0)
 
+// Misc //
+
+void cleartable(lua_State* L, int idx);
 
 } // namespace luaU
 
