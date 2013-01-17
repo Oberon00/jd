@@ -18,7 +18,9 @@ DrawService::Layer& DrawService::Layer::operator= (Layer&& rhs)
 
 DrawService::DrawService(sf::RenderWindow& window, std::size_t layerCount):
     m_window(window), m_layers(layerCount)
-{ }
+{
+    resetLayerViews();
+}
 
 void DrawService::clear()
 {
