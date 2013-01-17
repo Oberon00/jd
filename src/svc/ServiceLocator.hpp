@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 
+class Configuration;
 class StateManager;
 class LuaVm;
 class Mainloop;
@@ -42,6 +43,7 @@ public:
     static EventDispatcher& eventDispatcher();
     static Timer& timer();
     static SoundManager& soundManager();
+    static Configuration& configuration();
 
 private:
     static std::unordered_map<MetaComponent const*, Service*> registry;

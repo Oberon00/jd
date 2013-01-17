@@ -2,6 +2,7 @@
 #include "compsys/Component.hpp"
 #include "compsys/ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
+#include "svc/Configuration.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/EventDispatcher.hpp"
 #include "svc/Mainloop.hpp"
@@ -33,6 +34,7 @@ static void init(LuaVm& vm)
         LHMEMFN(eventDispatcher),
         LHMEMFN(timer),
         LHMEMFN(soundManager),
+        LHMEMFN(configuration),
         def("get", &getService)
     ] ];
 }

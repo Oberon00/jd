@@ -2,6 +2,7 @@
 
 #include "compsys/Component.hpp"
 #include "compsys/MetaComponent.hpp"
+#include "svc/Configuration.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/EventDispatcher.hpp"
 #include "svc/LuaVm.hpp"
@@ -29,6 +30,7 @@ DEFINE_SVC_GETTER(EventDispatcher, eventDispatcher)
 DEFINE_SVC_GETTER(DrawService, drawService)
 DEFINE_SVC_GETTER(Timer, timer)
 DEFINE_SVC_GETTER(SoundManager, soundManager)
+DEFINE_SVC_GETTER(Configuration, configuration)
 
 /* static */ void ServiceLocator::registerService(Service& s)
 {
@@ -45,6 +47,7 @@ DEFINE_SVC_GETTER(SoundManager, soundManager)
     else ENTRY(DrawService, drawService)
     else ENTRY(Timer, timer)
     else ENTRY(SoundManager, soundManager)
+    else ENTRY(Configuration, configuration)
 
 #   undef ENTRY
 }
