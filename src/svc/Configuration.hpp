@@ -25,6 +25,9 @@ public:
     void load(std::string const& configurationFilename = "configuration.lua",
         std::string const& globalName = "conf");
 
+    void reload();
+    void save();
+
     template <typename T>
     T get(std::string const& p, T const& def)
     {
@@ -51,6 +54,7 @@ public:
     luabind::object getObject(std::string const& p);
 
 private:
+    std::string m_confPath;
     luabind::object m_conf;
 };
 #endif
