@@ -77,7 +77,7 @@ static void loadFontResource(VFileFont& fnt, std::string const& name)
     }
 }
 
-static bool initSfResources()
+void initDefaultResourceLoaders()
 {
     log(); // init logfile
 
@@ -87,8 +87,4 @@ static bool initSfResources()
 
     resMng<VFileFont>().setResourceNotFoundCallback(&loadFontResource);
     resMng<sf::SoundBuffer>().setResourceNotFoundCallback(&loadSfmlResource<sf::SoundBuffer>);
-
-    return bool();
 }
-
-static bool const dummy = initSfResources();

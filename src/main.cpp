@@ -2,6 +2,7 @@
 
 #include "Logfile.hpp"
 #include "LuaUtils.hpp"
+#include "ResourceLoaders.hpp"
 #include "ResourceManager.hpp"
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
@@ -234,7 +235,9 @@ int main(int argc, char* argv[])
 
 
         LOG_D("Finished initializing virtual filesystem.");
-        
+
+        initDefaultResourceLoaders();
+
         LOG_D("Initializing Lua...");
         ServiceEntry<LuaVm> luaVm;
         try {

@@ -43,5 +43,6 @@ void loadSfmlResource(ResT& res, std::string const& name)
     }
 }
 
+void initDefaultResourceLoaders();
 
 #endif
