@@ -134,6 +134,7 @@ static void init(LuaVm& vm)
             .LHMEMFN(close)
             .property("isOpen", &LHCURCLASS::isOpen)
             .def("setVSyncEnabled", &LHCURCLASS::setVerticalSyncEnabled)
+            .def("setKeyRepeatEnabled", &LHCURCLASS::setKeyRepeatEnabled)
             .enum_("Style") [
                 value("STYLE_NONE", sf::Style::None),
                 value("STYLE_TITLEBAR", sf::Style::Titlebar),

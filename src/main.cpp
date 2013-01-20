@@ -267,7 +267,6 @@ int main(int argc, char* argv[])
             }
             if (!window)
                 throw std::runtime_error("Got a NULL-window.");
-            window->setKeyRepeatEnabled(false);
             LOG_D("Finished creating Window and preparing SFML.");
 
             EventDispatcher eventDispatcher(*window);
