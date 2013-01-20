@@ -2,7 +2,7 @@
 #define VCREDISTDIR AddBackslash(GetEnv("VS110COMNTOOLS")) + \
                     "..\..\VC\redist\x86\Microsoft.VC110.CRT"
 
-#define SFMLDIR AddBackslash(GetEnv("SFMLDIR")) + "bin"
+#define SFMLDIR AddBackslash(GetEnv("SFML_ROOT")) + "bin"
 #define EXECUTABLE  "..\build11\src\Release\jd.exe"
 
 #define tmp AddBackslash(GetEnv("TMP")) 

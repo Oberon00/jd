@@ -151,14 +151,23 @@ if (MSVC)
 	/MP)    # multicore compilation
     list(APPEND COMP_DEFS "_CRT_SECURE_NO_WARNINGS" "_SCL_SECURE_NO_WARNINGS")
     
+	# Disable auto-linkage
+	list(APPEND COMP_DEFS  "BOOST_ALL_NO_LIB")
+	
     # Comment out the following line, if you do not have 
 	# VLD (http://vld.codeplex.com) installed
-    list(APPEND COMP_DEFS "JD_HAS_VLD")
+    #list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
 find_package(SFML REQUIRED system-s graphics-s window-s audio-s main)
-find_package(PhysFs REQUIRED)
+find_package(PhysFS REQUIRED)
 find_package(zlib REQUIRED)
+set(Boost_USE_STATIC_LIBS    ON)
+set(Boost_USE_MULTITHREADED  ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+# Cannot just append "filesystem" to the find_package line:
+# somehow FindBoost.cmake fails to recognize it.
+set(Boost_FIND_COMPONENTS system filesystem)
 find_package(boost REQUIRED)
 include_directories(
     "${CMAKE_SOURCE_DIR}/src"
@@ -167,7 +176,7 @@ include_directories(
     ${LUABIND_INCLUDE_DIR}
     ${PHYSFS_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
-    ${BOOST_INCLUDE_DIR})
+    ${Boost_INCLUDE_DIRS})
 add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd
@@ -175,5 +184,6 @@ target_link_libraries(jd
     ${LUA_LIBRARY}
     ${LUABIND_LIBRARY}
     ${PHYSFS_LIBRARY}
-    ${ZLIB_LIBRARY})
+    ${ZLIB_LIBRARY}
+	${Boost_LIBRARIES})
 
