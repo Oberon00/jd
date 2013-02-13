@@ -9,7 +9,7 @@ static char const libname[] = "EventDispatcher";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_EVT_COMPONENT_IMPL(EventDispatcher)
+JD_BASIC_EVT_COMPONENT_IMPL(EventDispatcher)
 
 JD_EVENT_TABLE_BEGIN(EventDispatcher)
 #define E0(n) JD_EVENT_ENTRY0(n, void)

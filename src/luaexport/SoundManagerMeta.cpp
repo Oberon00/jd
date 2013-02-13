@@ -6,7 +6,7 @@ static char const libname[] = "SoundManager";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_COMPONENT_IMPL(SoundManager)
+JD_BASIC_COMPONENT_IMPL(SoundManager)
 
 static void init(LuaVm& vm)
 {

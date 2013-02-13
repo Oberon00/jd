@@ -7,7 +7,7 @@ static char const libname[] = "RectCollisionComponent";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_EVT_COMPONENT_IMPL(RectCollisionComponent)
+JD_BASIC_EVT_COMPONENT_IMPL(RectCollisionComponent)
 
 JD_EVENT_TABLE_BEGIN(RectCollisionComponent)
     JD_EVENT_ENTRY(collided, void, _1, ref(_2), _3)

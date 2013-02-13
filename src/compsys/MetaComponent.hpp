@@ -22,10 +22,13 @@ public:
     virtual ~MetaComponent() { }
 
     virtual std::string const& name() const = 0;
-    virtual Component* create() const = 0;
 
     // places result on top of stack.
-    virtual void castUp(lua_State*, Component*) const { assert(!"not scriptable!"); }
+    virtual void castDown(lua_State*, Component*) const
+    {
+        assert(!"not scriptable!");
+        throw std::runtime_error("castDown() is not implemented.");
+    }
 
     // receiver is on top of stack; return value disconnects automatically on deletion
     virtual ConnectionBase* connectEvent(lua_State*, Component*, std::string const& name) const
@@ -48,9 +51,8 @@ class LuaMetaComponent: public MetaComponent {
 public:
     LuaMetaComponent(lua_State* L, std::string const& name);
     virtual std::string const& name() const;
-    virtual Component* create() const;
 
-    virtual void castUp(lua_State* L, Component* c) const;
+    virtual void castDown(lua_State* L, Component* c) const override;
     virtual ConnectionBase* connectEvent(Component* c, std::string const& name) const;
 
 private:

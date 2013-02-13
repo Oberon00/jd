@@ -18,6 +18,7 @@ void ComponentRegistry::registerComponent(MetaComponent const* meta)
     assert(meta);
     bool const success = m_registry.insert(std::make_pair(meta->name(), meta)).second;
     assert(success);
+    (void)success;
 }
 
 MetaComponent const* ComponentRegistry::operator[] (std::string const& name)
@@ -53,8 +54,8 @@ static int destroyComponentRegistry(lua_State* L)
     // Registry for this state exists yet?
     assert(lua_type(L, -1) == LUA_TUSERDATA);
     auto& result = *static_cast<ComponentRegistry*>(lua_touserdata(L, -1));
-	lua_pop(L, 1);
-	return result;
+    lua_pop(L, 1);
+    return result;
 }
 
 MetaComponent const& ComponentRegistry::metaComponent(std::string const& name, lua_State* L)
@@ -73,8 +74,8 @@ MetaComponent const& ComponentRegistry::metaComponent(std::string const& name, l
 
 /* static */ void ComponentRegistry::_init(lua_State* L)
 {
-	void* registryLocation = lua_newuserdata(L, sizeof (ComponentRegistry)); // allocate memory
-	assert(registryLocation);
+    void* registryLocation = lua_newuserdata(L, sizeof (ComponentRegistry)); // allocate memory
+    assert(registryLocation);
 
     // create metatable
     lua_createtable(L, 0, 1);
@@ -95,5 +96,5 @@ MetaComponent const& ComponentRegistry::metaComponent(std::string const& name, l
 
 static void init(LuaVm& vm)
 {
-	ComponentRegistry::_init(vm.L());
+    ComponentRegistry::_init(vm.L());
 }

@@ -8,7 +8,7 @@ static char const libname[] = "TilePositionComponent";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_EVT_COMPONENT_IMPL(TilePositionComponent)
+JD_BASIC_EVT_COMPONENT_IMPL(TilePositionComponent)
 
 JD_EVENT_TABLE_BEGIN(TilePositionComponent)
     JD_EVENT_ENTRY(tilePositionChanged, void, _1, _2)

@@ -8,7 +8,7 @@ static char const libname[] = "Mainloop";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_EVT_COMPONENT_IMPL(Mainloop)
+JD_BASIC_EVT_COMPONENT_IMPL(Mainloop)
 
 JD_EVENT_TABLE_BEGIN(Mainloop)
 #define ENTRY(n) JD_EVENT_ENTRY0(n, void)

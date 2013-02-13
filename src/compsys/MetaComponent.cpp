@@ -192,13 +192,7 @@ std::string const& LuaMetaComponent::name() const
     return m_name;
 }
 
-Component* LuaMetaComponent::create() const
-{
-    using namespace luabind;
-    return call_function<Component*>(m_L, m_name.c_str())[adopt(result)];
-}
-
-void LuaMetaComponent::castUp(lua_State* L, Component* c) const
+void LuaMetaComponent::castDown(lua_State* L, Component* c) const
 {
     assert(dynamic_cast<wrap_Component*>(c));
 	luabind::object o(L, c->ref<wrap_Component>());

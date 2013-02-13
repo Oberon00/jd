@@ -32,7 +32,7 @@ public:
         return ServiceLocator::get(T::staticMetaComponent).as<T>();
     }
 
-    static Component& get (MetaComponent const& m);
+    static Service& get (MetaComponent const& m);
 
     static void registerService(Service& s);
 

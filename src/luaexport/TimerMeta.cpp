@@ -6,7 +6,7 @@ static char const libname[] = "Timer";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_COMPONENT_IMPL(Timer)
+JD_BASIC_COMPONENT_IMPL(Timer)
 
 static Timer::CallOrder Timer_callEvery(
     Timer& timer, sf::Time every, luabind::object o)

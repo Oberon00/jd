@@ -18,7 +18,7 @@ static char const libname[] = "ServiceLocator";
 static luabind::object getService(lua_State* L, std::string const& name)
 {
     MetaComponent const& mc = ComponentRegistry::metaComponent(name);
-    mc.castUp(L, &ServiceLocator::get(mc));
+    mc.castDown(L, &ServiceLocator::get(mc));
     luabind::object result(luabind::from_stack(L, -1));
     lua_pop(L, 1);
     return result;

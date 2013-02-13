@@ -4,24 +4,18 @@
 #include "ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"
 
-#include <luabind/back_reference.hpp> // for WeakRef (linking errors)
+#include <luabind/back_reference.hpp> // for WeakRef (avoid linking errors)
 #include <luabind/object.hpp>
 
 #include <string>
 
 
 template <typename T>
-class BasicSingletonMetaComponent: public MetaComponent {
+class BasicMetaComponent: public MetaComponent {
 public:
-    BasicSingletonMetaComponent() { ComponentRegistry::get().registerComponent(this); }
+    BasicMetaComponent() { ComponentRegistry::get().registerComponent(this); }
     virtual std::string const& name() const { return T::componentName; }
-    virtual T* create() const
-    {
-        throw std::logic_error("attempt to create a singleton [type=" +
-            std::string(typeid(T).name()) + ']');
-    }
-
-    virtual void castUp(lua_State* L, Component* c) const
+    virtual void castDown(lua_State* L, Component* c) const
     {
         assert(c->as<T>());
         luabind::object o(L, c->ref<T>());
@@ -39,18 +33,6 @@ public:
     };                                                     \
     } // anonymous namespace
 
-
-#define JD_SINGLETON_COMPONENT_IMPL(c) JD_COMPONENT_IMPL(c, BasicSingletonMetaComponent<c>)
-
-#define JD_SINGLETON_EVT_COMPONENT_IMPL(c) \
-    JD_EVT_METACOMPONENT(c, BasicSingletonMetaComponent<c>) \
-    JD_COMPONENT_IMPL(c, c##Meta)
-
-template <typename T>
-class BasicMetaComponent: public BasicSingletonMetaComponent<T> {
-public:
-    virtual T* create() const { return new T; }
-};
 
 #define JD_BASIC_COMPONENT_IMPL(c) JD_COMPONENT_IMPL(c, BasicMetaComponent<c>)
 

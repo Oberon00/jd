@@ -3,4 +3,4 @@
 #include "compsys/BasicMetaComponent.hpp"
 
 
-JD_SINGLETON_COMPONENT_IMPL(FileSystem)
+JD_BASIC_COMPONENT_IMPL(FileSystem)

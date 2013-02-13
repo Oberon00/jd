@@ -6,7 +6,7 @@ static char const libname[] = "DrawService";
 #include "ExportThis.hpp"
 
 
-JD_SINGLETON_COMPONENT_IMPL(DrawService)
+JD_BASIC_COMPONENT_IMPL(DrawService)
 
 static DrawService::Layer& getLayer(DrawService& ds, std::size_t n)
 {
