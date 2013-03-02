@@ -284,9 +284,9 @@ static void init(LuaVm& vm)
 #       define LHCURCLASS RenderWindow
         class_<LHCURCLASS, Window>("RenderWindow")
             .def(constructor<>())
-            .def(constructor<VideoMode, std::string const&>())
-            .def(constructor<VideoMode, std::string const&, Uint32>())
-            .def(constructor<VideoMode, std::string const&, Uint32,
+            .def(constructor<VideoMode, sf::String const&>())
+            .def(constructor<VideoMode, sf::String const&, Uint32>())
+            .def(constructor<VideoMode, sf::String const&, Uint32,
                 ContextSettings const&>()),
 #       undef LHCURCLASS
 

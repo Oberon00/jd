@@ -54,13 +54,13 @@ static LuaVec2 VideoMode_size(sf::VideoMode const& mode)
 }
 
 static void Window_create2(sf::Window& w,
-    sf::VideoMode mode, std::string const& title)
+    sf::VideoMode mode, sf::String const& title)
 {
     w.create(mode, title);
 }
 
 static void Window_create3(sf::Window& w,
-     sf::VideoMode mode, std::string const& title, sf::Uint32 style)
+     sf::VideoMode mode, sf::String const& title, sf::Uint32 style)
 {
     w.create(mode, title, style);
 }
@@ -119,7 +119,7 @@ static void init(LuaVm& vm)
 #       define LHCURCLASS Window
         LHCLASS
             .def("create",
-                (void (LHCURCLASS::*)(VideoMode, std::string const&, Uint32,
+                (void (LHCURCLASS::*)(VideoMode, sf::String const&, Uint32,
                       ContextSettings const&))&LHCURCLASS::create)
             .def("create", &Window_create2)
             .def("create", &Window_create3)
