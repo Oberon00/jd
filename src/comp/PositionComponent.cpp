@@ -2,8 +2,8 @@
 
 #include "compsys/BasicMetaComponent.hpp"
 #include "compsys/Entity.hpp"
-#include "luaexport/Geometry.hpp"
 #include "luaexport/LuaEventHelpers.hpp"
+#include "luaexport/SfBaseTypes.hpp"
 
 static char const libname[] = "PositionComponent";
 #include "luaexport/ExportThis.hpp"

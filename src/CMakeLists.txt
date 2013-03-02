@@ -7,7 +7,7 @@ set(SVC_HEADERS
     svc/DrawService.hpp
     svc/Configuration.hpp
     svc/ServiceLocator.hpp
-	svc/Timer.hpp
+    svc/Timer.hpp
     svc/SoundManager.hpp)    
 source_group("Service Headers" FILES ${SVC_HEADERS})
 
@@ -20,7 +20,7 @@ set(SVC_SOURCES
     svc/DrawService.cpp
     svc/Configuration.cpp
     svc/ServiceLocator.cpp
-	svc/Timer.cpp
+    svc/Timer.cpp
     svc/SoundManager.cpp)
 source_group("Service Sources" FILES ${SVC_SOURCES})
 
@@ -41,28 +41,28 @@ source_group("Component System Sources" FILES ${COMPSYS_SOURCES})
 set(COMP_HEADERS
     comp/PositionComponent.hpp
     comp/TileCollisionComponent.hpp
-	comp/TilePositionComponent.hpp
-	comp/RectCollisionComponent.hpp)
+    comp/TilePositionComponent.hpp
+    comp/RectCollisionComponent.hpp)
 source_group("Component Headers" FILES ${COMP_HEADERS})
 
 set(COMP_SOURCES
     comp/PositionComponent.cpp
     comp/TileCollisionComponent.cpp
-	comp/TilePositionComponent.cpp)
+    comp/TilePositionComponent.cpp)
 source_group("Component Sources" FILES ${COMP_SOURCES})
 
 set(LUAEXPORT_HEADERS
     luaexport/ExportThis.hpp
     luaexport/LuaExportMacros.hpp
-	luaexport/LuaFunction.hpp
+    luaexport/LuaFunction.hpp
     luaexport/LuaEventHelpers.hpp
-    luaexport/Geometry.hpp
+    luaexport/SfBaseTypes.hpp
     luaexport/sharedPtrConverter.hpp
     luaexport/container.hpp)
 source_group("LuaExport Headers" FILES ${LUAEXPORT_HEADERS})
 
 set(LUAEXPORT_SOURCES
-	luaexport/LuaExtra.cpp
+    luaexport/LuaExtra.cpp
     luaexport/SfSystem.cpp
     luaexport/SfWindow.cpp
     luaexport/SfGraphics.cpp
@@ -70,7 +70,7 @@ set(LUAEXPORT_SOURCES
     luaexport/EntitySystem.cpp
     luaexport/ServiceLocator.cpp
     luaexport/Collisions.cpp
-    luaexport/SfVector.cpp
+    luaexport/Geometry.cpp
     luaexport/FileSystemMeta.cpp
     luaexport/DrawServiceMeta.cpp
     luaexport/MainloopMeta.cpp
@@ -78,12 +78,12 @@ set(LUAEXPORT_SOURCES
     luaexport/State.cpp
     luaexport/TileCollisionComponentMeta.cpp
     luaexport/EventDispatcherMeta.cpp
-	luaexport/TimerMeta.cpp
+    luaexport/TimerMeta.cpp
     luaexport/LuaPackage.cpp
     luaexport/Tilemap.cpp
-	luaexport/TilePositionComponentMeta.cpp
-	luaexport/RectCollisionComponentMeta.cpp
-	luaexport/luaIo.cpp
+    luaexport/TilePositionComponentMeta.cpp
+    luaexport/RectCollisionComponentMeta.cpp
+    luaexport/luaIo.cpp
     luaexport/SoundManagerMeta.cpp)
 source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
@@ -95,7 +95,7 @@ set(JD_HEADERS
     resfwd.hpp
     AutoResource.hpp
     AutoTexture.hpp
-	AutoFont.hpp
+    AutoFont.hpp
     AutoSoundBuffer.hpp
     ResourceManager.hpp
     ResourceManager.inl
@@ -113,7 +113,7 @@ set(JD_HEADERS
     State.hpp
     base64.hpp
     luaUtils.hpp
-	VFileFont.hpp
+    VFileFont.hpp
     VFileMusic.hpp
     ${SVC_HEADERS}
     ${COMPSYS_HEADERS}
@@ -155,7 +155,7 @@ if (MSVC)
 	list(APPEND COMP_DEFS  "BOOST_ALL_NO_LIB")
 	
     # Comment out the following line, if you do not have 
-	# VLD (http://vld.codeplex.com) installed
+    # VLD (http://vld.codeplex.com) installed
     #list(APPEND COMP_DEFS "JD_HAS_VLD")
 endif()
 
@@ -185,5 +185,5 @@ target_link_libraries(jd
     ${LUABIND_LIBRARY}
     ${PHYSFS_LIBRARY}
     ${ZLIB_LIBRARY}
-	${Boost_LIBRARIES})
+    ${Boost_LIBRARIES})
 

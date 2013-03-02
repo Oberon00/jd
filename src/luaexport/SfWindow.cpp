@@ -1,4 +1,4 @@
-#include "Geometry.hpp"
+#include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
 #include "LuaUtils.hpp"
 

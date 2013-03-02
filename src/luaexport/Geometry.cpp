@@ -1,4 +1,4 @@
-#include "luaexport/Geometry.hpp"
+#include "luaexport/SfBaseTypes.hpp"
 
 #include "sfUtil.hpp"
 #include "svc/LuaVm.hpp"

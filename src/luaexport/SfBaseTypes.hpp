@@ -1,14 +1,15 @@
-#ifndef LUA_VECTOR_HPP_INCLUDED
-#define LUA_VECTOR_HPP_INCLUDED LUA_VECTOR_HPP_INCLUDED
+#ifndef SF_BASE_TYPES_HPP_INCLUDED
+#define SF_BASE_TYPES_HPP_INCLUDED SF_BASE_TYPES_HPP_INCLUDED
 
 #include <luabind/object.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/String.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
-#include <SFML/Graphics/Rect.hpp>
 
 
-typedef sf::Vector2<lua_Number>   LuaVec2;
-typedef sf::Vector3<lua_Number>   LuaVec3;
+typedef sf::Vector2<lua_Number> LuaVec2;
+typedef sf::Vector3<lua_Number> LuaVec3;
 typedef sf::Rect<lua_Number> LuaRect;
 
 namespace luaSfGeo {
@@ -96,6 +97,38 @@ CONVERTER(LuaVec3, sf::Vector3)
 CONVERTER(LuaRect, sf::Rect)
 
 #undef CONVERTER
+
+// sf::String <-> Lua converter (see luabind/detail/policy.hpp:741)
+template <>
+    struct default_converter<sf::String>
+      : native_converter_base<sf::String>
+    {
+        static int compute_score(lua_State* L, int index)
+        {
+            return lua_type(L, index) == LUA_TSTRING ? 0 : -1;
+        }
+
+        sf::String from(lua_State* L, int index)
+        {
+            return sf::String(lua_tostring(L, index));
+        }
+
+        void to(lua_State* L, sf::String const& value)
+        {
+            std::string const s(value);
+            lua_pushlstring(L, s.data(), s.size());
+        }
+    };
+
+    template <>
+    struct default_converter<sf::String const>
+      : default_converter<sf::String>
+    {};
+
+    template <>
+    struct default_converter<sf::String const&>
+      : default_converter<sf::String>
+    {};
 } // namespace luabind
 
 #endif

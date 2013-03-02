@@ -1,6 +1,6 @@
 #include "container.hpp"
-#include "Geometry.hpp"
 #include "MapInfo.hpp"
+#include "SfBaseTypes.hpp"
 #include "sharedPtrConverter.hpp"
 #include "Tilemap.hpp"
 #include "TransformGroup.hpp" // GroupedDrawable

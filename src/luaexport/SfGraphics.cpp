@@ -1,8 +1,8 @@
 #include "AutoFont.hpp"
 #include "AutoTexture.hpp"
-#include "Geometry.hpp"
 #include "ResourceManager.hpp"
 #include "sharedPtrConverter.hpp"
+#include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
 #include "TransformGroup.hpp"
 #include "VFileFont.hpp"
@@ -15,40 +15,6 @@
 
 static char const libname[] = "SfGraphics";
 #include "ExportThis.hpp"
-
-// sf::String <-> Lua converter (see luabind/detail/policy.hpp:741)
-namespace luabind {
-template <>
-    struct default_converter<sf::String>
-      : native_converter_base<sf::String>
-    {
-        static int compute_score(lua_State* L, int index)
-        {
-            return lua_type(L, index) == LUA_TSTRING ? 0 : -1;
-        }
-
-        sf::String from(lua_State* L, int index)
-        {
-            return sf::String(lua_tostring(L, index));
-        }
-
-        void to(lua_State* L, sf::String const& value)
-        {
-            std::string const s(value);
-            lua_pushlstring(L, s.data(), s.size());
-        }
-    };
-
-    template <>
-    struct default_converter<sf::String const>
-      : default_converter<sf::String>
-    {};
-
-    template <>
-    struct default_converter<sf::String const&>
-      : default_converter<sf::String>
-    {};
-} // namepace luabind
 
 #define RESMNG_METHOD(r, n, a, a2) \
     template <typename T>          \

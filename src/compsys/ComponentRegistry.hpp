@@ -17,7 +17,7 @@ public:
     static ComponentRegistry& get(lua_State* L); // get the Lua ComponentRegistry for L
     static MetaComponent const& metaComponent(std::string const& name, lua_State* L = nullptr);
 
-	static void _init(lua_State* L);
+    static void _init(lua_State* L);
 
 private:
     ComponentRegistry() { }

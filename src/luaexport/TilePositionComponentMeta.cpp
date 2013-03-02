@@ -1,8 +1,8 @@
 #include "comp/TilePositionComponent.hpp"
 
 #include "compsys/BasicMetaComponent.hpp"
-#include "Geometry.hpp"
 #include "LuaEventHelpers.hpp"
+#include "SfBaseTypes.hpp"
 
 static char const libname[] = "TilePositionComponent";
 #include "ExportThis.hpp"

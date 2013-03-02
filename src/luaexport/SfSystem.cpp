@@ -1,4 +1,4 @@
-#include "luaexport/Geometry.hpp"
+#include "luaexport/SfBaseTypes.hpp"
 
 #include <luabind/operator.hpp>
 #include <SFML/System.hpp>

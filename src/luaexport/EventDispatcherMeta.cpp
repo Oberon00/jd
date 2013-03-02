@@ -1,8 +1,8 @@
 #include "svc/EventDispatcher.hpp"
 
 #include "compsys/BasicMetaComponent.hpp"
-#include "Geometry.hpp"
 #include "LuaEventHelpers.hpp"
+#include "SfBaseTypes.hpp"
 #include "svc/ServiceLocator.hpp"
 
 static char const libname[] = "EventDispatcher";
