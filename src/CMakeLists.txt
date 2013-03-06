@@ -58,7 +58,8 @@ set(LUAEXPORT_HEADERS
     luaexport/LuaEventHelpers.hpp
     luaexport/SfBaseTypes.hpp
     luaexport/sharedPtrConverter.hpp
-    luaexport/container.hpp)
+    luaexport/container.hpp
+    luaexport/resources.hpp)
 source_group("LuaExport Headers" FILES ${LUAEXPORT_HEADERS})
 
 set(LUAEXPORT_SOURCES
