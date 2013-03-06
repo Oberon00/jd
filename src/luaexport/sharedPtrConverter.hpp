@@ -10,7 +10,8 @@
 
 
 namespace luabind { namespace detail { namespace has_get_pointer_ {
-    using boost::get_pointer;
+    template<class T>
+    T * get_pointer(std::shared_ptr<T> const& p) { return p.get(); }
 }}}
 
 #else // if BOOST_VERSION < 105300
@@ -20,17 +21,18 @@ namespace luabind { namespace detail { namespace has_get_pointer_ {
 
 // Not standard conforming: add function to ::std(::tr1)
 namespace std {
+
 #if defined(_MSC_VER) && _MSC_VER < 1700
 namespace tr1 {
 #endif
-template<class T>
-T * get_pointer(shared_ptr<T> const& p) { return p.get(); }
 
-template<class T>
-T const* get_pointer(shared_ptr<T const> const& p) { return p.get(); }
+    template<class T>
+    T * get_pointer(shared_ptr<T> const& p) { return p.get(); }
+
 #if defined(_MSC_VER) && _MSC_VER < 1700
 } // namespace tr1
 #endif
+
 } // namespace std
 
 #endif // if BOOST_VERSION < 105300

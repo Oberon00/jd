@@ -22,42 +22,31 @@ public:
     ~SoundManager();
 
     void playSound(std::string const& name);
-	void playSound(ResourceTraits<sf::SoundBuffer>::Ptr const& buf);
-	void playSound(AutoSound& sound);
+    void playSound(ResourceTraits<sf::SoundBuffer>::Ptr const& buf);
+    void playSound(AutoSound& sound);
 	
-	void setBackgroundMusic(std::string const& name, sf::Time fadeDuration = sf::Time::Zero);
-	void setBackgroundMusic(VFileMusic& music, sf::Time fadeDuration = sf::Time::Zero);
+    void setBackgroundMusic(std::string const& name, sf::Time fadeDuration = sf::Time::Zero);
+    void setBackgroundMusic(VFileMusic& music, sf::Time fadeDuration = sf::Time::Zero);
 
     void fade();
-	void tidy();
+    void tidy();
 	
 private:	
-	struct FadedMusic {
+    struct FadedMusic {
         FadedMusic(): target(0), increment(0) { }
-		FadedMusic(VFileMusic& music, float target, sf::Time fadeDuration);
+        FadedMusic(VFileMusic& music, float target, sf::Time fadeDuration);
 		
-		FadedMusic& operator= (FadedMusic&& rhs);
-		bool fade();
+        FadedMusic& operator= (FadedMusic&& rhs);
+        bool fade();
 		
-		float target;
-		std::unique_ptr<VFileMusic> music;
-		float increment;
-	};
-	// struct SoundLengthLess: std::binary_function<sf::Sound const&, sf::Sound const&, bool> {
-		// bool operator() (sf::Sound const& lhs, sf::Sound const& rhs) const
-		// {
-			// return remainingLength(lhs) < remainingLenght(rhs);
-		// }
-	// private:
-		// sf::Time remainingLenght(sf::Sound const& sound) const
-		// {
-			// return sound.getBuffer()->getDuration() - sound.getPlayingOffset();
-		// }
-	// };
+        float target;
+        std::unique_ptr<VFileMusic> music;
+        float increment;
+    };
 	
-	FadedMusic m_previousMusic;
-	FadedMusic m_currentMusic;
-	boost::ptr_vector<AutoSound> m_playingSounds;
+    FadedMusic m_previousMusic;
+    FadedMusic m_currentMusic;
+    boost::ptr_vector<AutoSound> m_playingSounds;
 };
 
 #endif

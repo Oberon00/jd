@@ -15,15 +15,15 @@ template <typename mediaT, typename resT>
 class AutoResource: public mediaT
 {
 public:
-	typedef typename ResourceTraits<resT>::Ptr Ptr;
+    typedef typename ResourceTraits<resT>::Ptr Ptr;
     typedef typename ResourceTraits<resT>::ConstPtr ConstPtr;
 
-	explicit AutoResource(Ptr resource);
-	AutoResource(){};
-	virtual ~AutoResource(){};
-	ConstPtr resource() const;
-	Ptr resource();
-	void setResource(Ptr resource);
+    explicit AutoResource(Ptr resource);
+    AutoResource(){};
+    virtual ~AutoResource(){};
+    ConstPtr resource() const;
+    Ptr resource();
+    void setResource(Ptr resource);
 
 private:
 	Ptr m_resource;
