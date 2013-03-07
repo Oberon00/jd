@@ -74,37 +74,38 @@ public:
         assert(this->parent() == &parent);
     }
 
-	void bindLuaPart()
-	{
-		luabind::wrapped_self_t& wrapper = luabind::detail::wrap_access::ref(*this);
-		if (wrapper.m_strong_ref.is_valid()) {
-			LOG_W("Double call to wrap_Component::bindLuaPart");
-			return;
-		}
-		wrapper.get(wrapper.state());
-		wrapper.m_strong_ref.set(wrapper.state());
-	}
+    void bindLuaPart()
+    {
+        luabind::wrapped_self_t& wrapper = luabind::detail::wrap_access::ref(*this);
+        if (wrapper.m_strong_ref.is_valid()) {
+            LOG_W("Double call to wrap_Component::bindLuaPart");
+            return;
+        }
+        wrapper.get(wrapper.state());
+        wrapper.m_strong_ref.set(wrapper.state());
+    }
 
     virtual MetaComponent const& metaComponent() const { return *m_metaComponent; }
 
     virtual void initComponent()
-	{
-		luabind::wrapped_self_t& wrapper = luabind::detail::wrap_access::ref(*this);
-		if (!wrapper.m_strong_ref.is_valid()) {
-			LOG_W("wrap_Component::bindLuaPart was not called yet! Calling it now.");
-			bindLuaPart();
-		}
-		call<void>("initComponent");
-	}
+    {
+        luabind::wrapped_self_t& wrapper = luabind::detail::wrap_access::ref(*this);
+        if (!wrapper.m_strong_ref.is_valid()) {
+            LOG_W("wrap_Component::bindLuaPart was not called yet! Calling it now.");
+            bindLuaPart();
+        }
+        call<void>("initComponent");
+    }
     virtual void cleanupComponent()
-	{
-		if (ServiceLocator::luaVm().L()) {
-			call<void>("cleanupComponent");
-		} else {
-			LOG_W(boost::format("wrap_Component::cleanupComponent: cannot dispatch to Lua, because"
-			     " the lua_State is closing. (this=%1%; name=%2%)") % this % m_metaComponent->name());
-		}
-	}
+    {
+        luabind::wrapped_self_t& wrapper = luabind::detail::wrap_access::ref(*this);
+        if (wrapper.m_strong_ref.is_valid()) {
+            call<void>("cleanupComponent");
+        } else {
+            LOG_W(boost::format("wrap_Component::cleanupComponent: cannot dispatch to Lua, because"
+                 " the lua_State is closing. (this=%1%; name=%2%)") % this % m_metaComponent->name());
+        }
+    }
 
     static void nop(Component*) { /* NOP */ }
 
@@ -137,7 +138,7 @@ static void init(LuaVm& vm)
             .def("cleanupComponent", &Component::cleanupComponent, &wrap_Component::nop)
             .property("parent", &Component_parent)
             .property("componentName", &Component_componentName)
-			.def("_bindLuaPart", &wrap_Component::bindLuaPart)
+            .def("_bindLuaPart", &wrap_Component::bindLuaPart)
             .def(const_self == other<Component*>())
             .def(tostring(const_self))
             .LHISREFVALID2(Component),
@@ -195,7 +196,7 @@ std::string const& LuaMetaComponent::name() const
 void LuaMetaComponent::castDown(lua_State* L, Component* c) const
 {
     assert(dynamic_cast<wrap_Component*>(c));
-	luabind::object o(L, c->ref<wrap_Component>());
+    luabind::object o(L, c->ref<wrap_Component>());
     o.push(L);
 }
 

@@ -104,8 +104,11 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
 
 LuaVm::~LuaVm()
 {
-    lua_pushnil(m_L);
-    lua_setglobal(m_L, "jd");
+   lua_pushglobaltable(m_L);
+   lua_pushliteral(m_L, "jd");
+   lua_pushnil(m_L);
+   lua_rawset(m_L, -3);
+   lua_pop(m_L, 1);
 
     try { deinit(); }
     catch (std::exception const& e) {
@@ -116,8 +119,8 @@ LuaVm::~LuaVm()
     if (lua_gettop(m_L) != 0)
         LOG_W("Elements left on Lua stack: " + luaU::dumpstack(m_L));
 
-	lua_State* L = m_L;
-	m_L = nullptr;
+    lua_State* L = m_L;
+    m_L = nullptr;
     lua_close(L);
 }
 
@@ -171,46 +174,55 @@ void LuaVm::initLibs()
         }
 }
 
+static void collectgarbage(lua_State* L)
+{
+    lua_pushcfunction(L, [](lua_State* L) -> int {
+        lua_gc(L, LUA_GCCOLLECT, 0);
+        return 0;
+    });
+    luaU::pcall(L, 0, 0);
+}
 
 void LuaVm::deinit()
 {
-	// Try to avoid crashes caused by the undefined order
+    // Try to avoid crashes caused by the undefined order
     // in which lua_close calls finalizers.
 
-	lua_gc(m_L, LUA_GCCOLLECT, 0);
+    collectgarbage(m_L);
 
+    lua_pushglobaltable(m_L);
+    lua_pushliteral(m_L, "jd");
     lua_pushnil(m_L);
-    lua_setglobal(m_L, "jd");
-    lua_gc(m_L, LUA_GCCOLLECT, 0);
-
-	lua_pushglobaltable(m_L);
-
-	// clear package.loaded and .preload //
-	lua_pushliteral(m_L, "package");
-	lua_rawget(m_L, -2);
-
-	if (lua_isnil(m_L, -1)) {
-		// already cleared.
-		lua_pop(m_L, 2); // nil, globals table
-		return;
-	}
-
-	lua_pushliteral(m_L, "loaded");
-	lua_rawget(m_L, -2);
-
-	luaU::cleartable(m_L, -1);
-
-	lua_pushliteral(m_L, "preload");
-	lua_rawget(m_L, -2);
-	luaU::cleartable(m_L, -1);
-
-	lua_pop(m_L, 1); // pop package table
+    lua_rawset(m_L, -3);
+    collectgarbage(m_L);
 
 
-	// clear globals table //
-	luaU::cleartable(m_L, -1);
+    // clear package.loaded and .preload //
+    lua_pushliteral(m_L, "package");
+    lua_rawget(m_L, -2);
 
-	lua_gc(m_L, LUA_GCCOLLECT, 0);
+    if (lua_isnil(m_L, -1)) {
+        // already cleared.
+        lua_pop(m_L, 2); // nil, globals table
+        return;
+    }
+
+    lua_pushliteral(m_L, "loaded");
+    lua_rawget(m_L, -2);
+
+    luaU::cleartable(m_L, -1);
+
+    lua_pushliteral(m_L, "preload");
+    lua_rawget(m_L, -2);
+    luaU::cleartable(m_L, -1);
+
+    lua_pop(m_L, 1); // pop package table
+
+
+    // clear globals table //
+    luaU::cleartable(m_L, -1);
+
+    collectgarbage(m_L);
 }
 
 

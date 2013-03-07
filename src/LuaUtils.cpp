@@ -251,16 +251,16 @@ StackBalance::~StackBalance()
 void cleartable(lua_State* L, int idx)
 {
     assert(lua_istable(L, idx));
-	idx = lua_absindex(L, idx);
-	// see http://www.lua.org/manual/5.2/manual.html#lua_next
+    idx = lua_absindex(L, idx);
+    // see http://www.lua.org/manual/5.2/manual.html#lua_next
     lua_pushnil(L);
     while (next(L, idx) != 0) {
-		lua_pop(L, 1); // remove value, keep key on stack for lua_next
-		lua_pushvalue(L, -1); // copy key
-		lua_pushnil(L); // new value
-		lua_rawset(L, idx);
+        lua_pop(L, 1); // remove value, keep key on stack for lua_next
+        lua_pushvalue(L, -1); // copy key
+        lua_pushnil(L); // new value
+        lua_rawset(L, idx);
     }
-	lua_pop(L, 1);
+    lua_pop(L, 1);
 }
 
 // Lua serializer //
@@ -373,7 +373,7 @@ static std::string serializeTable(lua_State* L, int idx, unsigned depth)
         return callSerializeCallback(L, idx);
 
     std::string r(1, '{');
-	// see http://www.lua.org/manual/5.2/manual.html#lua_next
+    // see http://www.lua.org/manual/5.2/manual.html#lua_next
     lua_pushnil(L);
     unsigned nextSeqKey = 1;
     while (luaU::next(L, idx) != 0) {
@@ -384,7 +384,7 @@ static std::string serializeTable(lua_State* L, int idx, unsigned depth)
         } else {
             nextSeqKey = 0;
             lua_pushvalue(L, -2); // preserve key
-		    r += '[';
+            r += '[';
             r += serialize(L, -1, depth + 1);
             r += "]=";
         }

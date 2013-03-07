@@ -51,8 +51,9 @@ static std::ostream& operator<< (std::ostream& os, Entity const& e)
 {
     os << "jd.Entity ( @" << &e << "; ";
     auto const& comps = e.components();
-    for (Component const& c : comps)
-        os << c.metaComponent().name() << ' ';
+    if (!comps.empty())
+        for (Component const& c : comps)
+            os << c.metaComponent().name() << ' ';
     return os << ')';
 }
 
@@ -71,7 +72,7 @@ void init(LuaVm& vm)
     LHMODULE [
 
 #       define LHCURCLASS Entity
-		LHCLASS
+        LHCLASS
             .scope [
                 cObjectVec
             ]
