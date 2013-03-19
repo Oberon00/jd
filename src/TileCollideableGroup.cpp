@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <array>
+#include <boost/current_function.hpp>
 #include <functional>
 #include <unordered_set>
 
@@ -25,7 +26,8 @@ void TileCollideableInfo::setProxy(unsigned tileId, TileCollisionComponent* prox
             LOG_W("Attempt to unset a proxy, which was not set.");
     } else if (!m_proxyEntities.insert(std::make_pair(tileId, proxy)).second)
         throw std::logic_error(
-            __FUNCTION__ ": cannot assign proxy entity: already assigned");
+            BOOST_CURRENT_FUNCTION +
+            std::string(": cannot assign proxy entity: already assigned"));
 }
 
  WeakRef<TileCollisionComponent> TileCollideableInfo::proxy(unsigned tileId)

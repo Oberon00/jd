@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
-
+#include <cstring>
 
 namespace {
 static base64::byte charToByte(base64::byte c)

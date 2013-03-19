@@ -97,9 +97,9 @@ public:
 	~ResourceManager();
 
 private:
-	typedef std::tr1::unordered_map<std::string, WeakPtr> resMap_t;
+	typedef std::unordered_map<std::string, WeakPtr> resMap_t;
 	resMap_t m_resMap;
-	typedef std::tr1::unordered_map<std::string, Ptr> keptMap_t;
+	typedef std::unordered_map<std::string, Ptr> keptMap_t;
 	keptMap_t m_kept;
 
     ResourceNotFoundCallback m_callback;

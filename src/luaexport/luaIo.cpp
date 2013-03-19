@@ -1,8 +1,9 @@
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 #include "svc/FileSystem.hpp"
 
 #include <physfs.h>
 #include <zlib.h>
+#include <cstdint>
 
 static char const libname[] = "LuaIo";
 #include "ExportThis.hpp"
@@ -82,19 +83,24 @@ static void throwZErr(int r)
         throw std::runtime_error(zError(r));
 }
 
+typedef std::uint32_t uncompressed_len_t;
+
 static int compressString(lua_State* L)
 {
     size_t srcLen;
     char const* s = luaL_checklstring(L, 1, &srcLen);
     try {
         std::vector<char> buf(
-            std::max(compressBound(srcLen), 1ul) + sizeof(uLongf));
-        *reinterpret_cast<uLongf*>(&buf[0]) = srcLen;
-        uLongf dstLen = buf.size() - sizeof(uLongf);
+            std::max(
+                static_cast<size_t>(srcLen * 1.001 + 12 + 1),
+                static_cast<size_t>(1)) +
+            sizeof(uncompressed_len_t));
+        *reinterpret_cast<uncompressed_len_t*>(&buf[0]) = srcLen;
+        uLongf dstLen = buf.size() - sizeof(uncompressed_len_t);
         throwZErr(compress(
-            reinterpret_cast<Bytef*>(&buf[sizeof(uLongf)]), &dstLen,
+            reinterpret_cast<Bytef*>(&buf[sizeof(uncompressed_len_t)]), &dstLen,
             reinterpret_cast<Bytef const*>(s), srcLen));
-        lua_pushlstring(L, &buf[0], dstLen + sizeof(uLongf));
+        lua_pushlstring(L, &buf[0], dstLen + sizeof(uncompressed_len_t));
         return 1;
     } catch (std::exception const& e) {
         return luaL_error(L, "could not compress data: %s", e.what());
@@ -105,14 +111,16 @@ static int uncompressString(lua_State* L)
 {
     size_t srcLen;
     char const* s = luaL_checklstring(L, 1, &srcLen);
-    luaL_argcheck(L, srcLen >= sizeof(uLongf), 1, "invalid data");
+    luaL_argcheck(L, srcLen >= sizeof(uncompressed_len_t), 1, "invalid data");
     try {
         std::vector<char> buf(std::max(
-            *reinterpret_cast<uLongf const*>(s), 1ul));
+            *reinterpret_cast<uncompressed_len_t const*>(s),
+            static_cast<uncompressed_len_t>(1)));
         uLongf dstLen = buf.size();
         throwZErr(uncompress(
             reinterpret_cast<Bytef*>(&buf[0]), &dstLen,
-            reinterpret_cast<Bytef const*>(s + sizeof(uLongf)), srcLen - sizeof(uLongf)));
+            reinterpret_cast<Bytef const*>(
+                s + sizeof(uncompressed_len_t)), srcLen - sizeof(uncompressed_len_t)));
         lua_pushlstring(L, &buf[0], dstLen);
         return 1;
     } catch (std::exception const& e) {

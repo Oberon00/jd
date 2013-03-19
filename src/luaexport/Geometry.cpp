@@ -268,7 +268,7 @@ template <typename T>
 static int geo_create(lua_State* L);
 
 template <>
-static int geo_create<LuaVec2>(lua_State* L)
+int geo_create<LuaVec2>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -287,7 +287,7 @@ static int geo_create<LuaVec2>(lua_State* L)
 }
 
 template <>
-static int geo_create<LuaVec3>(lua_State* L)
+int geo_create<LuaVec3>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -303,7 +303,7 @@ static int geo_create<LuaVec3>(lua_State* L)
 }
 
 template <>
-static int geo_create<LuaRect>(lua_State* L)
+int geo_create<LuaRect>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -328,7 +328,7 @@ template <typename T>
 static int geo_tostring(lua_State* L);
 
 template <>
-static int geo_tostring<LuaVec2>(lua_State* L)
+inline int geo_tostring<LuaVec2>(lua_State* L)
 {
     LuaVec2* v = lgeo::to<LuaVec2>(L, 1);
     lua_pushfstring(L, "jd.Vec2(%f,%f)", v->x, v->y);
@@ -336,7 +336,7 @@ static int geo_tostring<LuaVec2>(lua_State* L)
 }
 
 template <>
-static int geo_tostring<LuaVec3>(lua_State* L)
+inline int geo_tostring<LuaVec3>(lua_State* L)
 {
     LuaVec3* v = lgeo::to<LuaVec3>(L, 1);
     lua_pushfstring(L, "jd.Vec3(%f,%f,%f)", v->x, v->y, v->z);
@@ -344,7 +344,7 @@ static int geo_tostring<LuaVec3>(lua_State* L)
 }
 
 template <>
-static int geo_tostring<LuaRect>(lua_State* L)
+inline int geo_tostring<LuaRect>(lua_State* L)
 {
     LuaRect* v = lgeo::to<LuaRect>(L, 1);
     lua_pushfstring(L, "jd.Rect(%f,%f,%f,%f)", v->left, v->top, v->width, v->height);

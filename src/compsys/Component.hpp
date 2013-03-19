@@ -14,7 +14,7 @@ class Entity;
 /* abstract */ class Component: public EnableWeakRefFromThis<Component>, private boost::noncopyable {
 public:
     Component(): m_parent(nullptr) { }
-    virtual ~Component() = 0 { }
+    virtual ~Component() = 0;
     virtual MetaComponent const& metaComponent() const = 0;
     virtual void initComponent() { }
     virtual void cleanupComponent() { }

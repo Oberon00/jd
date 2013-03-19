@@ -1,6 +1,6 @@
 #include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 
 #include <luabind/iterator_policy.hpp>
 #include <luabind/operator.hpp>

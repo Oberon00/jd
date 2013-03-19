@@ -31,7 +31,7 @@ struct LuaFunction
     }
 
 #define BOOST_PP_ITERATION_LIMITS (1, LUA_FUNCTION_MAX_ARGS)
-#define BOOST_PP_FILENAME_1 "LuaFunction.hpp" // include self
+#define BOOST_PP_FILENAME_1 "luaexport/LuaFunction.hpp" // include self
 #include BOOST_PP_ITERATE()
 
 private:
@@ -55,7 +55,7 @@ struct LuaFunction<void>
 
 #define VOID_SPEC
 #define BOOST_PP_ITERATION_LIMITS (1, LUA_FUNCTION_MAX_ARGS)
-#define BOOST_PP_FILENAME_1 "LuaFunction.hpp" // include self
+#define BOOST_PP_FILENAME_1 "luaexport/LuaFunction.hpp" // include self
 #include BOOST_PP_ITERATE()
 #undef VOID_SPEC
 

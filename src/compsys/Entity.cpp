@@ -1,6 +1,5 @@
 #include "Entity.hpp"
 
-#include "compsys/Component.hpp"
 #include "Logfile.hpp"
 
 

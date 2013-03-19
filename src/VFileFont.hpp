@@ -5,11 +5,12 @@
 
 #include <SFML/Graphics/Font.hpp>
 
+static void loadFontResource(struct VFileFont&, std::string const&);
 
 struct VFileFont: public sf::Font
 {
 private:
-    friend static void loadFontResource(VFileFont&, std::string const&);
+    friend void loadFontResource(VFileFont&, std::string const&);
     VFile stream;
 };
 

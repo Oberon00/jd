@@ -83,7 +83,8 @@ public:
 	Connection(signal_type& signal, typename signal_type::function_type const& slot):
 		m_signal(&signal)
 	{
-        signal.m_slots.push_front(std::move(Signal<R(TYPES)>::SlotRef(slot, this)));
+        signal.m_slots.push_front(std::move(
+            typename Signal<R(TYPES)>::SlotRef(slot, this)));
 		m_iterator = signal.m_slots.begin();
 	}
 
@@ -188,36 +189,38 @@ Signal<R(TYPES)>::SlotRef::~SlotRef()
 template<typename R TRAILING_TMPL_PARAMS>
 class ScopedConnection<R(TYPES)>: public Connection<R(TYPES)>, private boost::noncopyable
 {
+    typedef Connection<R(TYPES)> base_t;
+    typedef typename base_t::signal_type signal_type;
 public:
     ScopedConnection() { }
 
 	ScopedConnection(signal_type& signal, typename signal_type::function_type const& slot):
-	  Connection(signal, slot)
+	  base_t(signal, slot)
 	{ }
 
-	ScopedConnection(Connection const& rhs):
-		Connection(rhs)
+	ScopedConnection(base_t const& rhs):
+		base_t(rhs)
 	{ }
 
     ScopedConnection(ScopedConnection&& rhs):
-        Connection(std::move(rhs))
+        base_t(std::move(rhs))
     { }
 
 	~ScopedConnection()
 	{
-		if (isConnected())
-			disconnect();
+		if (this->isConnected())
+			this->disconnect();
     }
 
-    ScopedConnection& operator= (Connection const& rhs)
+    ScopedConnection& operator= (base_t const& rhs)
     {
-        Connection::operator=(rhs);
+        base_t::operator=(rhs);
         return *this;
     }
 
-    ScopedConnection& operator= (Connection&& rhs)
+    ScopedConnection& operator= (base_t&& rhs)
     {
-        Connection::operator=(std::forward<Connection&&>(rhs));
+        base_t::operator=(std::forward<base_t&&>(rhs));
         return *this;
     }
 

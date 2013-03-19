@@ -1,9 +1,10 @@
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 
 #include "svc/FileSystem.hpp"
 
 #include <boost/lexical_cast.hpp>
 #include <luabind/lua_include.hpp>
+#include <boost/current_function.hpp>
 
 #include <array>
 
@@ -176,11 +177,13 @@ void load(lua_State* L, std::string const& vfilename, char const* mode)
     int const r = lua_load(L, &loader, &loadInfo, ('@' + vfilename).c_str(), mode);
     if (r != LUA_OK) {
         if (!loadInfo.f.lastError().empty()) {
-            throw luaU::Error(__FUNCTION__ " failed: I/O error: " + loadInfo.f.lastError());
+            throw luaU::Error(
+                BOOST_CURRENT_FUNCTION + std::string(" failed: I/O error: ") +
+                loadInfo.f.lastError());
         } else {
             throw luaU::Error(L, 
-                __FUNCTION__ " failed: lua_load failed (" + luaU::errstring(r)
-                + ")");
+                BOOST_CURRENT_FUNCTION + std::string(" failed: lua_load failed (") +
+                luaU::errstring(r) + ")");
         }
     }
 
@@ -196,11 +199,15 @@ void dumpFunction(lua_State* L, VFile& f)
     int const r = lua_dump(L, &dumper, &f);
     if (r != LUA_OK) {
         if (!f.lastError().empty()) {
-            throw luaU::Error(__FUNCTION__ " failed: I/O error: " + f.lastError());
+            throw luaU::Error(
+                BOOST_CURRENT_FUNCTION +
+                std::string(" failed: I/O error: ") +
+                f.lastError());
         } else {
             throw luaU::Error(L, 
-                __FUNCTION__ " failed: lua_dump failed (" + luaU::errstring(r)
-                + ")");
+                BOOST_CURRENT_FUNCTION +
+                std::string(" failed: lua_dump failed (")
+                + luaU::errstring(r) + ")");
         }
     }
 }

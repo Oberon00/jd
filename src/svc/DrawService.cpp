@@ -4,20 +4,20 @@
 
 
 DrawService::Layer::Layer(Layer&& rhs):
-    group(std::move(rhs.group)),
-    view(std::move(rhs.view))
+    view(std::move(rhs.view)),
+    group(std::move(rhs.group))
 { }
 
 DrawService::Layer& DrawService::Layer::operator= (Layer&& rhs)
 {
-    group = std::move(rhs.group);
     view  = std::move(rhs.view);
+    group = std::move(rhs.group);
     return *this;
 }
 
 
 DrawService::DrawService(sf::RenderWindow& window, std::size_t layerCount):
-    m_window(window), m_layers(layerCount)
+    m_layers(layerCount), m_window(window)
 {
     resetLayerViews();
 }

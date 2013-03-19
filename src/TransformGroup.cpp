@@ -105,7 +105,8 @@ void TransformGroup::AutoEntry::setGroup(WeakRef<TransformGroup> g)
 
     Item entry(nullptr);
     if (m_group.valid() && m_entry) {
-        entry = *m_entry;
+        entry.drawable = m_entry->drawable;
+        entry.visible = m_entry->visible;
         release();
     }
     m_group = g;

@@ -3,6 +3,7 @@
 
 #include "compsys/Component.hpp"
 #include "jdConfig.hpp"
+#include "luaUtils.hpp"
 #include "LuaVm.hpp"
 
 #include <luabind/object.hpp>

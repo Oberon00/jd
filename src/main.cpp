@@ -1,8 +1,8 @@
 #include "cmdline.hpp"
 
 #include "Logfile.hpp"
-#include "LuaUtils.hpp"
-#include "ResourceLoaders.hpp"
+#include "luaUtils.hpp"
+#include "resourceLoaders.hpp"
 #include "ResourceManager.hpp"
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
@@ -173,16 +173,17 @@ int main(int argc, char* argv[])
 #   ifdef _WIN32
     std::string const basepath(std::string(getenv("APPDATA")) + '/' + gameName + '/');
 #   else
-    std::string const basepath("~/." + gameName + "/");
+    std::string const basepath(std::string(getenv("HOME")) + "/." + gameName +  '/');
 #endif
 
+    std::string const logpath(basepath + "jd.log");
     int r = EXIT_FAILURE;
     try {
         boost::filesystem::create_directories(basepath);
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
-        log().open(basepath + "jd.log");
+        log().open(logpath);
 
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
@@ -327,7 +328,8 @@ int main(int argc, char* argv[])
 #       ifdef _WIN32
         MessageBoxA(NULL, e.what(), "Jade Engine", MB_ICONERROR | MB_TASKMODAL);
 #       else
-        std::cerr << "Exception: " << e.what();
+        std::cerr << "Exception: " << e.what() << '\n'
+                  << "See logfile: " << logpath  << std::endl;
 #       endif
         return EXIT_FAILURE;
     }

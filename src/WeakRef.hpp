@@ -19,7 +19,7 @@ class EnableWeakRefFromThis;
 
 namespace detail {
 struct WeakRefConnection: private boost::noncopyable {
-    WeakRefConnection(void* r): referenced(r), refCount(0) { }
+    WeakRefConnection(void* r): refCount(0), referenced(r) { }
     
     void unref() {
         assert(refCount > 0);
@@ -151,7 +151,7 @@ public:
     }
 
 private:
-    friend ::detail::WeakRefConnection* ::detail::getConnection(EnableWeakRefFromThis<T>* r);
+    friend ::detail::WeakRefConnection* ::detail::getConnection<T>(EnableWeakRefFromThis<T>* r);
 
     void ensureConnection()
     {

@@ -3,7 +3,7 @@
 #include "compsys/Entity.hpp"
 #include "compsys/MetaComponent.hpp"
 #include "container.hpp"
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 
 #include <luabind/adopt_policy.hpp>
 #include <luabind/dependency_policy.hpp>

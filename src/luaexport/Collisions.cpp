@@ -1,6 +1,7 @@
 #include "Collisions.hpp"
 
 #include "comp/TileCollisionComponent.hpp"
+#include "comp/PositionComponent.hpp"
 #include "compsys/Entity.hpp"
 #include "container.hpp"
 #include "LuaFunction.hpp"

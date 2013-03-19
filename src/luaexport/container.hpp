@@ -26,7 +26,7 @@ void AssocContainer_set(C& c, typename C::key_type const& key, luabind::argument
     if (luabind::type(value) == LUA_TNIL)
         c.erase(key);
     else
-        c[key] = luabind::object_cast<C::mapped_type>(value);
+        c[key] = luabind::object_cast<typename C::mapped_type>(value);
 }
 
 template<typename C, bool ref>
@@ -61,7 +61,7 @@ void RandomAccessContainer_set(C& c, typename C::size_type i, luabind::argument 
         else
             throw std::out_of_range("attempt to set invalid index to nil");
     } else {
-        c.at(i) = luabind::object_cast<C::value_type>(value);
+        c.at(i) = luabind::object_cast<typename C::value_type>(value);
     }
 }
 

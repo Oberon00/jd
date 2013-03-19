@@ -333,7 +333,6 @@ bool intersection(
     sf::Vector2<T> p1, sf::Vector2<T> p2,
     sf::Rect<T> r)
 {
-    sf::Vector2<T> inside1 = p1, inside2 = p2;
     return clipLine(p1, p2, r);
 }
 

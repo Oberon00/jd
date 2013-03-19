@@ -150,7 +150,7 @@ void loadResource(ResT& resource, std::string const& name)
 {
 	if (!resource.loadFromFile(name)) {
 		throw jd::ResourceLoadError(
-			"failed loading resource (type: " + std::string(typeid(Resource).name()) +
+			"failed loading resource (type: " + std::string(typeid(ResT).name()) +
 			") from file \"" + name + "\".");
 	}
 }

@@ -4,7 +4,7 @@
 #include "compsys/Component.hpp"
 #include "Entity.hpp"
 #include "Logfile.hpp"
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 #include "ssig.hpp"
 #include "svc/ServiceLocator.hpp"
 #include "svc/LuaVm.hpp"

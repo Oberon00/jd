@@ -1,4 +1,4 @@
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 
 static char const libname[] = "LuaExtra";
 #include "ExportThis.hpp"

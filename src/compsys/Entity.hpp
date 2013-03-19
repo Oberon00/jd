@@ -1,6 +1,7 @@
-#ifndef ENTITY_HPP_INCLUDED
+    #ifndef ENTITY_HPP_INCLUDED
 #define ENTITY_HPP_INCLUDED ENTITY_HPP_INCLUDED
 
+#include "Component.hpp"
 #include "WeakRef.hpp"
 
 #include <boost/noncopyable.hpp>

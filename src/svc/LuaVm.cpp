@@ -4,7 +4,7 @@
 #include "FileSystem.hpp"
 #include "jdConfig.hpp"
 #include "Logfile.hpp"
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 
 #include <luabind/lua_include.hpp>
 extern "C" {
@@ -34,7 +34,7 @@ static char const registryKey = '\0';
 
 /* static */ LuaVm& LuaVm::get(lua_State* L)
 {
-    lua_rawgetp(L, LUA_REGISTRYINDEX, registryKey);
+    lua_rawgetp(L, LUA_REGISTRYINDEX, &registryKey);
     LuaVm* vm = static_cast<LuaVm*>(lua_touserdata(L, -1));
     if (!vm)
         throw luaU::Error("no LuaVm registered for the requested state");
@@ -61,7 +61,7 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
     lua_pop(m_L, 1);
 
     lua_pushlightuserdata(m_L, this);
-    lua_rawsetp(m_L, LUA_REGISTRYINDEX, registryKey);
+    lua_rawsetp(m_L, LUA_REGISTRYINDEX, &registryKey);
 
     auto const require = [this](lua_CFunction f, char const* n)->void {
         luaL_requiref(m_L, n, f, n[0] ? true : false);

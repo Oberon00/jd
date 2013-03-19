@@ -3,21 +3,32 @@
 
 #include <boost/version.hpp>
 
-
 #if BOOST_VERSION >= 105300
-
 #include <boost/get_pointer.hpp>
 
 
 namespace luabind { namespace detail { namespace has_get_pointer_ {
-    template<class T>
-    T * get_pointer(std::shared_ptr<T> const& p) { return p.get(); }
-}}}
+  template<class T>
+  struct impl<std::shared_ptr<T>> {
+      BOOST_STATIC_CONSTANT(bool, value = true);
+      typedef boost::mpl::bool_<value> type;
+  };
+  
+  template<class T>
+  struct impl<const std::shared_ptr<T>>: impl<std::shared_ptr<T>> { };
+  
+  template<class T>
+  struct impl<volatile std::shared_ptr<T>>: impl<std::shared_ptr<T>> { };
+  
+  template<class T>
+  struct impl<const volatile std::shared_ptr<T>>: impl<std::shared_ptr<T>> { };
+}}
+using boost::get_pointer;
+}
+
+
 
 #else // if BOOST_VERSION < 105300
-
-#include <memory>
-
 
 // Not standard conforming: add function to ::std(::tr1)
 namespace std {

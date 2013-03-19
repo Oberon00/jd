@@ -1,5 +1,5 @@
 #include "Logfile.hpp"
-#include "LuaUtils.hpp"
+#include "luaUtils.hpp"
 #include "svc/FileSystem.hpp"
 
 #include <boost/algorithm/string/split.hpp>

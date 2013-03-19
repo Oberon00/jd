@@ -29,7 +29,7 @@ public:
     template<typename T>
     static T& get()
     {
-        return ServiceLocator::get(T::staticMetaComponent).as<T>();
+        return ServiceLocator::get(T::staticMetaComponent).template as<T>();
     }
 
     static Service& get (MetaComponent const& m);

@@ -5,7 +5,6 @@
 extern "C" {
 #   include "lua.h"
 }
-#include "LuaUtils.hpp"
 #include "svc/FileSystem.hpp"
 #include "svc/ServiceLocator.hpp"
 

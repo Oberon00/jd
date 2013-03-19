@@ -13,8 +13,8 @@
 namespace jd {
 
 Tileset::Tileset():
-    m_ordering(linewiseOrdered),
-    m_texture(nullptr)
+    m_texture(nullptr),
+    m_ordering(linewiseOrdered)
 {
 }
 
@@ -206,7 +206,7 @@ void Tilemap::animate(sf::Time elapsedTime)
 
 void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    sf::FloatRect const viewRect(viewRect(target.getView()));
+    sf::FloatRect const viewRect(jd::viewRect(target.getView()));
 
     Vector3u size = this->size();
     sf::Vector2i firstTPos(tilePosFromGlobal(topLeft(viewRect)));

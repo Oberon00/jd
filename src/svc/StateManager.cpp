@@ -2,6 +2,8 @@
 
 #include "State.hpp"
 
+#include <boost/current_function.hpp>
+
 
 namespace {
 
@@ -28,12 +30,14 @@ private:
 
 #define STRINGID_WRAPPER(fname) \
     void StateManager::fname(std::string const& id) \
-    {                                                        \
-        State* s = stateForId(id);                           \
-        if (s)                                               \
+    {                                               \
+        State* s = stateForId(id);                  \
+        if (s)                                      \
             fname(*s);                              \
-        else                                                 \
-            throw std::runtime_error(__FUNCTION__ ": invalid state id"); \
+        else                                        \
+            throw std::runtime_error(               \
+                BOOST_CURRENT_FUNCTION +            \
+                std::string(": invalid state id")); \
     }
 
 STRINGID_WRAPPER(push)
@@ -42,7 +46,7 @@ STRINGID_WRAPPER(switchTo)
 
 void StateManager::pushAdditional(State& s)
 {
-#define MODIFYING Modify _detail_mod_##__LINE__(m_modifying, __FUNCTION__);
+#define MODIFYING Modify _detail_mod_##__LINE__(m_modifying, BOOST_CURRENT_FUNCTION);
     s.initialize();
 
     MODIFYING
@@ -74,7 +78,9 @@ void StateManager::push(State& s)
 void StateManager::pop()
 {
     if (m_stack.empty())
-        throw std::logic_error(__FUNCTION__ ": stack already empty.");
+        throw std::logic_error(
+            BOOST_CURRENT_FUNCTION +
+            std::string(": stack already empty."));
     if (m_concurrentCount.back() - 1 == 0) {
         popRunning();
     } else {
@@ -94,7 +100,9 @@ void StateManager::popRunning()
     MODIFYING
 
     if (m_stack.empty())
-        throw std::logic_error(__FUNCTION__ ": stack already empty.");
+        throw std::logic_error(
+            BOOST_CURRENT_FUNCTION +
+            std::string(": stack already empty."));
 
     auto const firstPopped = m_stack.end() - m_concurrentCount.back();
     for (auto it = firstPopped; it != m_stack.end(); ++it) {

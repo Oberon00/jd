@@ -17,6 +17,10 @@
 static char const libname[] = "SfGraphics";
 #include "ExportThis.hpp"
 
+static_assert(
+    luabind::detail::has_get_pointer<std::shared_ptr<sf::Image>>::value,
+    "get_pointer for std::shared_ptr broke again");
+
 
 template <typename T, typename B>
 static void addDrawableDefs(luabind::class_<T, B >& c)
@@ -34,7 +38,7 @@ template <typename T, typename B>
 static void addTextureProp(luabind::class_<T, B >& c)
 {
     c.property("texture",
-        (T::Ptr(T::*)())&T::resource,
+        (typename T::Ptr(T::*)())&T::resource,
         &T::setResource);
 }
 
@@ -344,7 +348,6 @@ static void init(LuaVm& vm)
     ];
 
     lua_State* L = vm.L();
-    static int const colorCount = 9;
     lua_getglobal(L, "jd");
     lua_getfield(L, -1, "Color");
     object stdColors(from_stack(L, -1));

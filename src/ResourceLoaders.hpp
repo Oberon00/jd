@@ -2,6 +2,7 @@
 #define RESOURCE_LOADERS_HPP_INCLUDED RESOURCE_LOADERS_HPP_INCLUDED
 
 #include "svc/FileSystem.hpp"
+#include "exceptions.hpp"
 
 #include <array>
 #include <string>
@@ -15,10 +16,10 @@ struct ResLoadTraits;
 #define LOAD_TRAITS(t, pfx, nExts, exts_) \
     template<> struct ResLoadTraits<t> {                  \
         static std::string const prefix;                  \
-        static std::array<char*, nExts> const exts;       \
+        static std::array<char const*, nExts> const exts; \
     };                                                    \
     std::string const ResLoadTraits<t>::prefix(pfx);      \
-    std::array<char*, nExts> const                        \
+    std::array<char const*, nExts> const                  \
         ResLoadTraits<t>::exts = {LOAD_TRAITS_DETAIL_EXPAND_ARGS exts_};
 
 std::string const findResource(
