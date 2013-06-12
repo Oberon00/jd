@@ -91,6 +91,8 @@ source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
 
 set(JD_HEADERS
+    ssig.hpp
+    ssig_template.hpp
     MapInfo.hpp
     exceptions.hpp
     resourceLoaders.hpp
