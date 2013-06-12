@@ -10,6 +10,7 @@
 #define GAME tmp + GAMENAME
 #define BASEDATA tmp + "base.jd"
 #define DOCDIR "..\doc"
+#define SOUNDSRCFILE "..\dbg\res\snd\sources.txt"
 
 #if !FileExists(GAME)
 #   error Run ..\buildInstaller.bat to create the installer.
@@ -59,6 +60,7 @@ Source: "floodfill.ico"; DestDir: "{app}"
 Source: "{#GAME}"; DestDir: "{app}"
 Source: "{#BASEDATA}"; DestDir: "{app}"
 Source: "{#DOCDIR}\usermanual.pdf"; DestDir: "{app}"
+Source: "{#SOUNDSRCFILE}"; DestName: "Sound-Quellen.txt"; DestDir: "{app}"
 
 
 #define PARAMS 'Parameters: """{app}\' + GAMENAME + '"""'
@@ -78,4 +80,6 @@ Filename: "{app}\usermanual.pdf"; \
 Name: "{group}\{#APPN}"; {#ICONSETTINGS}
 Name: "{commondesktop}\{#APPN}"; {#ICONSETTINGS}; Tasks: desktopicon
 Name: "{group}\{#APPN} Benutzerhandbuch"; Filename: "{app}\usermanual.pdf"
+Name: "{group}\Quellen der {#APPN}-Sounds"; Filename: "{app}\Sound-Quellen.txt"
 Name: "{group}\{#APPN} entfernen"; Filename: "{uninstallexe}"
+
