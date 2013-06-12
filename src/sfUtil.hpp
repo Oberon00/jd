@@ -2,12 +2,13 @@
 #define SFUTIL_HPP_INCLUDED SFUTIL_HPP_INCLUDED
 
 #include <SFML/Graphics/Rect.hpp>
-#include <SFML/Graphics/View.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
 
 #include <functional> // std::hash
 #include <string>
+
+namespace sf { class Text; class String; class View; }
 
 
 namespace jd {
@@ -341,6 +342,9 @@ bool intersection(
 sf::FloatRect viewRect(sf::View const& view);
 void setViewRect(sf::View& view, sf::FloatRect const& newRect);
 
+// sf::Text utility //
+
+void breakTextLines(sf::Text& text, float maxX);
 
 } // namespace jd
 

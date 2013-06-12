@@ -221,6 +221,7 @@ static void init(LuaVm& vm)
             .property("underlined", &Text_isUnderlined, &Text_setUnderlined)
             .def("isRegular", &Text_isRegular)
             .def("resetStyle", &Text_resetStyle)
+            .def("breakLines", &jd::breakTextLines)
             .LHMEMFN(findCharacterPos)
             .property("color",
                 &LHCURCLASS::getColor, &LHCURCLASS::setColor, copy(result));
