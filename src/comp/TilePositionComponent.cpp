@@ -45,7 +45,7 @@ void TilePositionComponent::on_positionChanged(
         oldRect == newRect ||
         m_tilemap.tilePosFromGlobal(jd::center(oldRect)) ==
             static_cast<sf::Vector2i>(jd::vec3to2(m_tilePosition)));
-
+    (void)oldRect;
     sf::Vector3i const newPos = jd::vec2to3(
         m_tilemap.tilePosFromGlobal(jd::center(newRect)),
         static_cast<int>(m_tilePosition.z));
