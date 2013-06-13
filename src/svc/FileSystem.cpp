@@ -1,6 +1,7 @@
 #include "FileSystem.hpp"
 
 #include "cmdline.hpp"
+#include "encoding.hpp"
 #include "Logfile.hpp"
 
 #include <boost/filesystem/operations.hpp>
@@ -191,6 +192,7 @@ void VFileDevice::throwErr()
 
 FileSystem::Init::Init()
 {
+    // Use original encoding here.
     CALL_PHYSFS(PHYSFS_init, argv()[0]);
 }
 
@@ -237,7 +239,7 @@ bool FileSystem::mount(
     int flags)
 {
     if (flags & writeDirectory) {
-        boost::filesystem::create_directories(path);
+        boost::filesystem::create_directories(enc::utf8ToWideChar(path));
         CALL_PHYSFS(PHYSFS_setWriteDir, path.c_str());
     }
 

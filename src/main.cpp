@@ -1,5 +1,6 @@
 #include "cmdline.hpp"
 
+#include "encoding.hpp"
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
 #include "resourceLoaders.hpp"
@@ -116,23 +117,28 @@ static void redirectHandle(DWORD nStdHandle, FILE* stdfile, char const* name)
 static bool attachToConsole()
 {
     // ERROR_ACCESS_DENIED: Already owns console.
-    return AttachConsole(ATTACH_PARENT_PROCESS) != 0 || GetLastError() == ERROR_ACCESS_DENIED;
+    return AttachConsole(ATTACH_PARENT_PROCESS) != 0 ||
+           GetLastError() == ERROR_ACCESS_DENIED;
 }
+
+
 
 static void initializeStdStreams(std::string const& basepath)
 {
+    std::string basepath_a = enc::ucs2ToAnsi(enc::utf8ToUcs2(basepath));
     if (attachToConsole()) {
         LOG_D("Attaching to console.");
         redirectHandle(STD_OUTPUT_HANDLE, stdout, "stdout");
         redirectHandle(STD_ERROR_HANDLE, stderr, "stderr");
         redirectHandle(STD_INPUT_HANDLE, stdin, "stdin");
     } else {
-        if (!std::freopen((basepath + "/stdout.txt").c_str(), "w", stdout))
+        if (!std::freopen((basepath_a + "/stdout.txt").c_str(), "w", stdout))
             LOG_W("Redirecting stdout to file failed.");
-        if (!std::freopen((basepath + "/stderr.txt").c_str(), "w", stderr))
+        if (!std::freopen((basepath_a + "/stderr.txt").c_str(), "w", stderr))
             LOG_W("Redirecting stderr to file failed.");
     }
 }
+
 #else
 inline void initializeStdStreams(std::string const&)
 {
@@ -149,17 +155,38 @@ std::vector<std::string> const& commandLine() { return cmdLine; }
 int main(int argc, char* argv[])
 {
     assert(argc > 0);
+#ifdef _WIN32
+    std::string defaultGame;
+    { // Scope for moduleName, moduleNameW
+        uint16_t moduleNameW[MAX_PATH];
+        if (GetModuleFileNameW(
+                NULL,
+                reinterpret_cast<wchar_t*>(moduleNameW),
+                MAX_PATH) != 0) {
+            defaultGame = enc::ucs2ToUtf8(moduleNameW);
+        } else {
+            defaultGame = argv[0];
+        }
+    }
+#else
     std::string const defaultGame = argv[0]; // Adjust if neccessary.
+#endif
     std::string game = defaultGame;
     bool gameSpecified = false;
     if (argc >= 2) {
+#ifdef _WIN32
+        game = enc::ucs2ToUtf8(enc::ansiToUcs2(argv[1]));
+#else
         game = argv[1];
+#endif
         gameSpecified = true;
     }
-    const boost::filesystem::path gamePath(game);
-    std::string gameName = (gamePath.has_stem() ?
-        gamePath.stem() : gamePath.has_filename() ?
-            gamePath.filename() : gamePath.parent_path().filename()).string();
+    const boost::filesystem::path gamePath = enc::utf8ToWideChar(game);
+    std::string gameName = enc::wideCharToUtf8((
+        gamePath.has_stem() ?
+            gamePath.stem() : gamePath.has_filename() ?
+            gamePath.filename() : gamePath.parent_path().filename()
+        ).wstring());
 
     bool gameNameFound = true;
     if (gameName.empty() || gameName == ".") {
@@ -171,7 +198,8 @@ int main(int argc, char* argv[])
 
     // Create directory for log file
 #   ifdef _WIN32
-    std::string const basepath(std::string(getenv("APPDATA")) + '/' + gameName + '/');
+    std::string const basepath = enc::wideCharToUtf8(_wgetenv(L"APPDATA")) + '/' +
+        gameName + '/';
 #   else
     std::string const basepath(std::string(getenv("HOME")) + "/." + gameName +  '/');
 #endif
@@ -179,11 +207,15 @@ int main(int argc, char* argv[])
     std::string const logpath(basepath + "jd.log");
     int r = EXIT_FAILURE;
     try {
-        boost::filesystem::create_directories(basepath);
+        boost::filesystem::create_directories(enc::utf8ToWideChar(basepath));
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
+#ifdef _WIN32
+        log().open(enc::ucs2ToAnsi(enc::utf8ToUcs2(logpath)));
+#else
         log().open(logpath);
+#endif
 
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
@@ -199,6 +231,11 @@ int main(int argc, char* argv[])
         argc_ = argc;
         argv_ = argv;
         cmdLine.assign(argv, argv + argc);
+#ifdef _WIN32
+        for (auto& arg: cmdLine) {
+            arg = enc::ucs2ToUtf8(enc::ansiToUcs2(arg));
+        }
+#endif
 
         // Construct and register services // 
         auto const regSvc = ServiceLocator::registerService;
@@ -278,9 +315,11 @@ int main(int argc, char* argv[])
                 bind(&EventDispatcher::dispatch, &eventDispatcher));
 
             // Various other initializations //
-            ServiceLocator::stateManager().setStateNotFoundCallback(&loadStateFromLua);
+            ServiceLocator::stateManager().setStateNotFoundCallback(
+                &loadStateFromLua);
 
-            DrawService drawService(*window, conf.get<std::size_t>("misc.layerCount", 1UL));
+            DrawService drawService(
+                *window, conf.get<std::size_t>("misc.layerCount", 1UL));
             regSvc(drawService);
             mainloop.connect_preFrame(bind(&Timer::beginFrame, &timer));
             mainloop.connect_update(bind(&Timer::processCallbacks, &timer));
@@ -310,23 +349,27 @@ int main(int argc, char* argv[])
             // Run mainloop //
             LOG_D("Mainloop...");
             r = ServiceLocator::mainloop().exec();
-            LOG_D("Mainloop finished with exit code " + boost::lexical_cast<std::string>(r) + ".");
+            LOG_D("Mainloop finished with exit code " +
+                  boost::lexical_cast<std::string>(r) + ".");
 
             LOG_D("Cleanup...");
             stateManager.clear();
-			luaVm.deinit();
+            luaVm.deinit();
 
         } catch (luabind::error const& e) {
             throw luaU::Error(e);
         } catch (luabind::cast_failed const& e) {
-            throw luaU::Error(e.what() + std::string("; type: ") + e.info().name());
+            throw luaU::Error(
+                e.what() + std::string("; type: ") + e.info().name());
         }
 
     // In case of an exception, log it and notify the user //
     } catch (std::exception const& e) {
         log().logEx(e, loglevel::fatal, LOGFILE_LOCATION);
 #       ifdef _WIN32
-        MessageBoxA(NULL, e.what(), "Jade Engine", MB_ICONERROR | MB_TASKMODAL);
+        std::wstring const msg = enc::utf8ToWideChar(e.what());
+        MessageBoxW(
+            NULL, msg.c_str(), L"Jade Engine", MB_ICONERROR | MB_TASKMODAL);
 #       else
         std::cerr << "Exception: " << e.what() << '\n'
                   << "See logfile: " << logpath  << std::endl;
