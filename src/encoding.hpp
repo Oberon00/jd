@@ -25,8 +25,12 @@ std::string wideCharToUtf8(std::wstring const& w);
 std::wstring utf8ToWideChar(std::string const& utf8);
 
 #ifdef _WIN32
-std::string ucs2ToAnsi(ucs2str const& w);
-ucs2str ansiToUcs2(std::string const& w);
+std::string ucs2ToAnsi(ucs2str const& ucs2);
+ucs2str ansiToUcs2(std::string const& ansi);
+
+std::wstring utf8ToFstreamArg(std::string const& utf8);
+#else
+inline std::string const& utf8ToFstreamArg(std::string const& utf8) { return utf8; }
 #endif
 
 } // namespace enc

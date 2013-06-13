@@ -1,7 +1,6 @@
 #include "FileSystem.hpp"
 
 #include "cmdline.hpp"
-#include "encoding.hpp"
 #include "Logfile.hpp"
 
 #include <boost/filesystem/operations.hpp>
@@ -239,7 +238,7 @@ bool FileSystem::mount(
     int flags)
 {
     if (flags & writeDirectory) {
-        boost::filesystem::create_directories(enc::utf8ToWideChar(path));
+        boost::filesystem::create_directories(path);
         CALL_PHYSFS(PHYSFS_setWriteDir, path.c_str());
     }
 

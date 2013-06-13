@@ -191,8 +191,8 @@ set(Boost_USE_MULTITHREADED  ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 # Cannot just append "filesystem" to the find_package line:
 # somehow FindBoost.cmake fails to recognize it.
-set(Boost_FIND_COMPONENTS system filesystem)
-find_package(Boost REQUIRED system filesystem)
+set(Boost_FIND_COMPONENTS system filesystem locale)
+find_package(Boost REQUIRED system filesystem locale)
 include_directories(
     "${CMAKE_SOURCE_DIR}/src"
     ${SFML_INCLUDE_DIR}

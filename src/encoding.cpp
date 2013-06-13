@@ -119,5 +119,11 @@ ucs2str ansiToUcs2(std::string const& ansi)
     return reinterpret_cast<std::uint16_t*>(&wideChar[0]);
 }
 
-} // namespace enc
+std::wstring utf8ToFstreamArg(std::string const& utf8)
+{
+    return utf8ToWideChar(utf8);
+}
+
 #endif
+
+} // namespace enc

@@ -21,11 +21,15 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/locale/generator.hpp>
 #include <luabind/adopt_policy.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <physfs.h>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+
+#include <iostream> // for cout, clog, cerr, cin .imbue()
+#include <locale>
 
 #if defined(BOOST_MSVC) && defined(_DEBUG) && defined(JD_HAS_VLD)
 #   include <vld.h>
@@ -37,6 +41,7 @@
 #   define WIN32_LEAN_AND_MEAN
 #   define NOMINMAX
 #   include <Windows.h>
+#   include <Shellapi.h> // CommandLineToArgvW 
 #endif
 
 
@@ -125,16 +130,16 @@ static bool attachToConsole()
 
 static void initializeStdStreams(std::string const& basepath)
 {
-    std::string basepath_a = enc::ucs2ToAnsi(enc::utf8ToUcs2(basepath));
+    std::wstring wbasepath = enc::utf8ToWideChar(basepath);
     if (attachToConsole()) {
         LOG_D("Attaching to console.");
         redirectHandle(STD_OUTPUT_HANDLE, stdout, "stdout");
         redirectHandle(STD_ERROR_HANDLE, stderr, "stderr");
         redirectHandle(STD_INPUT_HANDLE, stdin, "stdin");
     } else {
-        if (!std::freopen((basepath_a + "/stdout.txt").c_str(), "w", stdout))
+        if (!_wfreopen((wbasepath + L"/stdout.txt").c_str(), L"w", stdout))
             LOG_W("Redirecting stdout to file failed.");
-        if (!std::freopen((basepath_a + "/stderr.txt").c_str(), "w", stderr))
+        if (!_wfreopen((wbasepath + L"/stderr.txt").c_str(), L"w", stderr))
             LOG_W("Redirecting stderr to file failed.");
     }
 }
@@ -154,68 +159,83 @@ std::vector<std::string> const& commandLine() { return cmdLine; }
 
 int main(int argc, char* argv[])
 {
-    assert(argc > 0);
-#ifdef _WIN32
-    std::string defaultGame;
-    { // Scope for moduleName, moduleNameW
-        uint16_t moduleNameW[MAX_PATH];
-        if (GetModuleFileNameW(
-                NULL,
-                reinterpret_cast<wchar_t*>(moduleNameW),
-                MAX_PATH) != 0) {
-            defaultGame = enc::ucs2ToUtf8(moduleNameW);
-        } else {
-            defaultGame = argv[0];
-        }
-    }
-#else
-    std::string const defaultGame = argv[0]; // Adjust if neccessary.
-#endif
-    std::string game = defaultGame;
-    bool gameSpecified = false;
-    if (argc >= 2) {
-#ifdef _WIN32
-        game = enc::ucs2ToUtf8(enc::ansiToUcs2(argv[1]));
-#else
-        game = argv[1];
-#endif
-        gameSpecified = true;
-    }
-    const boost::filesystem::path gamePath = enc::utf8ToWideChar(game);
-    std::string gameName = enc::wideCharToUtf8((
-        gamePath.has_stem() ?
-            gamePath.stem() : gamePath.has_filename() ?
-            gamePath.filename() : gamePath.parent_path().filename()
-        ).wstring());
-
-    bool gameNameFound = true;
-    if (gameName.empty() || gameName == ".") {
-        gameName = "JadeEngine";
-        gameNameFound = false;
-    }
-    
-    // First thing to do: get the logfile opened.
-
-    // Create directory for log file
-#   ifdef _WIN32
-    std::string const basepath = enc::wideCharToUtf8(_wgetenv(L"APPDATA")) + '/' +
-        gameName + '/';
-#   else
-    std::string const basepath(std::string(getenv("HOME")) + "/." + gameName +  '/');
-#endif
-
-    std::string const logpath(basepath + "jd.log");
     int r = EXIT_FAILURE;
     try {
-        boost::filesystem::create_directories(enc::utf8ToWideChar(basepath));
+        assert(argc > 0);
+
+        // setup commandline functions //
+        argc_ = argc;
+        argv_ = argv;
+        
+#ifdef _WIN32
+        wchar_t* wcmdLine = GetCommandLineW();
+        wchar_t** wargv = CommandLineToArgvW(wcmdLine, &argc);
+        cmdLine.reserve(argc);
+        for (int i = 0; i < argc; ++i) {
+            cmdLine.push_back(enc::wideCharToUtf8(wargv[i]));
+        }
+#else
+        cmdLine.assign(argv, argv + argc);
+#endif
+
+#ifdef _WIN32
+        std::locale::global(boost::locale::generator().generate("")); // Use UTF-8
+        boost::filesystem::path::imbue(std::locale()); // Not sure if this is necessary.
+        std::cout.imbue(std::locale());
+        std::cerr.imbue(std::locale());
+        std::clog.imbue(std::locale());
+        std::cin.imbue(std::locale());
+
+        std::string defaultGame;
+        { // Scope for moduleName, moduleNameW
+            uint16_t moduleNameW[MAX_PATH];
+            if (GetModuleFileNameW(
+                    NULL,
+                    reinterpret_cast<wchar_t*>(moduleNameW),
+                    MAX_PATH) != 0) {
+                defaultGame = enc::ucs2ToUtf8(moduleNameW);
+            } else {
+                defaultGame = commandLine()[0];
+            }
+        }
+#else
+        std::string const defaultGame = argv[0]; // Adjust if necessary.
+#endif
+        std::string game = defaultGame;
+        bool gameSpecified = false;
+        if (argc >= 2) {
+            game = commandLine()[1];
+            gameSpecified = true;
+        }
+        const boost::filesystem::path gamePath = enc::utf8ToWideChar(game);
+        std::string gameName = (
+            gamePath.has_stem() ?
+                gamePath.stem() : gamePath.has_filename() ?
+                gamePath.filename() : gamePath.parent_path().filename()
+        ).string();
+
+        bool gameNameFound = true;
+        if (gameName.empty() || gameName == ".") {
+            gameName = "JadeEngine";
+            gameNameFound = false;
+        }
+    
+
+        // Create directory for log file
+#ifdef _WIN32
+        std::string const basepath = enc::wideCharToUtf8(_wgetenv(L"APPDATA")) + '/' +
+            gameName + '/';
+#else
+        std::string const basepath(std::string(getenv("HOME")) + "/." + gameName +  '/');
+#endif
+
+        std::string const logpath(basepath + "jd.log");
+
+        boost::filesystem::create_directories(basepath);
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
-#ifdef _WIN32
-        log().open(enc::ucs2ToAnsi(enc::utf8ToUcs2(logpath)));
-#else
         log().open(logpath);
-#endif
 
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
@@ -226,16 +246,6 @@ int main(int argc, char* argv[])
 
         LOG_D("Initialization...");
         initializeStdStreams(basepath);
-
-        // setup commandline functions //
-        argc_ = argc;
-        argv_ = argv;
-        cmdLine.assign(argv, argv + argc);
-#ifdef _WIN32
-        for (auto& arg: cmdLine) {
-            arg = enc::ucs2ToUtf8(enc::ansiToUcs2(arg));
-        }
-#endif
 
         // Construct and register services // 
         auto const regSvc = ServiceLocator::registerService;
