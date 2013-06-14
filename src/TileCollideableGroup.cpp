@@ -274,7 +274,7 @@ TileLayersCollideableGroup::TileLayersCollideableGroup(
     setEndLayer(endLayer);
     setFirstLayer(firstLayer);
 }
-    
+
 
 
 void TileLayersCollideableGroup::setFirstLayer(unsigned layer)
@@ -425,7 +425,7 @@ std::vector<Collision> TileStackCollideableGroup::colliding(
     return result;
 }
 
-    
+
     TileStackCollideableGroup::FilterCallback
 TileStackCollideableGroup::setFilter(FilterCallback filter)
 {
@@ -433,5 +433,3 @@ TileStackCollideableGroup::setFilter(FilterCallback filter)
     m_filter = filter;
     return oldfilter;
 }
-
-

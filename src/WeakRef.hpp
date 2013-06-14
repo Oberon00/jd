@@ -20,7 +20,7 @@ class EnableWeakRefFromThis;
 namespace detail {
 struct WeakRefConnection: private boost::noncopyable {
     WeakRefConnection(void* r): refCount(0), referenced(r) { }
-    
+
     void unref() {
         assert(refCount > 0);
         if (--refCount == 0 && !referenced)
@@ -75,7 +75,7 @@ public:
         ++m_connection->refCount;
         return *this;
     }
-    
+
     ~WeakRef()
     {
         m_connection->unref();
@@ -89,7 +89,7 @@ public:
     T* operator-> () const { return validate(); }
     T* get() const { return validate(); }
     T* getOpt() const {  return m_connection->referenced ? deref() : nullptr; }
-    
+
     bool operator! () const { return !valid(); }
     bool valid() const { return m_connection->referenced != nullptr; }
 
@@ -197,7 +197,7 @@ WeakRef<T>::WeakRef(EnableWeakRefFromThis<U>* u)
 template<typename T>
 WeakRef<T>::WeakRef(EnableWeakRefFromThis<T>* t):
     m_offset(0),
-    m_connection(::detail::getConnection(t))   
+    m_connection(::detail::getConnection(t))
 {
     assert(m_connection->referenced == static_cast<T*>(t));
     ++m_connection->refCount;

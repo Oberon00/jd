@@ -17,7 +17,7 @@ class Timer: public Component {
 
 public:
     typedef boost::function<void()> Callback;
- 
+
 private:
     struct Entry {
         Callback callback;
@@ -40,7 +40,7 @@ public:
     };
 
     Timer();
-    
+
     CallOrder callAfter(sf::Time after, Callback const& callback);
     CallOrder callEvery(sf::Time every, Callback const& callback);
 
@@ -68,4 +68,3 @@ private:
 };
 
 #endif
-

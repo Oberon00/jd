@@ -58,4 +58,3 @@ void TilePositionComponent::on_positionChanged(
     m_tilePosition = static_cast<Vector3u>(newPos);
     m_sig_tilePositionChanged(oldPos, m_tilePosition);
 }
-

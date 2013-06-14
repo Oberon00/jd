@@ -1,5 +1,5 @@
 #if !BOOST_PP_IS_ITERATING
-#	error "Do not include this file! Include ssig.hpp instead."
+#   error "Do not include this file! Include ssig.hpp instead."
 #endif
 
 #define NARGS BOOST_PP_ITERATION()
@@ -23,32 +23,32 @@ void discard_result(F f TRAILING_TYPED_ARGS_RREF)
 template<typename R TRAILING_TMPL_PARAMS>
 class Signal<R(TYPES)> {
 public:
-	typedef boost::function<R(TYPES)> function_type;
-	typedef Connection<R(TYPES)> connection_type;
+    typedef boost::function<R(TYPES)> function_type;
+    typedef Connection<R(TYPES)> connection_type;
 
-	R const operator() (TYPED_ARGS)
-	{
-		for (auto it = m_slots.begin(); it != m_slots.end(); ) {
+    R const operator() (TYPED_ARGS)
+    {
+        for (auto it = m_slots.begin(); it != m_slots.end(); ) {
             if (!it->slot) {
                 it = m_slots.erase(it);
             } else {
-			    if (detail::check<R>(boost::next(it) == m_slots.end()))
-				    return it->slot(ARGS); // return last result
-			    it->slot(ARGS); // discard all other results
+                if (detail::check<R>(boost::next(it) == m_slots.end()))
+                    return it->slot(ARGS); // return last result
+                it->slot(ARGS); // discard all other results
                 ++it;
             }
-		}
-		return detail::default_result<R>();
-	}
+        }
+        return detail::default_result<R>();
+    }
 
 
-	connection_type connect(function_type const& slot);
+    connection_type connect(function_type const& slot);
 
-	bool empty() const { return m_slots.empty(); }
+    bool empty() const { return m_slots.empty(); }
 
 
 private:
-	friend Connection<R(TYPES)>;
+    friend Connection<R(TYPES)>;
 
     typedef std::list<connection_type*> connection_container_type;
     struct SlotRef: private boost::noncopyable {
@@ -64,29 +64,29 @@ private:
         function_type slot;
     };
 
-	typedef std::list<SlotRef> container_type;
-	container_type m_slots;
+    typedef std::list<SlotRef> container_type;
+    container_type m_slots;
 
-   
+
 };
 
 template<typename R TRAILING_TMPL_PARAMS>
 class Connection<R(TYPES)>: public ConnectionBase {
 public:
-	typedef Signal<R(TYPES)> signal_type;
-	static_assert(
-		std::is_same<typename signal_type::connection_type, Connection>::value,
-		"internal error: inconsistent typedef");
+    typedef Signal<R(TYPES)> signal_type;
+    static_assert(
+        std::is_same<typename signal_type::connection_type, Connection>::value,
+        "internal error: inconsistent typedef");
 
     Connection(): m_signal(nullptr) { } // construct disconnected signal
 
-	Connection(signal_type& signal, typename signal_type::function_type const& slot):
-		m_signal(&signal)
-	{
+    Connection(signal_type& signal, typename signal_type::function_type const& slot):
+        m_signal(&signal)
+    {
         signal.m_slots.push_front(std::move(
             typename Signal<R(TYPES)>::SlotRef(slot, this)));
-		m_iterator = signal.m_slots.begin();
-	}
+        m_iterator = signal.m_slots.begin();
+    }
 
 
     ~Connection()
@@ -121,19 +121,19 @@ public:
         return *this;
     }
 
-	void disconnect()
-	{
-		checkSignal();
-		m_iterator->slot.clear();
+    void disconnect()
+    {
+        checkSignal();
+        m_iterator->slot.clear();
         m_iterator->connections.remove(this);
-		m_signal = nullptr;
-	}
+        m_signal = nullptr;
+    }
 
-	signal_type& signal() { checkSignal(); return *m_signal; }
+    signal_type& signal() { checkSignal(); return *m_signal; }
 
-	bool isConnected() const { return m_signal != nullptr; };
+    bool isConnected() const { return m_signal != nullptr; };
 
-	R invokeSlot(TYPED_ARGS) { return m_iterator->slot(ARGS); }
+    R invokeSlot(TYPED_ARGS) { return m_iterator->slot(ARGS); }
 
 private:
     void takeOver(Connection&& rhs)
@@ -162,20 +162,20 @@ private:
     friend Signal<R(TYPES)>;
     void signalDestroyed() { m_signal = nullptr; }
 
-	void checkSignal() const
-	{
-		if (!m_signal)
-			throw SsigError("attempt to use a disconnected signal");
-	}
+    void checkSignal() const
+    {
+        if (!m_signal)
+            throw SsigError("attempt to use a disconnected signal");
+    }
 
-	signal_type* m_signal;
-	typename signal_type::container_type::iterator m_iterator;
+    signal_type* m_signal;
+    typename signal_type::container_type::iterator m_iterator;
 };
 
 template<typename R TRAILING_TMPL_PARAMS>
 typename Signal<R(TYPES)>::connection_type Signal<R(TYPES)>::connect(function_type const& slot)
 {
-	return connection_type(*this, slot);
+    return connection_type(*this, slot);
 }
 
 template<typename R TRAILING_TMPL_PARAMS>
@@ -194,22 +194,22 @@ class ScopedConnection<R(TYPES)>: public Connection<R(TYPES)>, private boost::no
 public:
     ScopedConnection() { }
 
-	ScopedConnection(signal_type& signal, typename signal_type::function_type const& slot):
-	  base_t(signal, slot)
-	{ }
+    ScopedConnection(signal_type& signal, typename signal_type::function_type const& slot):
+      base_t(signal, slot)
+    { }
 
-	ScopedConnection(base_t const& rhs):
-		base_t(rhs)
-	{ }
+    ScopedConnection(base_t const& rhs):
+        base_t(rhs)
+    { }
 
     ScopedConnection(ScopedConnection&& rhs):
         base_t(std::move(rhs))
     { }
 
-	~ScopedConnection()
-	{
-		if (this->isConnected())
-			this->disconnect();
+    ~ScopedConnection()
+    {
+        if (this->isConnected())
+            this->disconnect();
     }
 
     ScopedConnection& operator= (base_t const& rhs)
@@ -227,4 +227,3 @@ public:
 private:
     ScopedConnection& operator= (ScopedConnection const&);
 };
-

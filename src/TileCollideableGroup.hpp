@@ -105,9 +105,9 @@ public:
         Info(unsigned tileId, WeakRef<Entity> const& entity):
             tileId(tileId), entity(entity), discard(false) { }
 
-	    unsigned tileId;
-	    WeakRef<Entity> entity;
-	    bool discard;
+        unsigned tileId;
+        WeakRef<Entity> entity;
+        bool discard;
     };
 
     typedef std::function<void(sf::Vector2u, std::vector<Info>&)> FilterCallback;

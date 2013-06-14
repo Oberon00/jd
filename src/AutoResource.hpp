@@ -5,10 +5,10 @@
 
 
 // Provide a function of the following form to use AutoResource<mediaT, resT>:
-// 
+//
 // void updateAutoResourceMedia(mediaT& m, typename ResourceTraits<resT>::Ptr p)
 // {
-//    m.setWhatever(*p); 
+//    m.setWhatever(*p);
 // }
 
 template <typename mediaT, typename resT>
@@ -26,27 +26,27 @@ public:
     void setResource(Ptr resource);
 
 private:
-	Ptr m_resource;
+    Ptr m_resource;
 };
 
 template <typename mediaT, typename resT>
 AutoResource<mediaT, resT>::AutoResource(Ptr resource):
-	mediaT(*resource),
-	m_resource(std::move(resource))
+    mediaT(*resource),
+    m_resource(std::move(resource))
 {}
 
 template <typename mediaT, typename resT>
 typename AutoResource<mediaT, resT>::ConstPtr
 AutoResource<mediaT, resT>::resource() const
 {
-	return m_resource;
+    return m_resource;
 }
 
 template <typename mediaT, typename resT>
 typename AutoResource<mediaT, resT>::Ptr
 AutoResource<mediaT, resT>::resource()
 {
-	return m_resource;
+    return m_resource;
 }
 
 template <typename mediaT, typename resT>

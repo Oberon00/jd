@@ -20,22 +20,22 @@ public:
     //{ Transition functions
     void pushAdditional(State& s);
     void pushAdditional(std::string const& id);
-        
+
     void push(State& s);
     void push(std::string const& id);
-        
+
     void pop(); // pop one
-    
+
     void popRunning(); // pop all running
     void clear();
 
     // switchTo(s); <=~> pop(); push(s);
-    void switchTo(State& s); 
+    void switchTo(State& s);
     void switchTo(std::string const& id);
     //}
-        
+
     State* active();
-        
+
     std::vector<State*> const running() const;
     std::vector<State*> const& stacked() const;
 

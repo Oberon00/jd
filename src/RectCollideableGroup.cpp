@@ -101,7 +101,7 @@ void RectCollideableGroup::collide()
         PositionComponent& p = **it;
         for (auto it2 = std::next(it); it2 != end(m_items); ++it2) {
             PositionComponent& p2 = **it2;
-            if (!p.rect().intersects(p2.rect())) 
+            if (!p.rect().intersects(p2.rect()))
                 continue;
             notifyEntity(p, p2);
             notifyEntity(p2, p);

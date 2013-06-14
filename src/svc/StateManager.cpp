@@ -74,7 +74,7 @@ void StateManager::push(State& s)
     s.resume();
 }
 
-        
+
 void StateManager::pop()
 {
     if (m_stack.empty())
@@ -130,14 +130,14 @@ void StateManager::switchTo(State& s)
         popRunning();
     push(s);
 }
- 
+
 //}
-        
+
 State* StateManager::active()
 {
     return m_stack.empty() ? nullptr : m_stack.back();
 }
-        
+
 std::vector<State*> const StateManager::running() const
 {
     assert(m_concurrentCount.size() >= m_stack.size());

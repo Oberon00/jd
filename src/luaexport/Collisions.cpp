@@ -157,10 +157,10 @@ static void init(LuaVm& vm)
 #       define LHCURCLASS CollideableGroup
         LHCLASS
             .def("colliding", &CollideableGroup_colliding)
-            .def("colliding", 
+            .def("colliding",
                 (CollisionVec (LHCURCLASS::*)(sf::FloatRect const&, Entity* e))
                     &LHCURCLASS::colliding)
-            .def("colliding", 
+            .def("colliding",
                 (CollisionVec (LHCURCLASS::*)(sf::Vector2f, sf::Vector2f))
                     &LHCURCLASS::colliding)
             .LHMEMFN(collideWith)
@@ -174,10 +174,10 @@ static void init(LuaVm& vm)
             .LHMEMFN(setProxy)
             .def("proxy", &TileCollideableInfo_proxy)
             .LHMEMFN(setColliding)
-            .def("colliding", 
+            .def("colliding",
                 (CollisionVec (LHCURCLASS::*)(sf::FloatRect const&, Entity* e, PositionVec*))
                     &LHCURCLASS::colliding, pure_out_value(_4))
-            .def("colliding", 
+            .def("colliding",
                 (CollisionVec (LHCURCLASS::*)(sf::Vector2f, sf::Vector2f, PositionVec*))
                     &LHCURCLASS::colliding, pure_out_value(_4))
             .def("colliding", &TileCollideableInfo_colliding)

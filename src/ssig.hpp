@@ -2,7 +2,7 @@
 #define SSIG_HPP_INCLUDED SSIG_HPP_INCLUDED
 
 #ifndef SSIG_MAX_ARGS
-#	define SSIG_MAX_ARGS 5
+#   define SSIG_MAX_ARGS 5
 #endif
 
 #include <boost/function.hpp>
@@ -19,8 +19,8 @@
 class SsigError: public std::logic_error
 {
 public:
-	SsigError(char const* msg): std::logic_error(msg) { }
-	SsigError(std::string const& msg): std::logic_error(msg) { }
+    SsigError(char const* msg): std::logic_error(msg) { }
+    SsigError(std::string const& msg): std::logic_error(msg) { }
 };
 
 namespace detail {
@@ -28,7 +28,7 @@ namespace detail {
 template<typename R>
 inline R default_result()
 {
-	throw SsigError("attempt to invoke empty signal with non-void return type");
+    throw SsigError("attempt to invoke empty signal with non-void return type");
 }
 
 template<>
@@ -82,7 +82,7 @@ class ScopedConnection;
         }                                                                 \
     private: Signal<signature> m_sig_##name;
 
-    
+
 #define SSIG_DEFINE_STATICSIGNAL(name, signature) \
     public:                                                               \
         static Signal<signature>::connection_type const connect_##name(   \

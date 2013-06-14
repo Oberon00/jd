@@ -26,7 +26,7 @@ public:
     void initLib(std::string const& libname);
     void initLibs();
 
-	void deinit();
+    void deinit();
 
     lua_State* L() { return m_L; }
 

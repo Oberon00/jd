@@ -11,13 +11,13 @@ HEADER_TEMPLATE = string.Template(
 
 class $compName: public Component {
     JD_COMPONENT
-    
+
 public:
     $compName();
     ~$compName();
 
 private:
-    
+
 };
 
 #endif
@@ -52,7 +52,7 @@ static void init(LuaVm& vm)
     LHMODULE [
 #       define LHCURCLASS $compName
         class_<LHCURCLASS, Component>("$compName")
-            
+
 #       undef LHCURCLASS
     ];
 }
@@ -91,7 +91,7 @@ def createComponent(name, pathPrefix = "comp/"):
 
 if __name__ == "__main__":
     compPath = (sys.argv[2] if len(sys.argv) > 2 else "comp") + "/"
-    
+
     createComponent(
         sys.argv[1],
         compPath)

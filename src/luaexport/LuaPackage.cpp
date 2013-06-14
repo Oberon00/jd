@@ -29,7 +29,7 @@ static std::string const searchPath(
     //  std::string will do it.
     path.c_str();
     for (auto& elem : pelems) {
-        if (elem.end() != path.end()) 
+        if (elem.end() != path.end())
             *elem.end() = '\0';
         char const* filename = &*elem.begin();
 

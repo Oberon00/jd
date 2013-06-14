@@ -83,4 +83,3 @@ bool EventDispatcher::isMouseButtonPressed(sf::Mouse::Button b) const
 {
     return m_hasFocus && sf::Mouse::isButtonPressed(b);
 }
-

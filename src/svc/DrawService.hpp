@@ -20,7 +20,7 @@ public:
         Layer() { }
         Layer(Layer&& rhs);
         Layer& operator= (Layer&& rhs);
-        
+
         sf::View view;
         TransformGroup group;
 
@@ -37,7 +37,7 @@ public:
     void clear();
     void draw();
     void display();
-    
+
     void resetLayerViews();
 
     sf::Color backgroundColor() const { return m_backgroundColor; }

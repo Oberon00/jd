@@ -16,10 +16,10 @@ SoundManager::~SoundManager()
 }
 
 SoundManager::FadedMusic::FadedMusic(
-	VFileMusic& music, float target, sf::Time fadeDuration):
-	target(target),
-	music(&music),
-	increment(0)
+    VFileMusic& music, float target, sf::Time fadeDuration):
+    target(target),
+    music(&music),
+    increment(0)
 {
     if (fadeDuration.asMicroseconds()) {
         music.setVolume(100 - target);
@@ -87,7 +87,7 @@ void SoundManager::setBackgroundMusic(VFileMusic& music, sf::Time fadeDuration)
 void SoundManager::tidy()
 {
     m_playingSounds.erase(
-	std::remove_if(m_playingSounds.begin(), m_playingSounds.end(),
+    std::remove_if(m_playingSounds.begin(), m_playingSounds.end(),
             [](AutoSound& snd) { return snd.getStatus() != sf::Sound::Playing; }),
     m_playingSounds.end());
 }

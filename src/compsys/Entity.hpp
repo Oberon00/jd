@@ -26,7 +26,7 @@ public:
     EntityState state() const { return m_state; }
 
     Component* operator[](MetaComponent const& meta);
-    
+
     template <typename T>
     T* get()
     {
@@ -41,7 +41,7 @@ public:
         if (!c) {
             std::string const typeName = typeid(T).name();
             throw std::runtime_error(
-                "required component not available (type " + typeName + ')'); 
+                "required component not available (type " + typeName + ')');
         }
         return *c;
     }

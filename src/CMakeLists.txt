@@ -8,7 +8,7 @@ set(SVC_HEADERS
     svc/Configuration.hpp
     svc/ServiceLocator.hpp
     svc/Timer.hpp
-    svc/SoundManager.hpp)    
+    svc/SoundManager.hpp)
 source_group("Service Headers" FILES ${SVC_HEADERS})
 
 set(SVC_SOURCES
@@ -38,7 +38,7 @@ set(COMPSYS_SOURCES
     compsys/ComponentRegistry.cpp
     compsys/Entity.cpp)
 source_group("Component System Sources" FILES ${COMPSYS_SOURCES})
-    
+
 set(COMP_HEADERS
     comp/PositionComponent.hpp
     comp/TileCollisionComponent.hpp
@@ -124,7 +124,7 @@ set(JD_HEADERS
     ${COMPSYS_HEADERS}
     ${COMP_HEADERS}
     ${LUAEXPORT_HEADERS})
-   
+
 set(JD_SOURCES
     encoding.cpp
     MapInfo.cpp
@@ -150,21 +150,21 @@ set(COMP_DEFS "SFML_STATIC")
 
 if (MSVC)
     add_definitions(
-	/wd4251 # disable warnings about undefined DLL interfaces (luabind)
-    /wd4709 # comma operator in array subscript expression (warning is issued incorrectly)
-	/wd4250 # 'class1' : inherits 'class2::member' via dominance (Boost.IOStreams)
-	/W4     # warning level 4
-	/MP)    # multicore compilation
+        /wd4251 # disable warnings about undefined DLL interfaces (luabind)
+        /wd4709 # comma operator in array subscript expression (warning is issued incorrectly)
+        /wd4250 # 'class1' : inherits 'class2::member' via dominance (Boost.IOStreams)
+        /W4     # warning level 4
+        /MP)    # multicore compilation
     list(APPEND COMP_DEFS "_CRT_SECURE_NO_WARNINGS" "_SCL_SECURE_NO_WARNINGS")
-    
-	# Disable auto-linkage
-	list(APPEND COMP_DEFS  "BOOST_ALL_NO_LIB")
-	
-    # Comment out the following line, if you do not have 
+
+    # Disable auto-linkage
+    list(APPEND COMP_DEFS  "BOOST_ALL_NO_LIB")
+
+    # Comment out the following line, if you do not have
     # VLD (http://vld.codeplex.com) installed
     #list(APPEND COMP_DEFS "JD_HAS_VLD")
 else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11") 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
     # see http://stackoverflow.com/a/11004675/2128694
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     execute_process(
@@ -210,4 +210,3 @@ target_link_libraries(jd
     ${PHYSFS_LIBRARY}
     ${ZLIB_LIBRARY}
     ${Boost_LIBRARIES})
-

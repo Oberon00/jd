@@ -54,7 +54,7 @@ void dumpFunction(lua_State* L, std::string const& vfilename);
 //      ...
 //      {nullptr, 0} // always mark the end with a entry whose name is nullptr
 // exportenum(L, myTableIdx, myenum);
-// 
+//
 // myTableIdx must be the index of a table
 
 struct ExportedEnumValue {

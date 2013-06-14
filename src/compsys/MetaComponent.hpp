@@ -40,7 +40,7 @@ public:
 };
 
 // Two MetaComponent instances are equal if and only if they have the same
-// adresses. In addition, only equal MetaComponents may have equal names. 
+// adresses. In addition, only equal MetaComponents may have equal names.
 bool operator== (MetaComponent const& lhs, MetaComponent const& rhs);
 bool operator!= (MetaComponent const& lhs, MetaComponent const& rhs);
 

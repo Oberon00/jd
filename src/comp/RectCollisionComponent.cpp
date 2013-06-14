@@ -7,4 +7,3 @@ RectCollisionComponent::RectCollisionComponent()
 RectCollisionComponent::~RectCollisionComponent()
 {
 }
-

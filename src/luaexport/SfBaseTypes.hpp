@@ -93,7 +93,7 @@ namespace luabind {
     template <typename T>                                       \
     struct default_converter<cppt<T> const&>                    \
       : default_converter<cppt<T>> { };
-    
+
 CONVERTER(LuaVec2, sf::Vector2)
 CONVERTER(LuaVec3, sf::Vector3)
 CONVERTER(LuaRect, sf::Rect)

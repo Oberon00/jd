@@ -50,7 +50,7 @@ static int destroyComponentRegistry(lua_State* L)
 {
     lua_pushlightuserdata(L, &get()); // adress of the C++ ComponentRegistry is the key
     lua_rawget(L, LUA_REGISTRYINDEX); // to the Lua registry in L
-    
+
     // Registry for this state exists yet?
     assert(lua_type(L, -1) == LUA_TUSERDATA);
     auto& result = *static_cast<ComponentRegistry*>(lua_touserdata(L, -1));

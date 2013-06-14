@@ -28,4 +28,3 @@ static void init(LuaVm& vm)
 #       undef LHCURCLASS
     ];
 }
-

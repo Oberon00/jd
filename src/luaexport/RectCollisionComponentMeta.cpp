@@ -20,8 +20,7 @@ static void init(LuaVm& vm)
 #       define LHCURCLASS RectCollisionComponent
         class_<LHCURCLASS, Component, WeakRef<Component>>("RectCollisionComponent")
             .def(constructor<Entity&>())
-            
+
 #       undef LHCURCLASS
     ];
 }
-

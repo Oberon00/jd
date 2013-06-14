@@ -41,7 +41,7 @@
 #   define WIN32_LEAN_AND_MEAN
 #   define NOMINMAX
 #   include <Windows.h>
-#   include <Shellapi.h> // CommandLineToArgvW 
+#   include <Shellapi.h> // CommandLineToArgvW
 #endif
 
 namespace fs = boost::filesystem;
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
         // setup commandline functions //
         argc_ = argc;
         argv_ = argv;
-        
+
 #ifdef _WIN32
         wchar_t* wcmdLine = GetCommandLineW();
         wchar_t** wargv = CommandLineToArgvW(wcmdLine, &argc);
@@ -238,7 +238,7 @@ int main(int argc, char* argv[])
             gameName = "JadeEngine";
             gameNameFound = false;
         }
-    
+
 
         // Create directory for log file
 #ifdef _WIN32
@@ -268,7 +268,7 @@ int main(int argc, char* argv[])
         LOG_D("Initialization...");
         initializeStdStreams(basepath);
 
-        // Construct and register services // 
+        // Construct and register services //
         auto const regSvc = ServiceLocator::registerService;
 
         LOG_D("Initializing virtual filesystem...");

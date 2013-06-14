@@ -181,7 +181,7 @@ void load(lua_State* L, std::string const& vfilename, char const* mode)
                 BOOST_CURRENT_FUNCTION + std::string(" failed: I/O error: ") +
                 loadInfo.f.lastError());
         } else {
-            throw luaU::Error(L, 
+            throw luaU::Error(L,
                 BOOST_CURRENT_FUNCTION + std::string(" failed: lua_load failed (") +
                 luaU::errstring(r) + ")");
         }
@@ -204,7 +204,7 @@ void dumpFunction(lua_State* L, VFile& f)
                 std::string(" failed: I/O error: ") +
                 f.lastError());
         } else {
-            throw luaU::Error(L, 
+            throw luaU::Error(L,
                 BOOST_CURRENT_FUNCTION +
                 std::string(" failed: lua_dump failed (")
                 + luaU::errstring(r) + ")");
@@ -231,7 +231,7 @@ StackBalance::StackBalance(lua_State* L, int diff, Action action):
     m_L((assert(L), L)),
     m_desiredTop(lua_gettop(L) + diff),
     m_action(action)
-{    
+{
     assert(m_desiredTop >= 0);
 
     // When adjusting, debug makes no sense because
@@ -282,7 +282,7 @@ static std::string quoteLuaString(lua_State* L, int idx)
     assert(s);
     std::string r;
     r.reserve(len + 3);
-    
+
     r += '"';
 
     for (std::size_t i = 0; i < len; ++i) {

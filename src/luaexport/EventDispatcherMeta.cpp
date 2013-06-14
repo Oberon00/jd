@@ -19,7 +19,7 @@ JD_EVENT_TABLE_BEGIN(EventDispatcher)
     E0(lostFocus)
     E0(gainedFocus)
     E1(textEntered)
-    
+
     E1(keyPressed)
     E1(keyReleased)
 
@@ -69,6 +69,6 @@ static void init(LuaVm& vm)
         ],
 #       define LHCURCLASS EventDispatcher
         class_<LHCURCLASS, Component>(BOOST_STRINGIZE(LHCURCLASS))
-            .LHPROPG(isWindowFocused)  
+            .LHPROPG(isWindowFocused)
     ];
 }

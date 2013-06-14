@@ -77,7 +77,7 @@ Tileset const& Tilemap::tileset() const
     return m_tileset;
 }
 
-        
+
 void Tilemap::setSize(Vector3u const& size)
 {
     m_map.resize(size.x * size.y * size.z);
@@ -93,7 +93,7 @@ Vector3u Tilemap::size() const
         m_map.size() / (m_columnCount * m_rowCount));
 }
 
-    
+
 // get prefix for consistence with other drawables
 sf::FloatRect Tilemap::getLocalBounds() const
 {
@@ -109,7 +109,7 @@ sf::FloatRect Tilemap::getGlobalBounds() const
     return getTransform().transformRect(getLocalBounds());
 }
 
-        
+
 unsigned Tilemap::operator[] (Vector3u pos) const
 {
     return m_map[index(pos)];
@@ -221,7 +221,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     std::size_t const renderedTileCount = distance.x * distance.y * size.z;
     static std::size_t const verticesPerTile = 4;
     std::vector<sf::Vertex> vertices(renderedTileCount * verticesPerTile);
-    
+
     sf::Vector2f const firstPos(localTilePos(firstTPos));
     std::size_t iVertices = 0;
     sf::Vector2f const tileSize(m_tileset.size());
@@ -248,7 +248,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
                 vertices[iVertices].texCoords  = texPos;
                 vertices[iVertices++].position = iPos;
                 vertices[iVertices].texCoords  = sf::Vector2f(texPos.x, texPos.y + tileSize.y);
-                vertices[iVertices++].position = sf::Vector2f(iPos.x,   iPos.y   + tileSize.y);  
+                vertices[iVertices++].position = sf::Vector2f(iPos.x,   iPos.y   + tileSize.y);
                 vertices[iVertices].texCoords  = texPos + tileSize;
                 vertices[iVertices++].position = iPos   + tileSize;
                 vertices[iVertices].texCoords  = sf::Vector2f(texPos.x +  tileSize.x, texPos.y);
@@ -261,7 +261,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
         iPos.y = firstPos.y;
         iMap  += mapSkipZ;
     } // for z
-    
+
     if (vertices.empty())
         return;
     states.transform *= getTransform();
@@ -282,7 +282,7 @@ std::size_t Tilemap::maybeAnimated(std::size_t tid, Vector3u pos) const
     auto iPos = m_posAnimations.find(pos);
     if (iPos != m_posAnimations.end())
         return iPos->second.currentFrame();
-    
+
     auto iTid = m_tidAnimations.find(tid);
     if (iTid != m_tidAnimations.end())
         return iTid->second.currentFrame();

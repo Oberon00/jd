@@ -87,7 +87,7 @@ Logfile::Logfile():
 Logfile::~Logfile()
 {
     LOG_I("End logging at " + full_time());
-    
+
     if (m_style == logstyle::html)
         m_file << "\n</tbody></table> </body> </html>\n";
     sf::err().rdbuf(m_originalSfBuf);

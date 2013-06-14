@@ -20,7 +20,7 @@ class TransformGroup:
     public sf::Drawable, public sf::Transformable,
     public EnableWeakRefFromThis<TransformGroup>,
     // Copies would have to notify all owners of Item*s because if
-    // they delete the sf::Drawables, all TransformGroups which 
+    // they delete the sf::Drawables, all TransformGroups which
     // have a pointer to it need to know.
     public boost::noncopyable
 {
@@ -64,7 +64,7 @@ public:
 
         bool visible() const;
         void setVisible(bool visible);
-        
+
     private:
         WeakRef<TransformGroup> m_group;
         Item* m_entry;

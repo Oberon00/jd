@@ -301,7 +301,7 @@ MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename)
             }
             p.y = 0;
             ++z;
-        }  
+        }
     }
     return result;
 }

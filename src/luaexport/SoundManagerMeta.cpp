@@ -66,4 +66,3 @@ static void init(LuaVm& vm)
 
     ];
 }
-

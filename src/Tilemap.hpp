@@ -23,7 +23,7 @@ typedef sf::Vector3<unsigned> Vector3u;
 {
 public:
     enum TileOrdering { linewiseOrdered, columnwiseOrdered };
-    
+
     Tileset();
     Tileset(
         sf::Vector2u size,
@@ -40,24 +40,24 @@ private:
     TileOrdering m_ordering;
     sf::Vector2u m_tileCount;
 };
-    
+
 // z-axis of a Vector3 is the layer.
 class Tilemap: public sf::Drawable, public sf::Transformable
 {
 public:
     void setTileset(Tileset const& ts);
     Tileset const& tileset() const;
-        
+
     void setSize(Vector3u const& size);
     Vector3u size() const;
-    
+
     // get prefix for consistence with other drawables
     sf::FloatRect getLocalBounds() const;
     sf::FloatRect getGlobalBounds() const;
-        
+
     unsigned operator[] (Vector3u pos) const;
     void set(Vector3u pos, unsigned tileId);
-    
+
     sf::Vector2f localTilePos(sf::Vector2i pos) const;
     sf::Vector2f globalTilePos(sf::Vector2i pos) const;
 
@@ -73,7 +73,7 @@ public:
     void addAnimation(Vector3u pos, std::size_t lastTid, float speed);
     void removeAnimation(std::size_t tid);
     void removeAnimation(Vector3u pos);
-    
+
     void animate(sf::Time elapsedTime);
 
 protected:
@@ -90,7 +90,7 @@ private:
             m_firstTid(firstTid), m_lastTid(lastTid),
             m_speed(speed), m_currentFrame(static_cast<float>(firstTid))
         { }
-        
+
         void animate(sf::Time elapsedTime);
         std::size_t currentFrame() const;
 
@@ -108,7 +108,7 @@ private:
     std::unordered_map<Vector3u, Animation> m_posAnimations;
 
     Tileset m_tileset;
-    
+
     std::size_t m_columnCount;
     std::size_t m_rowCount;
     std::vector<unsigned> m_map;

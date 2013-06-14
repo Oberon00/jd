@@ -59,4 +59,3 @@ DEFINE_SVC_GETTER(Configuration, configuration)
         throw Error("ServiceLocator: no Service of type \"" + m.name() + "\" registered");
     return *it->second;
 }
-

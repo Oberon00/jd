@@ -283,33 +283,33 @@ static void init(LuaVm& vm)
             .def(tostring(const_self)),
 #       undef LHCURCLASS
 
-#		define LHCURCLASS TransformGroup::AutoEntry
-		class_<LHCURCLASS>("TransformGroupEntry")
-			.property("visible", &LHCURCLASS::visible, &LHCURCLASS::setVisible)
-			.LHMEMFN(release),
-#		undef LHCURCLASS
+#       define LHCURCLASS TransformGroup::AutoEntry
+        class_<LHCURCLASS>("TransformGroupEntry")
+            .property("visible", &LHCURCLASS::visible, &LHCURCLASS::setVisible)
+            .LHMEMFN(release),
+#       undef LHCURCLASS
 
         cImage,
         cTexture,
         class_<Font>("@Font@"),
         cFont,
-        class_<TransformGroup, bases<Transformable, Drawable>>("@TranformGroup@"),  
+        class_<TransformGroup, bases<Transformable, Drawable>>("@TranformGroup@"),
 
 #       define LHCURCLASS GroupEntry
-		class_<GroupEntry, bases<TransformGroup, TransformGroup::AutoEntry>>("TransformGroup")
+        class_<GroupEntry, bases<TransformGroup, TransformGroup::AutoEntry>>("TransformGroup")
             .def(constructor<>())
             .def(constructor<TransformGroup&>())
             .property("group", &LHCURCLASS::group, &LHCURCLASS::setGroup),
 #       undef LHCURCLASS
 
-		class_<Sprite, bases<Drawable, Transformable>>("@Sprite@"),
+        class_<Sprite, bases<Drawable, Transformable>>("@Sprite@"),
         cSprite,
-        
+
         class_<Text, bases<Drawable, Transformable>>("@Text@"),
         cText,
 
 #       define LHCURCLASS Shape
-        class_<LHCURCLASS, bases<Drawable, Transformable>>("Shape") 
+        class_<LHCURCLASS, bases<Drawable, Transformable>>("Shape")
             .property("localBounds", &LHCURCLASS::getLocalBounds)
             .property("bounds", &LHCURCLASS::getGlobalBounds)
             .property("fillColor",
@@ -323,7 +323,7 @@ static void init(LuaVm& vm)
             .property("textureRect",
                 &LHCURCLASS::getTextureRect, &LHCURCLASS::setTextureRect),
 #       undef LHCURCLASS
-        
+
         class_<RectangleShape, Shape>("@RectangleShape@"),
         cRectangleShape,
 

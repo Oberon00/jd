@@ -167,7 +167,7 @@ boost::iostreams::stream_offset VFileDevice::seek(
         from = m_f.getSize();
     else
         throw std::invalid_argument("invalid seekdir");
-    
+
     throwErr();
     sf::Int64 const result = m_f.seek(from + off);
     throwErr();
@@ -249,5 +249,3 @@ bool FileSystem::mount(
     }
     return true;
 }
-
-

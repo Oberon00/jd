@@ -15,7 +15,7 @@ Timer::CallOrder Timer::callAfter(sf::Time after, Callback const& callback)
     std::size_t const id = m_nextId++;
     Entry e = {
         callback,
-        m_timer.getElapsedTime() + after, sf::Time::Zero, 
+        m_timer.getElapsedTime() + after, sf::Time::Zero,
         id};
     m_entries.push_back(std::move(e));
     return Timer::CallOrder(*this, id);
@@ -29,7 +29,7 @@ Timer::CallOrder Timer::callEvery(sf::Time every, Callback const& callback)
     std::size_t const id = m_nextId++;
     Entry e = {
         callback,
-        m_timer.getElapsedTime() + every, every, 
+        m_timer.getElapsedTime() + every, every,
         id};
     assert(e.at > m_timer.getElapsedTime());
     m_entries.push_back(std::move(e));

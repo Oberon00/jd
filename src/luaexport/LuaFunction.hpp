@@ -20,10 +20,10 @@ struct LuaFunction
 {
     typedef R result_type;
 
-	LuaFunction(luabind::object const& obj)
-		: m_func(obj)
-	{
-	}
+    LuaFunction(luabind::object const& obj)
+        : m_func(obj)
+    {
+    }
 
     R operator() ()
     {
@@ -35,7 +35,7 @@ struct LuaFunction
 #include BOOST_PP_ITERATE()
 
 private:
-	luabind::object m_func;
+    luabind::object m_func;
 };
 
 template <>
@@ -43,10 +43,10 @@ struct LuaFunction<void>
 {
     typedef void result_type;
 
-	LuaFunction(luabind::object const& obj)
-		: m_func(obj)
-	{
-	}
+    LuaFunction(luabind::object const& obj)
+        : m_func(obj)
+    {
+    }
 
     void operator() ()
     {
@@ -60,7 +60,7 @@ struct LuaFunction<void>
 #undef VOID_SPEC
 
 private:
-	luabind::object m_func;
+    luabind::object m_func;
 };
 
 

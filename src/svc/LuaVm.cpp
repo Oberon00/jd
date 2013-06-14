@@ -45,11 +45,11 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
 {
     m_L = luaL_newstate();
     oldpanicf = lua_atpanic(m_L, panicf);
-    
+
     lua_newtable(m_L);
     lua_pushvalue(m_L, -1);
     lua_setglobal(m_L, jd::moduleName);
-    
+
     lua_pushliteral(m_L, "DEBUG");
 
 #ifdef NDEBUG
@@ -75,7 +75,7 @@ LuaVm::LuaVm(std::string const& libConfigFilename)
     luaU::load(m_L, libConfigFilename);
     luaU::pcall(m_L, 0, LUA_MULTRET);
     int const rend = lua_gettop(m_L) + 1;
-    
+
     for (int i = rbegin; i < rend; ++i) {
         if (lua_type(m_L, i) != LUA_TSTRING) {
             LOG_W("Value " + luaU::dumpvar(m_L, i) + " returned by " +
@@ -115,7 +115,7 @@ LuaVm::~LuaVm()
         LOG_E("LuaVm::deinit() failed with following exception:");
         LOG_EX(e);
     }
-    
+
     if (lua_gettop(m_L) != 0)
         LOG_W("Elements left on Lua stack: " + luaU::dumpstack(m_L));
 

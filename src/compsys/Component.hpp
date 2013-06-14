@@ -20,7 +20,7 @@ public:
     virtual void cleanupComponent() { }
 
     Entity* parent() const { return m_parent; }
-        
+
     template<typename T>
     T* as() // unsafe & fast
     {
@@ -36,7 +36,7 @@ private:
     friend Entity;
     Entity* m_parent;
 };
-    
+
 template<typename T>
 inline T* component_cast(Component* c) // safe & a bit slower
 {

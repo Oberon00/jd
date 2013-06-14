@@ -56,7 +56,7 @@ public:
 
     // CollideableGroupGroup does not own g, but only holds a WeakRef to it
     void add(CollideableGroup& g);
-    
+
     void remove(CollideableGroup const& g);
 
     // notify if e != nullptr

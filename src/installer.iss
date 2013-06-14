@@ -5,7 +5,7 @@
 #define SFMLDIR AddBackslash(GetEnv("SFML_ROOT")) + "bin"
 #define EXECUTABLE  "..\build11\src\Release\jd.exe"
 
-#define tmp AddBackslash(GetEnv("TMP")) 
+#define tmp AddBackslash(GetEnv("TMP"))
 #define GAMENAME "floodfill.jd"
 #define GAME tmp + GAMENAME
 #define BASEDATA tmp + "base.jd"
@@ -31,7 +31,7 @@ DefaultGroupName    = "{#APPN}"
 AppPublisher        = "{#AUTHOR}"
 AppReadmeFile       = "{app}\usermanual.pdf"
 ; Needs at least Windows Vista
-MinVersion          = 6.0 
+MinVersion          = 6.0
 UninstallDisplayIcon= "{app}\{#APPN}.ico"
 AppCopyright        = "{#COPYRIGHT}"
 
@@ -68,7 +68,7 @@ Source: "{#SOUNDSRCFILE}"; DestName: "Sound-Quellen.txt"; DestDir: "{app}"
 Filename: "{app}\jd.exe"; \
     Flags: nowait postinstall runasoriginaluser skipifsilent; \
     Description: "FloodFill starten"; {#PARAMS}
-    
+
 Filename: "{app}\usermanual.pdf"; \
     Flags: postinstall shellexec runasoriginaluser skipifsilent; \
     Description: "Benutzerhandbuch lesen"
@@ -82,4 +82,3 @@ Name: "{commondesktop}\{#APPN}"; {#ICONSETTINGS}; Tasks: desktopicon
 Name: "{group}\{#APPN} Benutzerhandbuch"; Filename: "{app}\usermanual.pdf"
 Name: "{group}\Quellen der {#APPN}-Sounds"; Filename: "{app}\Sound-Quellen.txt"
 Name: "{group}\{#APPN} entfernen"; Filename: "{uninstallexe}"
-

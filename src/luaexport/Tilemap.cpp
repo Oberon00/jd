@@ -42,7 +42,7 @@ static void init(LuaVm& vm)
 
     class_<std::vector<MapObject>> cMapObjectVec("ObjectList");
     exportRandomAccessContainer<true>(cMapObjectVec);
-    
+
     LHMODULE [
         namespace_("mapInfo") [
             cPropertyMap,
@@ -101,7 +101,7 @@ static void init(LuaVm& vm)
 #   undef LHCURCLASS
         class_<jd::Tilemap, bases<sf::Drawable, sf::Transformable>>("@Tilemap@"),
 #   define LHCURCLASS GroupedDrawable<jd::Tilemap>
-		class_<LHCURCLASS, bases<TransformGroup::AutoEntry, jd::Tilemap>>("Tilemap")
+        class_<LHCURCLASS, bases<TransformGroup::AutoEntry, jd::Tilemap>>("Tilemap")
             .def(constructor<>())
             .def(constructor<TransformGroup&>())
             .def(constructor<LHCURCLASS const&>())

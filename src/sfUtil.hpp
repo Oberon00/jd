@@ -99,7 +99,7 @@ inline T bottomIn(sf::Rect<T> const& r)
     return r.height == 0 ? r.top : r.top + r.height - 1;
 }
 
-    
+
 template <typename T>
 inline sf::Vector2<T> topLeft(sf::Rect<T> const& r)
 {
@@ -310,14 +310,14 @@ bool clipLine(
     sf::Vector2<T>& p1, sf::Vector2<T>& p2,
     sf::Rect<T> r)
 {
-    
+
     unsigned k1 = clipflags(p1, r), k2 = clipflags(p2, r);
 
     sf::Vector2<T> const d = p2 - p1;
     while (k1 || k2) { // at most two cycles
         if (k1 & k2) // both outside on same side(s) ?
             return false;
-        
+
         if (k1) {
             clipPoint(p1, d, r, k1);
             if (k1 & k2)
@@ -370,7 +370,7 @@ struct hash<sf::Vector2<T>>: public unary_function<sf::Vector2<T>, size_t> {
     {
         hash<T> hasher;
         size_t result = hasher(v.x);
-        jd::hash_combine(result, v.y, hasher); 
+        jd::hash_combine(result, v.y, hasher);
         return result;
     }
 };
@@ -381,8 +381,8 @@ struct hash<sf::Vector3<T>>: public unary_function<sf::Vector3<T>, size_t> {
     {
         hash<T> hasher;
         size_t result = hasher(v.x);
-        jd::hash_combine(result, v.y, hasher); 
-        jd::hash_combine(result, v.z, hasher); 
+        jd::hash_combine(result, v.y, hasher);
+        jd::hash_combine(result, v.z, hasher);
         return result;
     }
 };

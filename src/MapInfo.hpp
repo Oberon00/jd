@@ -15,11 +15,11 @@ typedef std::unordered_map<std::string, std::string> PropertyMap;
 struct MapObject {
     enum T { rect, tile, line, poly };
     int objectType;
-	PropertyMap properties;
-	std::string name;
-	std::string type;
-	sf::Vector2f position;
-	sf::Vector2f size;
+    PropertyMap properties;
+    std::string name;
+    std::string type;
+    sf::Vector2f position;
+    sf::Vector2f size;
     unsigned tileId;
     std::vector<sf::Vector2f> relativePoints;
     std::vector<sf::Vector2f> absolutePoints() const;
@@ -27,8 +27,8 @@ struct MapObject {
 
 struct MapObjectGroup {
     std::string name;
-	PropertyMap properties;
-	std::vector<MapObject> objects;
+    PropertyMap properties;
+    std::vector<MapObject> objects;
     typedef std::unordered_map<std::string, MapObjectGroup> Map;
 };
 
@@ -40,7 +40,7 @@ struct MapInfo {
 
     // Note: an extra property "name" will be stored containing the layers name attribute
     std::vector<PropertyMap> layerProperties;
-	MapObjectGroup::Map objectGroups;
+    MapObjectGroup::Map objectGroups;
 };
 
 MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename);

@@ -17,7 +17,7 @@ typedef sf::Vector3<unsigned> Vector3u;
 
 class TilePositionComponent: public Component {
     JD_COMPONENT
-    
+
     SSIG_DEFINE_MEMBERSIGNAL(tilePositionChanged,
         void(Vector3u oldPos, Vector3u newPos))
 public:
@@ -42,4 +42,3 @@ private:
 };
 
 #endif
-

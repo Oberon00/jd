@@ -46,7 +46,7 @@ void Entity::finish()
     for (Component& c : m_components)
         c.initComponent();
 }
-    
+
 Component* Entity::operator[](MetaComponent const& meta)
 {
     auto const it = std::find_if(m_components.begin(), m_components.end(),
