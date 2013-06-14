@@ -91,9 +91,9 @@ source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
 
 set(JD_HEADERS
+    encoding.hpp
     ssig.hpp
     ssig_template.hpp
-	encoding.hpp
     MapInfo.hpp
     exceptions.hpp
     resourceLoaders.hpp
@@ -126,7 +126,7 @@ set(JD_HEADERS
     ${LUAEXPORT_HEADERS})
    
 set(JD_SOURCES
-	encoding.cpp
+    encoding.cpp
     MapInfo.cpp
     main.cpp
     resourceLoaders.cpp

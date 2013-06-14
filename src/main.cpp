@@ -1,6 +1,5 @@
 #include "cmdline.hpp"
 
-#include "encoding.hpp"
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
 #include "resourceLoaders.hpp"
@@ -22,6 +21,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/locale/generator.hpp>
+#include <boost/locale/encoding_utf.hpp>
 #include <luabind/adopt_policy.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
 #include <physfs.h>
@@ -44,6 +44,8 @@
 #   include <Shellapi.h> // CommandLineToArgvW 
 #endif
 
+namespace fs = boost::filesystem;
+namespace conv = boost::locale::conv;
 
 namespace {
 
@@ -130,7 +132,7 @@ static bool attachToConsole()
 
 static void initializeStdStreams(std::string const& basepath)
 {
-    std::wstring wbasepath = enc::utf8ToWideChar(basepath);
+    std::wstring wbasepath = conv::utf_to_utf<wchar_t>(basepath);
     if (attachToConsole()) {
         LOG_D("Attaching to console.");
         redirectHandle(STD_OUTPUT_HANDLE, stdout, "stdout");
@@ -144,10 +146,25 @@ static void initializeStdStreams(std::string const& basepath)
     }
 }
 
+static void reportError(std::string const& msg)
+{
+    std::wstring const wmsg = conv::utf_to_utf<wchar_t>(msg);
+    MessageBoxW(
+        NULL,                           // hWnd
+        wmsg.c_str(),                   // lpText
+        L"Jade Engine: Error",          // lpCaption
+        MB_ICONERROR | MB_TASKMODAL);   // uType
+}
+
 #else
 inline void initializeStdStreams(std::string const&)
 {
     // Not needed: do nothing.
+}
+
+static void reportError(std::string const& msg)
+{
+    std::cerr << msg << std::endl;
 }
 #endif
 
@@ -160,6 +177,7 @@ std::vector<std::string> const& commandLine() { return cmdLine; }
 int main(int argc, char* argv[])
 {
     int r = EXIT_FAILURE;
+    std::string logpath; // Used in error reporting.
     try {
         assert(argc > 0);
 
@@ -172,7 +190,7 @@ int main(int argc, char* argv[])
         wchar_t** wargv = CommandLineToArgvW(wcmdLine, &argc);
         cmdLine.reserve(argc);
         for (int i = 0; i < argc; ++i) {
-            cmdLine.push_back(enc::wideCharToUtf8(wargv[i]));
+            cmdLine.push_back(conv::utf_to_utf<char>(wargv[i]));
         }
 #else
         cmdLine.assign(argv, argv + argc);
@@ -180,7 +198,7 @@ int main(int argc, char* argv[])
 
 #ifdef _WIN32
         std::locale::global(boost::locale::generator().generate("")); // Use UTF-8
-        boost::filesystem::path::imbue(std::locale()); // Not sure if this is necessary.
+        fs::path::imbue(std::locale()); // Not sure if this is necessary.
         std::cout.imbue(std::locale());
         std::cerr.imbue(std::locale());
         std::clog.imbue(std::locale());
@@ -193,7 +211,7 @@ int main(int argc, char* argv[])
                     NULL,
                     reinterpret_cast<wchar_t*>(moduleNameW),
                     MAX_PATH) != 0) {
-                defaultGame = enc::ucs2ToUtf8(moduleNameW);
+                defaultGame = conv::utf_to_utf<char>(moduleNameW);
             } else {
                 defaultGame = commandLine()[0];
             }
@@ -207,7 +225,8 @@ int main(int argc, char* argv[])
             game = commandLine()[1];
             gameSpecified = true;
         }
-        const boost::filesystem::path gamePath = enc::utf8ToWideChar(game);
+        fs::path gamePath = game;
+        gamePath.make_preferred(); // This path may appear in error messages.
         std::string gameName = (
             gamePath.has_stem() ?
                 gamePath.stem() : gamePath.has_filename() ?
@@ -223,15 +242,17 @@ int main(int argc, char* argv[])
 
         // Create directory for log file
 #ifdef _WIN32
-        std::string const basepath = enc::wideCharToUtf8(_wgetenv(L"APPDATA")) + '/' +
-            gameName + '/';
+        std::string const basepath = fs::path(
+            conv::utf_to_utf<char>(_wgetenv(L"APPDATA")) + '/' + gameName + '/'
+        ).make_preferred().string();
+
 #else
         std::string const basepath(std::string(getenv("HOME")) + "/." + gameName +  '/');
 #endif
 
-        std::string const logpath(basepath + "jd.log");
+        logpath = basepath + "jd.log";
 
-        boost::filesystem::create_directories(basepath);
+        fs::create_directories(basepath);
 
         // Open the logfile
         log().setMinLevel(loglevel::debug);
@@ -375,15 +396,22 @@ int main(int argc, char* argv[])
 
     // In case of an exception, log it and notify the user //
     } catch (std::exception const& e) {
-        log().logEx(e, loglevel::fatal, LOGFILE_LOCATION);
-#       ifdef _WIN32
-        std::wstring const msg = enc::utf8ToWideChar(e.what());
-        MessageBoxW(
-            NULL, msg.c_str(), L"Jade Engine", MB_ICONERROR | MB_TASKMODAL);
-#       else
-        std::cerr << "Exception: " << e.what() << '\n'
-                  << "See logfile: " << logpath  << std::endl;
-#       endif
+        std::string msg = "An exception occured: " + std::string(e.what());
+        if (logpath.empty()) {
+            msg += "\n\nAlso, the logfile could not be created/updated.";
+        } else {
+            try {
+                log().logEx(e, loglevel::fatal, LOGFILE_LOCATION);
+            } catch (std::exception const& e2) {
+                reportError(
+                    e2.what() + std::string(
+                        " (occured when trying to log the following error)"));
+            }
+            msg +=  "\n\nThe logfile at ";
+            msg += logpath;
+            msg += " may contain more information.";
+        }
+        reportError(msg);
         return EXIT_FAILURE;
     }
 
