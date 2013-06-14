@@ -7,6 +7,8 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
 
+#include <boost/locale/encoding_utf.hpp>
+
 
 typedef sf::Vector2<lua_Number> LuaVec2;
 typedef sf::Vector3<lua_Number> LuaVec3;
@@ -110,12 +112,15 @@ template <>
 
         sf::String from(lua_State* L, int index)
         {
-            return sf::String(lua_tostring(L, index));
+            return sf::String(boost::locale::conv::utf_to_utf<sf::Uint32>(
+                lua_tostring(L, index)));
         }
 
         void to(lua_State* L, sf::String const& value)
         {
-            std::string const s(value);
+            std::string const s(
+                boost::locale::conv::utf_to_utf<char>(
+                value.getData(), value.getData() + value.getSize()));
             lua_pushlstring(L, s.data(), s.size());
         }
     };
