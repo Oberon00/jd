@@ -5,7 +5,6 @@
 #include "Logfile.hpp"
 #include "Tilemap.hpp"
 
-#include <algorithm>
 #include <array>
 #include <boost/current_function.hpp>
 #include <functional>
@@ -128,7 +127,7 @@ namespace {
     std::array<sf::Vector2i, 8> surroundingTiles(sf::Vector2i p)
     {
         std::array<sf::Vector2i, 8> result;
-        std::fill(result.begin(), result.end(), p);
+        result.fill(p);
 
         // 012
         // 3p4
@@ -280,7 +279,7 @@ TileLayersCollideableGroup::TileLayersCollideableGroup(
 void TileLayersCollideableGroup::setFirstLayer(unsigned layer)
 {
     if (layer >= m_endLayer)
-        throw std::out_of_range("layer >= end-layer");
+        throw std::out_of_range("first layer >= end layer");
     assert(layer < m_data->mapsize().z);
     m_firstLayer = layer;
 }
@@ -288,9 +287,9 @@ void TileLayersCollideableGroup::setFirstLayer(unsigned layer)
 void TileLayersCollideableGroup::setEndLayer(unsigned layer)
 {
     if (layer <= m_firstLayer)
-        throw std::out_of_range("layer <= first layer");
+        throw std::out_of_range("end layer <= first layer");
     if (layer >= m_data->mapsize().z)
-        throw std::out_of_range("layer >= count of layers");
+        throw std::out_of_range("end layer >= count of layers");
     m_endLayer = layer;
 }
 
