@@ -2,8 +2,8 @@
 
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
-#include "resourceLoaders.hpp"
-#include "ResourceManager.hpp"
+#include "ressys/resourceLoaders.hpp"
+#include "ressys/ResourceManager.hpp"
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/FileSystem.hpp"

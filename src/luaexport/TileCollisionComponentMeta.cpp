@@ -1,9 +1,9 @@
 #include "comp/TileCollisionComponent.hpp"
 
+#include "collision/TileCollideableGroup.hpp"
 #include "compsys/BasicMetaComponent.hpp"
 #include "compsys/Entity.hpp"
 #include "LuaEventHelpers.hpp"
-#include "TileCollideableGroup.hpp"
 
 static char const libname[] = "TileCollisionComponent";
 #include "ExportThis.hpp"

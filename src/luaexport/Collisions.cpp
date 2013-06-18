@@ -1,15 +1,15 @@
-#include "Collisions.hpp"
+#include "collision/Collisions.hpp"
 
+#include "collision/RectCollideableGroup.hpp"
+#include "collision/TileCollideableGroup.hpp"
 #include "comp/TileCollisionComponent.hpp"
 #include "comp/PositionComponent.hpp"
 #include "compsys/Entity.hpp"
 #include "container.hpp"
 #include "LuaFunction.hpp"
-#include "RectCollideableGroup.hpp"
 #include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
 #include "svc/ServiceLocator.hpp"
-#include "TileCollideableGroup.hpp"
 #include "Tilemap.hpp"
 
 #include <luabind/out_value_policy.hpp>

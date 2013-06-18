@@ -2,7 +2,7 @@
 #include "Timer.hpp"
 #include "ServiceLocator.hpp"
 
-#include "ResourceManager.hpp"
+#include "ressys/ResourceManager.hpp"
 
 #include <boost/bind.hpp>
 

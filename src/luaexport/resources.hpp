@@ -1,7 +1,7 @@
 #ifndef RESOURCES_HPP_INCLUDED
 #define RESOURCES_HPP_INCLUDED RESOURCES_HPP_INCLUDED
 
-#include "ResourceManager.hpp"
+#include "ressys/ResourceManager.hpp"
 
 #include <luabind/luabind.hpp>
 

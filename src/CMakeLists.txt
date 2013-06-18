@@ -9,7 +9,6 @@ set(SVC_HEADERS
     svc/ServiceLocator.hpp
     svc/Timer.hpp
     svc/SoundManager.hpp)
-source_group("Service Headers" FILES ${SVC_HEADERS})
 
 set(SVC_SOURCES
     svc/Mainloop.cpp
@@ -22,7 +21,8 @@ set(SVC_SOURCES
     svc/ServiceLocator.cpp
     svc/Timer.cpp
     svc/SoundManager.cpp)
-source_group("Service Sources" FILES ${SVC_SOURCES})
+source_group("Services" FILES ${SVC_SOURCES} ${SVC_HEADERS})
+
 
 set(COMPSYS_HEADERS
     compsys/Component.hpp
@@ -30,27 +30,29 @@ set(COMPSYS_HEADERS
     compsys/BasicMetaComponent.hpp
     compsys/ComponentRegistry.hpp
     compsys/Entity.hpp)
-source_group("Component System Headers" FILES ${COMPSYS_HEADERS})
 
 set(COMPSYS_SOURCES
     compsys/MetaComponent.cpp
     compsys/Component.cpp
     compsys/ComponentRegistry.cpp
     compsys/Entity.cpp)
-source_group("Component System Sources" FILES ${COMPSYS_SOURCES})
+
+source_group("Component System" FILES ${COMPSYS_SOURCES} ${COMPSYS_HEADERS})
+
 
 set(COMP_HEADERS
     comp/PositionComponent.hpp
     comp/TileCollisionComponent.hpp
     comp/TilePositionComponent.hpp
     comp/RectCollisionComponent.hpp)
-source_group("Component Headers" FILES ${COMP_HEADERS})
 
 set(COMP_SOURCES
     comp/PositionComponent.cpp
     comp/TileCollisionComponent.cpp
     comp/TilePositionComponent.cpp)
-source_group("Component Sources" FILES ${COMP_SOURCES})
+   
+source_group("Components" FILES ${COMP_SOURCES} ${COMP_HEADERS})
+
 
 set(LUAEXPORT_HEADERS
     luaexport/ExportThis.hpp
@@ -61,7 +63,6 @@ set(LUAEXPORT_HEADERS
     luaexport/sharedPtrConverter.hpp
     luaexport/container.hpp
     luaexport/resources.hpp)
-source_group("LuaExport Headers" FILES ${LUAEXPORT_HEADERS})
 
 set(LUAEXPORT_SOURCES
     luaexport/LuaExtra.cpp
@@ -87,8 +88,40 @@ set(LUAEXPORT_SOURCES
     luaexport/RectCollisionComponentMeta.cpp
     luaexport/luaIo.cpp
     luaexport/SoundManagerMeta.cpp)
-source_group("LuaExport Sources" FILES ${LUAEXPORT_SOURCES})
 
+source_group("LuaExport" FILES ${LUAEXPORT_SOURCES} ${LUAEXPORT_HEADERS})
+
+
+set(RESSYS_HEADERS
+    ressys/resourceLoaders.hpp
+    ressys/resfwd.hpp
+    ressys/AutoResource.hpp
+    ressys/AutoTexture.hpp
+    ressys/AutoFont.hpp
+    ressys/AutoSoundBuffer.hpp
+    ressys/ResourceManager.hpp
+    ressys/ResourceManager.inl
+    ressys/VFileFont.hpp
+    ressys/VFileMusic.hpp)
+
+set(RESSYS_SOURCES
+    ressys/resourceLoaders.cpp)
+
+source_group("Resource System" FILES ${RESSYS_SOURCES} ${RESSYS_HEADERS})
+
+
+set(COLLISION_HEADERS
+    collision/Collisions.hpp
+    collision/TileCollideableGroup.hpp
+    collision/RectCollideableGroup.hpp)
+
+set(COLLISION_SOURCES
+    collision/Collisions.cpp
+    collision/TileCollideableGroup.cpp
+    collision/RectCollideableGroup.cpp)
+    
+source_group("Collisions" FILES ${COLLISION_SOURCES} ${COLLISION_HEADERS})
+    
 
 set(JD_HEADERS
     encoding.hpp
@@ -96,14 +129,6 @@ set(JD_HEADERS
     ssig_template.hpp
     MapInfo.hpp
     exceptions.hpp
-    resourceLoaders.hpp
-    resfwd.hpp
-    AutoResource.hpp
-    AutoTexture.hpp
-    AutoFont.hpp
-    AutoSoundBuffer.hpp
-    ResourceManager.hpp
-    ResourceManager.inl
     sfKeyCodes.hpp
     jdConfig.hpp
     cmdline.hpp
@@ -112,39 +137,34 @@ set(JD_HEADERS
     TransformGroup.hpp
     Logfile.hpp
     sfUtil.hpp
-    Collisions.hpp
-    TileCollideableGroup.hpp
-    RectCollideableGroup.hpp
     State.hpp
     base64.hpp
     luaUtils.hpp
-    VFileFont.hpp
-    VFileMusic.hpp
     ${SVC_HEADERS}
     ${COMPSYS_HEADERS}
     ${COMP_HEADERS}
-    ${LUAEXPORT_HEADERS})
+    ${LUAEXPORT_HEADERS}
+    ${RESSYS_HEADERS}
+    ${COLLISION_HEADERS})
 
 set(JD_SOURCES
     encoding.cpp
     MapInfo.cpp
     main.cpp
-    resourceLoaders.cpp
     luaUtils.cpp
     jdConfig.cpp
     Tilemap.cpp
     TransformGroup.cpp
     Logfile.cpp
-    Collisions.cpp
-    TileCollideableGroup.cpp
-    RectCollideableGroup.cpp
     base64.cpp
     sfUtil.cpp
     Resources.rc
     ${SVC_SOURCES}
     ${COMPSYS_SOURCES}
     ${COMP_SOURCES}
-    ${LUAEXPORT_SOURCES})
+    ${LUAEXPORT_SOURCES}
+    ${RESSYS_SOURCES}
+    ${COLLISION_SOURCES})
 
 set(COMP_DEFS "SFML_STATIC")
 

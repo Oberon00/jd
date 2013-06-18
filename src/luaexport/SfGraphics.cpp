@@ -1,12 +1,12 @@
-#include "AutoFont.hpp"
-#include "AutoTexture.hpp"
-#include "ResourceManager.hpp"
 #include "resources.hpp"
+#include "ressys/AutoFont.hpp"
+#include "ressys/AutoTexture.hpp"
+#include "ressys/ResourceManager.hpp"
+#include "ressys/VFileFont.hpp"
 #include "sharedPtrConverter.hpp"
 #include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
 #include "TransformGroup.hpp"
-#include "VFileFont.hpp"
 
 #include <luabind/copy_policy.hpp>
 #include <luabind/operator.hpp>

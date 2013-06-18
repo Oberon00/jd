@@ -1,7 +1,7 @@
 #ifndef TILEMAP_HPP_INCLUDED
 #define TILEMAP_HPP_INCLUDED TILEMAP_HPP_INCLUDED
 
-#include "resfwd.hpp"
+#include "ressys/resfwd.hpp"
 #include "sfUtil.hpp"
 
 #include <SFML/Graphics/Drawable.hpp>

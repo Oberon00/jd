@@ -1,10 +1,10 @@
 #ifndef SOUNDMANAGER_HPP_INCLUDED
 #define SOUNDMANAGER_HPP_INCLUDED SOUNDMANAGER_HPP_INCLUDED
 
-#include "AutoResource.hpp"
-#include "AutoSoundBuffer.hpp"
 #include "compsys/Component.hpp"
-#include "VFileMusic.hpp"
+#include "ressys/AutoResource.hpp"
+#include "ressys/AutoSoundBuffer.hpp"
+#include "ressys/VFileMusic.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 

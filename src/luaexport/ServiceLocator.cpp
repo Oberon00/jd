@@ -1,4 +1,3 @@
-#include "Collisions.hpp"
 #include "compsys/Component.hpp"
 #include "compsys/ComponentRegistry.hpp"
 #include "compsys/MetaComponent.hpp"

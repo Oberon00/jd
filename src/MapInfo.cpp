@@ -2,7 +2,7 @@
 
 #include "base64.hpp"
 #include "Logfile.hpp"
-#include "ResourceManager.hpp"
+#include "ressys/ResourceManager.hpp"
 #include "svc/FileSystem.hpp"
 
 #include <boost/algorithm/string/classification.hpp>
