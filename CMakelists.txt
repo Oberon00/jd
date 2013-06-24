@@ -1,26 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
 project(JadeEngine)
 
-# Adjust to actual locations and comment in if necessary
-if (WIN32)
-    #set (SFML_ROOT "C:/myProgs/cpp/Bibliotheken/SFML-2/install")
-    set (ENV{PHYSFSDIR} "C:/Program Files (x86)/PhysicsFS")
-    set (ENV{BOOST_ROOT} "C:/myProgs/cpp/Bibliotheken/boost_1_53_0")
-    set (LUA_DIR "C:/myProgs/cpp/Bibliotheken/lua-5.2.0")
-    set (LUABIND_DIR "C:/myProgs/cpp/Projekte/luabind")
-    set (LUA_INCLUDE_DIR "${LUA_DIR}/src")
-    set (LUA_LIBRARY
-        optimized "${LUA_DIR}/build11/RelWithDebInfo/lua52.lib"
-        debug     "${LUA_DIR}/build11/Debug/lua52-d.lib")
-    set (LUABIND_INCLUDE_DIR "${LUABIND_DIR}")
-    set (LUABIND_LIBRARY
-        optimized "${LUABIND_DIR}/build/src/Release/luabind09.lib"
-        debug     "${LUABIND_DIR}/build/src/Debug/luabind09-d.lib")
-else ()
-    set(LUABIND_LIBRARY
-        optimized "libluabind09.a"
-        debug     "libluabind09-d.a")
-    find_package(Lua52 REQUIRED)
-endif()
 add_subdirectory("src")
 add_subdirectory("base.jd")
