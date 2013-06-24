@@ -230,3 +230,5 @@ target_link_libraries(jd
     ${PHYSFS_LIBRARY}
     ${ZLIB_LIBRARY}
     ${Boost_LIBRARIES})
+
+install(TARGETS jd RUNTIME DESTINATION bin)
