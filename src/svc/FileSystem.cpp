@@ -8,10 +8,16 @@
 
 #include <array>
 
+static std::string lastPhysFsError()
+{
+    char const* err = PHYSFS_getLastError();
+    return err ? err : "OK";
+}
+
 
 FileSystem::Error::Error(std::string const& msg, bool getLastError):
     std::runtime_error(msg + (
-        getLastError ? std::string(": ") + PHYSFS_getLastError() : std::string())) { }
+        getLastError ? std::string(": ") + lastPhysFsError() : std::string())) { }
 
 
 
@@ -243,9 +249,37 @@ bool FileSystem::mount(
     }
 
     if (!PHYSFS_mount(path.c_str(), mountPoint.c_str(), flags & appendPath)) {
+        Error err("", false);
+        if (flags & logWarnings || !(flags & mountOptional)) {
+            err = Error("Mounting \"" + path + "\" failed");
+            if (flags & logWarnings)
+                LOG_W(err.what());
+        }
         if (flags & mountOptional)
             return false;
-        throw Error ("Mounting \"" + path + "\" failed");
+        throw err;
     }
     return true;
 }
+
+
+bool FileSystem::mountFirstWorking(
+    std::vector<std::string> const& paths,
+    std::string const& mountPoint,
+    int flags)
+{
+    int const mflags = flags & ~logWarnings | mountOptional;
+    std::string message = "Failed mounting all of the following:";
+    for (auto const& path: paths) {
+        if (mount(path, mountPoint, mflags))
+            return true;
+        else
+            message += "\n\t" + path + ": " + lastPhysFsError();
+    }
+    if (flags & logWarnings)
+        LOG_W(message);
+    if (flags & mountOptional)
+        return false;
+    throw Error(message, false);
+}
+

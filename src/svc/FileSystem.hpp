@@ -6,10 +6,11 @@
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/positioning.hpp>
 #include <SFML/System/InputStream.hpp>
+#include <boost/range/any_range.hpp>
 
 #include <iosfwd>
 #include <string>
-
+#include <vector>
 
 struct PHYSFS_File;
 
@@ -96,10 +97,16 @@ public:
     enum MountFlags {
         prependPath = 0, appendPath = 1,
         writeDirectory = 2,
-        mountOptional = 4};
+        mountOptional = 4,
+        logWarnings = 8};
 
     bool mount(
         std::string const& path,
+        std::string const& mountPoint = std::string(),
+        int flags = prependPath);
+
+    bool mountFirstWorking(
+        std::vector<std::string> const& paths,
         std::string const& mountPoint = std::string(),
         int flags = prependPath);
 

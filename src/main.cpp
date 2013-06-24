@@ -278,23 +278,16 @@ int main(int argc, char* argv[])
         regSvc(fs);
 
         std::string programpath = PHYSFS_getBaseDir();
-        fs.mount(programpath + "/data", "/",
-            FileSystem::mountOptional);
-        std::string const baselib = programpath + "/base.jd";
-        if (!fs.mount(baselib, "/", FileSystem::mountOptional)) {
-            FileSystem::Error const err("Could not open \"" + baselib + '\"');
-            if (!fs.mount("./base.jd", "/", FileSystem::mountOptional)) {
-                LOG_W(err.what());
-                LOG_W(FileSystem::Error(
-                    "Could not open \"./base.jd\"").what());
-            }
-        }
+        std::vector<std::string> baselibpaths;
+        baselibpaths.push_back(programpath + "/base.jd");
+        baselibpaths.push_back(programpath + "/../base.jd");
+        baselibpaths.push_back(programpath + "/../share/base.jd");
+        baselibpaths.push_back(basepath + "/base.jd");
+        fs.mountFirstWorking(baselibpaths, "/", FileSystem::logWarnings|FileSystem::mountOptional);
 
-        if (!fs.mount(game, "/", gameSpecified ?
-            FileSystem::prependPath : FileSystem::mountOptional)
+        if (!fs.mount(game, "/", FileSystem::logWarnings|(gameSpecified ?
+            FileSystem::prependPath : FileSystem::mountOptional))
         ) {
-            LOG_W(FileSystem::Error(
-                "Failed mounting game \"" + game + "\"").what());
             LOG_W("Mounting working directory instead.");
             fs.mount(".");
         }
