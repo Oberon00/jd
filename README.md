@@ -4,7 +4,7 @@ Author: Christian Neumüller
 JadeEngine
 ==========
 
-**JadeEngine** (or '**jd**' for short) is a game Engine written in *C++* for
+**JadeEngine** (or **jd** for short) is a game Engine written in *C++* for
 *[Lua][]* with 2D graphics, audio, virtual file system (ZIP) and *TMX*
 ([Tiled Map Editor][]'s format) support.
 
@@ -32,7 +32,7 @@ The following libraries are needed:
 - **[zlib][]** (tested with version 1.2.7).
 - **[PhysFS][]** (tested with version 2.0.3).
 
-The only compiler throughoutly tested is **MSVC 11**, but once upon a time the
+The only compiler throughoutly tested is **[MSVC 11][]**, but once upon a time the
 source code and `CMakeLists.txt` were adjusted to also work with g++ 4.7.2.
 The build system used is **[CMake][]** in a recent 2.8.x version.
 
@@ -44,14 +44,16 @@ next section for how to set it.
 
 As an alternative to setting the variables you can also install the libraries
 to the (CMake) standard locations or add the containing directories to
-CMAKE_PREFIX_PATH.
+`CMAKE_PREFIX_PATH`.
 
 
 [SFML]: http:/sfml-dev.org/
 [Boost]: http://www.boost.org/
 [Luabind]: http://www.rasterbar.com/products/luabind.html
 [zlib]: http://www.zlib.net/
-[PysFS]: http://icculus.org/physfs/
+[PhysFS]: http://icculus.org/physfs/
+[MSVC 11]: http://www.microsoft.com/visualstudio/eng/products/visual-studio-express-for-windows-desktop#product-express-desktop
+[CMake]: http://www.cmake.org/
 
 
 ### `Find*.cmake` ###
@@ -67,9 +69,9 @@ two options:
   installation directory on Windows (usually
   `C:\Program Files (x86)\CMake 2.8`) and usually simply `/usr` on Linux.
 - Specify the directories where the files are located as a semicolon `;`
-  separated list in the `CMAKE_MODULE_PATH` CMake cache variable (*Add entry*,
+  separated list in the `CMAKE_MODULE_PATH` CMake cache variable: *Add entry*,
   type string in the Windows GUI; or `-DCMAKE_MODULE_PATH=<path-list>` on the
-  command line). 
+  command line. 
 
 
 > Jade Engine -- Copyright (c) Christian Neumüller 2012--2013
