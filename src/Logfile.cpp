@@ -132,8 +132,8 @@ void Logfile::open(const std::string& filename, logstyle::T style)
                   "<td>Level</td> <td>Time(s)</td> <td>Location</td> <td>Message</td> </tr></thead><tbody>\n";
     } else {
         m_file << "===< LOGFILE >===\n\n"
-                  "Level      Time(s)    Location                     Message\n"
-                  "---------- ---------- ---------------------------- ----------" \
+                  "Level      Time(s)    Location                              Message\n"
+                  "---------- ---------- ------------------------------------- ----------" \
                   "----------------------------------------\n";
     }
     LOG_I("Start logging at " + full_time());
@@ -172,7 +172,7 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
     }
     else // if (m_style == logstyle::plain)
     {
-        fmt = levelpreambles[level] + str(boost::format("%|-8|") % levelnames[level]) + "%|10| %|-28| %||";
+        fmt = levelpreambles[level] + str(boost::format("%|-8|") % levelnames[level]) + "%|9| %|-37| %||";
         std::string msg2 = msg;
         if (msg.back() == '\n')
             msg2.pop_back();
@@ -181,7 +181,7 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
         for (const char c : msg2) switch (c)
         {
             case '\n':
-                real_msg += "\n" + std::string(52, ' ');
+                real_msg += "\n" + std::string(60, ' ');
                 break;
             default:
                 real_msg += c;
