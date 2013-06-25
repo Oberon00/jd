@@ -25,4 +25,4 @@ add_custom_target(basejd ALL
     DEPENDS ${basejdout}
     SOURCES ${SRCS})
 
-install(FILES ${basejdout} DESTINATION share)
+install(FILES ${basejdout} DESTINATION "share/jade-engine")

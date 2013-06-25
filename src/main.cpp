@@ -289,6 +289,7 @@ int main(int argc, char* argv[])
         std::vector<std::string> baselibpaths;
         baselibpaths.push_back(programpath + "/base.jd");
         baselibpaths.push_back(programpath + "/../base.jd");
+        baselibpaths.push_back(programpath + "/../share/jade-engine/base.jd");
         baselibpaths.push_back(programpath + "/../share/base.jd");
         baselibpaths.push_back(basepath + "/base.jd");
         baselibpaths.push_back("./base.jd");
