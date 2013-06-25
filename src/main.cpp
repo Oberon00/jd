@@ -1,3 +1,7 @@
+// Part of the Jade Engine -- Copyright (c) Christian Neumüller 2012--2013
+// This file is subject to the terms of the BSD 2-Clause License.
+// See LICENSE.txt or http://opensource.org/licenses/BSD-2-Clause
+
 #include "cmdline.hpp"
 
 #include "Logfile.hpp"
@@ -258,6 +262,10 @@ int main(int argc, char* argv[])
         log().setMinLevel(loglevel::debug);
         log().open(logpath);
 
+        LOG_I(
+            "Jade Engine -- Copyright (c) Christian Neumüller 2012--2013\n"
+            "This program is subject to the terms of the BSD 2-Clause License.\n"
+            "See LICENSE.txt or http://opensource.org/licenses/BSD-2-Clause");
 #ifndef NDEBUG
         LOG_I("This is a debug build.");
 #endif
@@ -283,6 +291,7 @@ int main(int argc, char* argv[])
         baselibpaths.push_back(programpath + "/../base.jd");
         baselibpaths.push_back(programpath + "/../share/base.jd");
         baselibpaths.push_back(basepath + "/base.jd");
+        baselibpaths.push_back("./base.jd");
         fs.mountFirstWorking(baselibpaths, "/", FileSystem::logWarnings|FileSystem::mountOptional);
 
         if (!fs.mount(game, "/", FileSystem::logWarnings|(gameSpecified ?
