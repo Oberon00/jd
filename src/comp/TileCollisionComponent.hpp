@@ -7,11 +7,11 @@
 
 #include "compsys/Component.hpp"
 
-#include "ssig.hpp"
 #include "WeakRef.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <ssig.hpp>
 
 
 class TileCollideableInfo;
@@ -49,7 +49,7 @@ private:
     void on_tilePositionChanged(
         sf::Vector3<unsigned> oldPos, sf::Vector3<unsigned> newPos);
 
-    ScopedConnection<
+    ssig::ScopedConnection<
         void(sf::Vector3<unsigned>, sf::Vector3<unsigned>)
     > m_con_positionChanged;
     WeakRef<TileCollideableInfo> m_tileinfo;

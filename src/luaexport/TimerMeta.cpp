@@ -39,7 +39,7 @@ static void init(LuaVm& vm)
             .LHPROPG(frameDuration)
             .property("factor", &LHCURCLASS::factor, &LHCURCLASS::setFactor)
             .scope [
-                class_<LHCURCLASS::CallOrder, ConnectionBase>("CallOrder")
+                class_<LHCURCLASS::CallOrder, ssig::ConnectionBase>("CallOrder")
             ]
 
 #       undef LHCURCLASS

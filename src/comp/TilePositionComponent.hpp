@@ -7,10 +7,10 @@
 
 #include "compsys/Component.hpp"
 
-#include "ssig.hpp"
-
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <ssig.hpp>
+
 #include <string>
 
 
@@ -38,7 +38,7 @@ private:
     void on_positionChanged(
         sf::FloatRect const& oldRect, sf::FloatRect const& newRect);
 
-    ScopedConnection<void(sf::FloatRect const&, sf::FloatRect const&)>
+    ssig::ScopedConnection<void(sf::FloatRect const&, sf::FloatRect const&)>
         m_con_positionChanged;
     Vector3u m_tilePosition;
     jd::Tilemap const& m_tilemap;

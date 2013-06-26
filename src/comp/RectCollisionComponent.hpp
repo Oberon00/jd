@@ -8,9 +8,9 @@
 #include "compsys/Component.hpp"
 
 #include "compsys/Entity.hpp"
-#include "ssig.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
+#include <ssig.hpp>
 
 #include <string>
 

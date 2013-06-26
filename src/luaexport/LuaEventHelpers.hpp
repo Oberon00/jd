@@ -6,9 +6,9 @@
 #define LUA_EVENT_HELPERS_HPP_INCLUDED LUA_EVENT_HELPERS_HPP_INCLUDED
 
 #include "LuaFunction.hpp"
-#include "ssig.hpp"
 
 #include <boost/bind.hpp>
+#include <ssig.hpp>
 
 
 #define LUA_EVENT_HELPERS_MAX_ARGS SSIG_MAX_ARGS
@@ -26,12 +26,12 @@
     else { }
 
 #define JD_EVENT_TABLE_BEGIN(ct) \
-    ConnectionBase* ct##Meta::connectEvent( \
-            lua_State* L,                   \
-            Component* c,                   \
-            std::string const& name) const  \
-    {                                       \
-        ct* cc = c->as<ct>();               \
+    ssig::ConnectionBase* ct##Meta::connectEvent( \
+            lua_State* L,                         \
+            Component* c,                         \
+            std::string const& name) const        \
+    {                                             \
+        ct* cc = c->as<ct>();                     \
         luabind::object recv(luabind::from_stack(L, -1)); \
         using boost::ref; using boost::cref;
 
@@ -39,9 +39,10 @@
 
 
 template<typename Signature>
-ScopedConnection<Signature>* makeConnection(Connection<Signature> const& con)
+ssig::ScopedConnection<Signature>* makeConnection(
+    ssig::Connection<Signature> const& con)
 {
-    return new ScopedConnection<Signature>(con);
+    return new ssig::ScopedConnection<Signature>(con);
 }
 
 #endif // include guard

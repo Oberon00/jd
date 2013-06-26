@@ -13,7 +13,7 @@
 
 
 struct lua_State;
-class ConnectionBase;
+namespace ssig { class ConnectionBase; }
 class Component;
 
 class InvalidMetaComponentName: public std::runtime_error {
@@ -36,7 +36,7 @@ public:
     }
 
     // receiver is on top of stack; return value disconnects automatically on deletion
-    virtual ConnectionBase* connectEvent(lua_State*, Component*, std::string const& name) const
+    virtual ssig::ConnectionBase* connectEvent(lua_State*, Component*, std::string const& name) const
     {
         (void)name;
         return nullptr;
@@ -58,7 +58,7 @@ public:
     virtual std::string const& name() const;
 
     virtual void castDown(lua_State* L, Component* c) const override;
-    virtual ConnectionBase* connectEvent(Component* c, std::string const& name) const;
+    virtual ssig::ConnectionBase* connectEvent(Component* c, std::string const& name) const;
 
 private:
     lua_State* m_L;

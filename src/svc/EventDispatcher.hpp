@@ -6,9 +6,9 @@
 #define EVENT_DISPATCHER_HPP_INCLUDED EVENT_DISPATCHER_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
-#include "ssig.hpp"
 
 #include <SFML/Window/Event.hpp>
+#include <ssig.hpp>
 
 
 namespace sf { class Window; }

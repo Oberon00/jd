@@ -8,7 +8,8 @@
 namespace sf { class RenderWindow; }
 
 #include "compsys/Component.hpp"
-#include "ssig.hpp"
+
+#include <ssig.hpp>
 
 #include <cstdlib>
 

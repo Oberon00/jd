@@ -7,9 +7,8 @@
 
 #include "compsys/Component.hpp"
 
-#include "ssig.hpp"
-
 #include <SFML/Graphics/Rect.hpp>
+#include <ssig.hpp>
 
 
 class Entity;

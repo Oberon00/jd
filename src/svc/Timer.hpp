@@ -6,11 +6,11 @@
 #define TIMER_HPP_INCLUDED TIMER_HPP_INCLUDED
 
 #include "compsys/Component.hpp"
-#include "ssig.hpp"
 
 #include <boost/function.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
+#include <ssig.hpp>
 
 #include <list>
 #include <string>
@@ -31,7 +31,7 @@ private:
     };
 
 public:
-    class CallOrder: public ConnectionBase {
+    class CallOrder: public ssig::ConnectionBase {
     public:
         virtual void disconnect() override;
         virtual bool isConnected() const override;

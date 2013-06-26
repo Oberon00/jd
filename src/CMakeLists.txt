@@ -129,8 +129,6 @@ source_group("Collisions" FILES ${COLLISION_SOURCES} ${COLLISION_HEADERS})
 
 set(JD_HEADERS
     encoding.hpp
-    ssig.hpp
-    ssig_template.hpp
     MapInfo.hpp
     exceptions.hpp
     sfKeyCodes.hpp
@@ -212,6 +210,7 @@ find_package(PhysFS REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Lua52 REQUIRED)
 find_package(Luabind REQUIRED)
+find_package(ssig REQUIRED)
 set(Boost_USE_STATIC_LIBS    ON)
 set(Boost_USE_MULTITHREADED  ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
@@ -226,7 +225,8 @@ include_directories(
     ${LUABIND_INCLUDE_DIRS}
     ${PHYSFS_INCLUDE_DIR}
     ${ZLIB_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS})
+    ${Boost_INCLUDE_DIRS}
+    ${SSIG_INCLUDE_DIRS})
 add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd

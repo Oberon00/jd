@@ -9,7 +9,6 @@
 #include "Entity.hpp"
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
-#include "ssig.hpp"
 #include "svc/ServiceLocator.hpp"
 #include "svc/LuaVm.hpp"
 
@@ -18,6 +17,7 @@
 #include <luabind/class_info.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/raw_policy.hpp>
+#include <ssig.hpp>
 
 #include <unordered_map>
 
@@ -51,14 +51,14 @@ static std::ostream& operator<< (std::ostream& os, Component const& c)
     return os << "jd.Component (" << c.metaComponent().name() << " @" << &c << ')';
 }
 
-static ConnectionBase* connectEvent(
+static ssig::ConnectionBase* connectEvent(
     lua_State* L,
     Component& sender,
     std::string const& eventname,
     luabind::object const& receiver)
 {
     receiver.push(L);
-    ConnectionBase* result = sender.metaComponent().connectEvent(
+    ssig::ConnectionBase* result = sender.metaComponent().connectEvent(
         L, &sender, eventname);
     lua_pop(L, 1);
     if (!result)
@@ -117,7 +117,7 @@ private:
     MetaComponent const* m_metaComponent;
 };
 
-class wrap_ConnectionBase: public ConnectionBase, public luabind::wrap_base {
+class wrap_ConnectionBase: public ssig::ConnectionBase, public luabind::wrap_base {
 public:
     virtual void disconnect() { call<void>("disconnect"); }
     virtual bool isConnected() const { return call<bool>("getIsConnected"); }
@@ -148,11 +148,11 @@ static void init(LuaVm& vm)
             .LHISREFVALID2(Component),
         def("registerComponent", &registerMetaComponent),
         def("connect", &connectEvent, adopt(result)),
-        class_<ConnectionBase, wrap_ConnectionBase>("ConnectionBase")
+        class_<ssig::ConnectionBase, wrap_ConnectionBase>("ConnectionBase")
             .def(constructor<>())
-            .def("disconnect", &ConnectionBase::disconnect)
-            .def("getIsConnected", &ConnectionBase::isConnected)
-            .property("isConnected", &ConnectionBase::isConnected)
+            .def("disconnect", &ssig::ConnectionBase::disconnect)
+            .def("getIsConnected", &ssig::ConnectionBase::isConnected)
+            .property("isConnected", &ssig::ConnectionBase::isConnected)
     ];
 
     lua_getglobal(vm.L(), "jd");
@@ -204,12 +204,12 @@ void LuaMetaComponent::castDown(lua_State* L, Component* c) const
     o.push(L);
 }
 
-ConnectionBase* LuaMetaComponent::connectEvent(Component* c, std::string const& name) const
+ssig::ConnectionBase* LuaMetaComponent::connectEvent(Component* c, std::string const& name) const
 {
     using namespace luabind;
     object receiver(from_stack(m_L, -1));
     object callback = globals(m_L)[jd::moduleName]["callback_connectLuaEvent"];
     if (type(callback) != LUA_TFUNCTION)
         throw std::runtime_error("no callback for event connection defined (must be a plain function)");
-    return object_cast<ConnectionBase*>(callback(c, name, receiver)[adopt(result)]);
+    return object_cast<ssig::ConnectionBase*>(callback(c, name, receiver)[adopt(result)]);
 }

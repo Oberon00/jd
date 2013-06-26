@@ -28,13 +28,14 @@ public:
 };
 
 #define JD_EVT_METACOMPONENT(c, bc) \
-    namespace {                                            \
-    class c##Meta: public bc {                             \
-    public:                                                \
-        virtual ConnectionBase* connectEvent(lua_State*,   \
-            Component*,                                    \
-            std::string const& name) const;                \
-    };                                                     \
+    namespace {                                     \
+    class c##Meta: public bc {                      \
+    public:                                         \
+        virtual ssig::ConnectionBase* connectEvent( \
+            lua_State*,                             \
+            Component*,                             \
+            std::string const& name) const;         \
+    };                                              \
     } // anonymous namespace
 
 
