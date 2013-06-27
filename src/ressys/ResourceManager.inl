@@ -116,8 +116,7 @@ typename ResourceManager<ResT>::Ptr ResourceManager<ResT>::get(
     auto result = tryGet(name);
     if (!result)
         LOG_THROW(jd::ResourceError("resource \"" + name + "\" is not loaded"));
-    else
-        return result;
+    return result;
 }
 
 template<typename ResT>
