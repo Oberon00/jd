@@ -18,7 +18,7 @@ namespace jd {
 
 Tileset::Tileset():
     m_texture(nullptr),
-    m_ordering(linewiseOrdered)
+    m_ordering(TileOrdering::linewiseOrdered)
 {
 }
 
@@ -32,7 +32,8 @@ Tileset::Tileset(
     m_ordering(ordering),
     m_tileCount(tx->getSize().x / size.x, tx->getSize().y / size.y)
 {
-    assert(ordering == linewiseOrdered || ordering == columnwiseOrdered);
+    assert(ordering == TileOrdering::linewiseOrdered ||
+           ordering == TileOrdering::columnwiseOrdered);
     assert(size.x <= m_texture->getSize().x);
     assert(size.y <= m_texture->getSize().y);
 }
@@ -40,7 +41,7 @@ Tileset::Tileset(
 sf::Vector2u Tileset::position(unsigned index) const
 {
     sf::Vector2u result;
-    if (m_ordering == linewiseOrdered) {
+    if (m_ordering == TileOrdering::linewiseOrdered) {
         result.x = m_size.x * (index % m_tileCount.x);
         result.y = m_size.y * (index / m_tileCount.x);
     } else {

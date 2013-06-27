@@ -26,13 +26,13 @@ typedef sf::Vector3<unsigned> Vector3u;
 /* const */ class Tileset
 {
 public:
-    enum TileOrdering { linewiseOrdered, columnwiseOrdered };
+    enum class TileOrdering { linewiseOrdered, columnwiseOrdered };
 
     Tileset();
     Tileset(
         sf::Vector2u size,
         ResourceTraits<sf::Texture>::Ptr texture,
-        TileOrdering ordering = linewiseOrdered);
+        TileOrdering ordering = TileOrdering::linewiseOrdered);
 
     sf::Vector2u position(unsigned index) const;
     ResourceTraits<sf::Texture>::Ptr texture() const { return m_texture; }

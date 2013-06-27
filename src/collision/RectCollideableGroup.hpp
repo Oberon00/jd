@@ -22,7 +22,8 @@ public:
     virtual std::vector<Collision> colliding(
         sf::FloatRect const&, Entity* e = nullptr) override;
     virtual void collideWith(
-        CollideableGroup& other, DelegateState delegated = notDelegated) override;
+        CollideableGroup& other,
+        DelegateState delegated = DelegateState::notDelegated) override;
 
     virtual std::vector<Collision> colliding(
         sf::Vector2f lineStart, sf::Vector2f lineEnd) override;

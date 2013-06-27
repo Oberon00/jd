@@ -86,9 +86,9 @@ void init(LuaVm& vm)
             .LHPROPG(state)
             .LHISREFVALID
             .enum_("state") [
-                value("CREATED", Entity::created),
-                value("FINISHED", Entity::finished),
-                value("KILLED", Entity::killed)
+                value("CREATED", Entity::EntityState::created),
+                value("FINISHED", Entity::EntityState::finished),
+                value("KILLED", Entity::EntityState::killed)
             ]
             .def("components", &getComponents, dependency(_1, result))
             .def("component", &getComponent)

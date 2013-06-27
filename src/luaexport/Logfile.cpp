@@ -8,7 +8,7 @@ char const libname[] = "Logfile";
 #include "ExportThis.hpp"
 
 
-static void writelog(lua_State* L, std::string const& msg, loglevel::T lv)
+static void writelog(lua_State* L, std::string const& msg, loglevel lv)
 {
     // modified from luaL_where
     lua_Debug ar;

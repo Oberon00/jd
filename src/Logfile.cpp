@@ -72,7 +72,7 @@ static const std::string filterHtml(std::string const& s)
     return result;
 }
 
-Logfile::Logfile(const std::string& filename, loglevel::T min_level_, logstyle::T style_):
+Logfile::Logfile(const std::string& filename, loglevel min_level_, logstyle style_):
     m_min_level(min_level_),
     m_style(style_)
 {
@@ -105,7 +105,7 @@ void Logfile::init()
     sf::err().rdbuf(m_sferr.rdbuf());
 }
 
-void Logfile::open(const std::string& filename, logstyle::T style)
+void Logfile::open(const std::string& filename, logstyle style)
 {
     m_file.clear();
     m_file.open(enc::utf8ToFstreamArg(filename));
@@ -139,20 +139,23 @@ void Logfile::open(const std::string& filename, logstyle::T style)
     LOG_I("Start logging at " + full_time());
 }
 
-void Logfile::write(const boost::format& msg, loglevel::T level, char const* location)
+void Logfile::write(const boost::format& msg, loglevel level, char const* location)
 {
     write(msg.str(), level, location);
 }
 
-void Logfile::write(std::string const& msg, loglevel::T level, char const* location)
+void Logfile::write(std::string const& msg, loglevel level_, char const* location)
 {
-    if (level < m_min_level)
+    if (level_ < m_min_level)
         return;
 
-    static_assert(loglevel::max == 5, "Please correct levelnames below!");
-    static const std::array<const char* const, loglevel::max> levelnames =
+    auto level = static_cast<int>(level_);
+
+    static auto const maxloglevel = static_cast<int>(loglevel::max);
+    static_assert(maxloglevel == 5, "Please correct levelnames below!");
+    static const std::array<const char* const, maxloglevel> levelnames =
         { "debug", "info", "warning", "error", "fatal" };
-    static const std::array<const char* const, loglevel::max> levelpreambles =
+    static const std::array<const char* const, maxloglevel> levelpreambles =
         { "    ", "   _", "  + ", " *  ", "!>>>" };
 
     std::string location_;
@@ -208,23 +211,23 @@ void Logfile::write(std::string const& msg, loglevel::T level, char const* locat
 }
 
 
-loglevel::T Logfile::minLevel() const
+loglevel Logfile::minLevel() const
 {
     return m_min_level;
 }
 
-void Logfile::setMinLevel(loglevel::T level)
+void Logfile::setMinLevel(loglevel level)
 {
     m_min_level = level;
 }
 
-void Logfile::logThrow(const std::exception& ex, loglevel::T level, char const* location)
+void Logfile::logThrow(const std::exception& ex, loglevel level, char const* location)
 {
     logEx(ex, level, location);
     throw ex;
 }
 
-void Logfile::logEx(const std::exception& ex, loglevel::T level, char const* location)
+void Logfile::logEx(const std::exception& ex, loglevel level, char const* location)
 {
     write(boost::diagnostic_information(ex), level, location);
 }

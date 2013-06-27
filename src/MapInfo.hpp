@@ -17,8 +17,8 @@
 typedef std::unordered_map<std::string, std::string> PropertyMap;
 
 struct MapObject {
-    enum T { rect, tile, line, poly };
-    int objectType;
+    enum class T { rect, tile, line, poly };
+    T objectType;
     PropertyMap properties;
     std::string name;
     std::string type;

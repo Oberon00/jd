@@ -36,9 +36,9 @@ public:
     // If a CollideableGroup delegates the collision check to the other one
     // it should call collideWith with delegated = isDelegated, to detect/avoid
     // endless recursion, if the other CollideableGroup also wants to delegate.
-    enum DelegateState { notDelegated, isDelegated, reDelegated };
+    enum class DelegateState { notDelegated, isDelegated, reDelegated };
     virtual void collideWith(
-        CollideableGroup& other, DelegateState delegated = notDelegated)
+        CollideableGroup& other, DelegateState delegated = DelegateState::notDelegated)
     { other.collideWith(*this, nextDelegateState(delegated)); }
 
     virtual void collide() { }; // Check for internal collisions
@@ -49,7 +49,7 @@ protected:
     static DelegateState nextDelegateState(DelegateState s)
     {
         int const result = static_cast<int>(s) + 1;
-        if (s > reDelegated)
+        if (s > DelegateState::reDelegated)
             throw std::logic_error("cannot delegate a redelegated collideWith() call");
         return static_cast<DelegateState>(result);
     }
@@ -71,7 +71,8 @@ public:
         sf::Vector2f lineStart, sf::Vector2f lineEnd) override;
 
     virtual void collideWith(
-        CollideableGroup& other, DelegateState delegated = notDelegated) override;
+        CollideableGroup& other,
+        DelegateState delegated = DelegateState::notDelegated) override;
 
     virtual void collide() override; // Check for internal collisions
 

@@ -8,13 +8,13 @@
 
 
 Entity::Entity():
-    m_state(created)
+    m_state(EntityState::created)
 {
 }
 
 Entity::~Entity()
 {
-    if (m_state == finished) {
+    if (m_state == EntityState::finished) {
         try { kill(); }
         catch (std::exception const& e) {
             LOG_E("Exception in Entity destructor: kill() threw:");
@@ -31,7 +31,7 @@ void Entity::add(Component& c)
 {
     if (c.m_parent)
         throw std::logic_error("cannot add component: it already has a parent");
-    if (m_state != created)
+    if (m_state != EntityState::created)
         throw std::logic_error("attempt to add a component to an Entity in a wrong state");
     if ((*this)[c.metaComponent()])
         throw std::logic_error("only one component per type per Entity allowed");
@@ -42,11 +42,11 @@ void Entity::add(Component& c)
 
 void Entity::finish()
 {
-    if (m_state == finished)
+    if (m_state == EntityState::finished)
         return;
-    if (m_state != created)
+    if (m_state != EntityState::created)
         throw std::logic_error("attempt to finish an Entity in a wrong state");
-    m_state = finished;
+    m_state = EntityState::finished;
     for (Component& c : m_components)
         c.initComponent();
 }
@@ -62,11 +62,11 @@ Component* Entity::operator[](MetaComponent const& meta)
 
 void Entity::kill()
 {
-    if (m_state == killed)
+    if (m_state == EntityState::killed)
         return;
-    if (m_state != finished)
+    if (m_state != EntityState::finished)
         throw std::logic_error("attempt to kill an Entity in a wrong state");
-    m_state = killed;
+    m_state = EntityState::killed;
     for (Component& c : m_components)
         c.cleanupComponent();
 }

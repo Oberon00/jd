@@ -75,10 +75,10 @@ static void init(LuaVm& vm)
                 .LHPROPRW(relativePoints)
                 .LHPROPG(absolutePoints)
                 .enum_("t")[
-                    value("RECT", MapObject::rect),
-                    value("TILE", MapObject::tile),
-                    value("LINE", MapObject::line),
-                    value("POLY", MapObject::poly)
+                    value("RECT", MapObject::T::rect),
+                    value("TILE", MapObject::T::tile),
+                    value("LINE", MapObject::T::line),
+                    value("POLY", MapObject::T::poly)
                 ]
                 .LHPROPRW(properties),
 #           undef LHCURCLASS

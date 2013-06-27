@@ -236,16 +236,16 @@ MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename)
                     o.properties = loadPropertiesOptional(obj.second);
                     o.tileId = obj.second.get("<xmlattr>.gid", 0u);
                     if (o.tileId) {
-                        o.objectType = MapObject::tile;
+                        o.objectType = MapObject::T::tile;
                         o.position.y -= ts.size().y; // assuming map orientation is orthogonal.
                     } else if (auto const line = obj.second.get_child_optional("polyline")) {
-                        o.objectType = MapObject::line;
+                        o.objectType = MapObject::T::line;
                         o.relativePoints = loadPointsOptional(*line);
                     } else if (auto const line = obj.second.get_child_optional("polygon")) {
-                        o.objectType = MapObject::poly;
+                        o.objectType = MapObject::T::poly;
                         o.relativePoints = loadPointsOptional(*line);
                     } else {
-                        o.objectType = MapObject::rect; // WARN could also be invalid
+                        o.objectType = MapObject::T::rect; // WARN could also be invalid
                     }
                     group.objects.push_back(std::move(o));
                 } else if (obj.first != "<xmlattr>") {

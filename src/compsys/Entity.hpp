@@ -19,7 +19,7 @@ class MetaComponent;
 
 class Entity: public EnableWeakRefFromThis<Entity>, private boost::noncopyable {
 public:
-    enum EntityState { created, finished, killed };
+    enum class EntityState { created, finished, killed };
 
     Entity();
     ~Entity();

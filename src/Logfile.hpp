@@ -12,36 +12,36 @@
 #include <fstream>
 
 
-namespace loglevel { enum T { debug, info, warning, error, fatal,  max  }; }
-namespace logstyle { enum T { html, plain, like_extension,  max }; }
+enum class loglevel { debug, info, warning, error, fatal,  max  };
+enum class logstyle { html, plain, like_extension,  max };
 
 class Logfile
 {
 public:
     explicit Logfile(const std::string& filename,
-                     loglevel::T min_level = loglevel::debug,
-                     logstyle::T style = logstyle::like_extension);
+                     loglevel min_level = loglevel::debug,
+                     logstyle style = logstyle::like_extension);
     Logfile();
     ~Logfile();
     void write(
         const std::string& msg,
-        loglevel::T level = loglevel::info,
+        loglevel level = loglevel::info,
         char const* location = nullptr);
     void write(
         const boost::format& msg,
-        loglevel::T level = loglevel::info,
+        loglevel level = loglevel::info,
         char const* location = nullptr);
 
-    void open(const std::string& filename, logstyle::T style = logstyle::like_extension);
-    loglevel::T minLevel() const;
-    void setMinLevel(loglevel::T level);
+    void open(const std::string& filename, logstyle style = logstyle::like_extension);
+    loglevel minLevel() const;
+    void setMinLevel(loglevel level);
     void logThrow(
         const std::exception& ex,
-        loglevel::T level = loglevel::error,
+        loglevel level = loglevel::error,
         char const* location = nullptr);
     void logEx(
         const std::exception& ex,
-        loglevel::T level = loglevel::error,
+        loglevel level = loglevel::error,
         char const* location = nullptr);
 
     class Error;
@@ -52,8 +52,8 @@ private:
     void init();
     const std::string printable_time() const;
 
-    loglevel::T m_min_level;
-    logstyle::T m_style;
+    loglevel m_min_level;
+    logstyle m_style;
     std::ofstream m_file;
     boost::iostreams::filtering_ostream m_sferr;
     sf::Clock m_timer;
