@@ -231,7 +231,7 @@ add_executable(jd WIN32 ${JD_HEADERS} ${JD_SOURCES})
 set_target_properties(jd PROPERTIES COMPILE_DEFINITIONS "${COMP_DEFS}")
 target_link_libraries(jd
     ${SFML_LIBRARIES}
-    ${LUA_LIBRARY}
+    ${LUA_LIBRARIES}
     ${LUABIND_LIBRARIES}
     ${PHYSFS_LIBRARY}
     ${ZLIB_LIBRARY}
