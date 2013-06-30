@@ -8,7 +8,7 @@ set (SRCS
     lua/lib/text.lua
     lua/lib/util.lua
     lua/lib/vecutil.lua)
-    
+
 set (basejdout "${CMAKE_CURRENT_BINARY_DIR}/base.jd")
 
 add_custom_command(

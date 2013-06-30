@@ -54,7 +54,7 @@ set(COMP_SOURCES
     comp/PositionComponent.cpp
     comp/TileCollisionComponent.cpp
     comp/TilePositionComponent.cpp)
-   
+
 source_group("Components" FILES ${COMP_SOURCES} ${COMP_HEADERS})
 
 
@@ -123,9 +123,9 @@ set(COLLISION_SOURCES
     collision/Collisions.cpp
     collision/TileCollideableGroup.cpp
     collision/RectCollideableGroup.cpp)
-    
+
 source_group("Collisions" FILES ${COLLISION_SOURCES} ${COLLISION_HEADERS})
-    
+
 
 set(JD_HEADERS
     encoding.hpp
