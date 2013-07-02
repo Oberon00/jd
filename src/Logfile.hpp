@@ -35,7 +35,7 @@ public:
     void open(const std::string& filename, logstyle style = logstyle::like_extension);
     loglevel minLevel() const;
     void setMinLevel(loglevel level);
-    void logThrow(
+    BOOST_ATTRIBUTE_NORETURN void logThrow(
         const std::exception& ex,
         loglevel level = loglevel::error,
         char const* location = nullptr);
