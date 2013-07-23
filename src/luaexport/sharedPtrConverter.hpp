@@ -9,6 +9,7 @@
 
 #if BOOST_VERSION >= 105300
 #include <boost/get_pointer.hpp>
+#include <luabind/detail/has_get_pointer.hpp>
 
 
 namespace luabind { namespace detail { namespace has_get_pointer_ {

@@ -31,7 +31,7 @@ public:
     // places result on top of stack.
     virtual void castDown(lua_State*, Component*) const
     {
-        assert(!"not scriptable!");
+        assert("not scriptable!" && false);
         throw std::runtime_error("castDown() is not implemented.");
     }
 
@@ -54,14 +54,14 @@ bool operator<  (MetaComponent const& lhs, MetaComponent const& rhs);
 
 class LuaMetaComponent: public MetaComponent {
 public:
-    LuaMetaComponent(lua_State* L, std::string const& name);
-    virtual std::string const& name() const;
+    explicit LuaMetaComponent(lua_State* L, std::string const& name);
+    std::string const& name() const override;
 
-    virtual void castDown(lua_State* L, Component* c) const override;
-    virtual ssig::ConnectionBase* connectEvent(Component* c, std::string const& name) const;
+    void castDown(lua_State* L, Component* c) const override;
+    ssig::ConnectionBase* connectEvent(
+        lua_State* L, Component* c, std::string const& name) const override;
 
 private:
-    lua_State* m_L;
     std::string const m_name;
 };
 

@@ -197,8 +197,9 @@ MapInfo loadTilemap(jd::Tilemap& tm, std::string const& vfilename)
     tm.setSize(jd::Vector3u(
         map.get<unsigned>("<xmlattr>.width"),
         map.get<unsigned>("<xmlattr>.height"),
-        rng::count_if(map, [](pt::ptree::value_type const& e) {
-            return e.first == "layer"; })));
+        static_cast<unsigned>(
+            rng::count_if(map, [](pt::ptree::value_type const& e) {
+                return e.first == "layer"; }))));
     if (tm.size().x * tm.size().y * tm.size().z == 0)
         throw jd::ResourceLoadError("map is empty");
 

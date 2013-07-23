@@ -131,10 +131,6 @@ public:
       m_connection(nullptr)
     { }
 
-    EnableWeakRefFromThis(EnableWeakRefFromThis const& rhs):
-      m_connection(nullptr) // reset connection
-    { }
-
     WeakRef<T> ref()
     {
         ensureConnection();

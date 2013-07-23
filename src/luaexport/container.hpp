@@ -60,8 +60,9 @@ void RandomAccessContainer_set(C& c, typename C::size_type i, luabind::argument 
 
     --i;
     if (luabind::type(value) == LUA_TNIL) {
+        typedef typename C::difference_type offset_t;
         if (c.size() > i)
-            c.erase(c.begin() + i);
+            c.erase(c.begin() + static_cast<offset_t>(i));
         else
             throw std::out_of_range("attempt to set invalid index to nil");
     } else {

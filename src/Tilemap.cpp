@@ -93,9 +93,9 @@ void Tilemap::setSize(Vector3u const& size)
 Vector3u Tilemap::size() const
 {
     return Vector3u(
-        m_columnCount,
-        m_rowCount,
-        m_map.size() / (m_columnCount * m_rowCount));
+        static_cast<unsigned>(m_columnCount),
+        static_cast<unsigned>(m_rowCount),
+        static_cast<unsigned>(m_map.size() / (m_columnCount * m_rowCount)));
 }
 
 
@@ -136,8 +136,8 @@ std::size_t Tilemap::index(Vector3u pos) const
 sf::Vector2f Tilemap::localTilePos(sf::Vector2i pos) const
 {
     return sf::Vector2f(
-        static_cast<float>(pos.x * m_tileset.size().x),
-        static_cast<float>(pos.y * m_tileset.size().y));
+        static_cast<float>(pos.x * static_cast<int>(m_tileset.size().x)),
+        static_cast<float>(pos.y * static_cast<int>(m_tileset.size().y)));
 }
 
 sf::Vector2f Tilemap::globalTilePos(sf::Vector2i pos) const
@@ -214,34 +214,40 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
     sf::FloatRect const viewRect(jd::viewRect(target.getView()));
 
     Vector3u size = this->size();
-    sf::Vector2i firstTPos(tilePosFromGlobal(topLeft(viewRect)));
-    firstTPos.x = std::max(firstTPos.x, 0);
-    firstTPos.y = std::max(firstTPos.y, 0);
-    sf::Vector2i lastTPos(tilePosFromGlobal(bottomRight(viewRect)));
-    lastTPos.x = std::min(lastTPos.x + 1, static_cast<int>(size.x));
-    lastTPos.y = std::min(lastTPos.y + 1, static_cast<int>(size.y));
-    sf::Vector2i distance(lastTPos - firstTPos);
-    if (distance.x <= 0 || distance.y <= 0)
+    sf::Vector2i firstTPosI(tilePosFromGlobal(topLeft(viewRect)));
+    firstTPosI.x = std::max(firstTPosI.x, 0);
+    firstTPosI.y = std::max(firstTPosI.y, 0);
+    sf::Vector2i lastTPosI(tilePosFromGlobal(bottomRight(viewRect)));
+    lastTPosI.x = std::min(lastTPosI.x + 1, static_cast<int>(size.x));
+    lastTPosI.y = std::min(lastTPosI.y + 1, static_cast<int>(size.y));
+    sf::Vector2i distanceI = lastTPosI - firstTPosI;
+    if (distanceI.x <= 0 || distanceI.y <= 0)
         return;
+    
+    auto distance = vec_cast<unsigned>(distanceI);
+    
+    auto firstTPos = vec_cast<unsigned>(firstTPosI);
+    auto lastTPos = vec_cast<unsigned>(lastTPosI);
+    
     std::size_t const renderedTileCount = distance.x * distance.y * size.z;
     static std::size_t const verticesPerTile = 4;
     std::vector<sf::Vertex> vertices(renderedTileCount * verticesPerTile);
 
-    sf::Vector2f const firstPos(localTilePos(firstTPos));
+    sf::Vector2f const firstPos(localTilePos(firstTPosI));
     std::size_t iVertices = 0;
-    sf::Vector2f const tileSize(m_tileset.size());
+    auto const tileSize = vec_cast<float>(m_tileset.size());
     std::size_t const mapSkipY = size.x - distance.x;
     std::size_t const mapSkipZ =
         size.x * size.y - distance.x * distance.y - mapSkipY * distance.y;
 
     std::size_t iMap = index(Vector3u(
-        firstTPos.x,
-        firstTPos.y,
+        static_cast<unsigned>(firstTPos.x),
+        static_cast<unsigned>(firstTPos.y),
         0));
     sf::Vector2f iPos(firstPos);
-    for (std::size_t z = 0; z < size.z; ++z) {
-        for (std::size_t y = firstTPos.y; y < static_cast<std::size_t>(lastTPos.y); ++y){
-            for (std::size_t x = firstTPos.x; x < static_cast<std::size_t>(lastTPos.x); ++x) {
+    for (unsigned z = 0; z < size.z; ++z) {
+        for (unsigned y = firstTPos.y; y < static_cast<std::size_t>(lastTPos.y); ++y){
+            for (unsigned x = firstTPos.x; x < static_cast<std::size_t>(lastTPos.x); ++x) {
                 assert(index(Vector3u(x, y, z)) == iMap);
                 unsigned const tileId = m_map[iMap++];
                 if (tileId == 0) {
@@ -249,7 +255,9 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
                     iPos.x += tileSize.x;
                     continue;
                 }
-                sf::Vector2f texPos(m_tileset.position(maybeAnimated(tileId, Vector3u(x, y, z)) - 1));
+                sf::Vector2f texPos(m_tileset.position(
+                    static_cast<unsigned>(maybeAnimated(
+                            tileId, Vector3u(x, y, z)) - 1)));
                 vertices[iVertices].texCoords  = texPos;
                 vertices[iVertices++].position = iPos;
                 vertices[iVertices].texCoords  = sf::Vector2f(texPos.x, texPos.y + tileSize.y);
@@ -271,7 +279,11 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
         return;
     states.transform *= getTransform();
     states.texture = m_tileset.texture().get();
-    target.draw(&vertices[0], vertices.size(), sf::Quads, states);
+    target.draw(
+        &vertices[0],
+        static_cast<unsigned>(vertices.size()),
+                sf::Quads,
+                states);
 } // Tilemap::draw()
 
 bool Tilemap::isValidPosition(sf::Vector3i pos) const

@@ -28,12 +28,12 @@ public:
     WeakRef<TileCollisionComponent> colliding(Vector3u pos);
 
     // notify if e != nullptr
-    virtual std::vector<Collision> colliding(
+    std::vector<Collision> colliding(
         sf::FloatRect const&,
         Entity* e = nullptr,
         std::vector<Vector3u>* positions = nullptr);
 
-    virtual std::vector<Collision> colliding(
+    std::vector<Collision> colliding(
         sf::Vector2f lineStart,
         sf::Vector2f lineEnd,
         std::vector<Vector3u>* positions = nullptr);
@@ -41,7 +41,7 @@ public:
     jd::Tilemap& tilemap() { return m_tilemap; }
     Vector3u mapsize() const;
 
-    virtual void clear() { m_entities.clear(); m_proxyEntities.clear(); }
+    void clear() { m_entities.clear(); m_proxyEntities.clear(); }
 
     Collision makeCollision(
         Vector3u pos,

@@ -23,8 +23,8 @@ public:
     typedef typename ResourceTraits<resT>::ConstPtr ConstPtr;
 
     explicit AutoResource(Ptr resource);
-    AutoResource(){};
-    virtual ~AutoResource(){};
+    AutoResource(){}
+    virtual ~AutoResource(){}
     ConstPtr resource() const;
     Ptr resource();
     void setResource(Ptr resource);

@@ -72,9 +72,9 @@ std::vector<byte> decode(byte const* encoded, std::size_t byteCount)
             charToByte);
 
         std::array<byte, 3> outBytes;
-        outBytes[0] = inBytes[0] << '\2' | inBytes[1] >> '\4';
-        outBytes[1] = inBytes[1] << '\4' | inBytes[2] >> '\2';
-        outBytes[2] = inBytes[2] << '\6' | inBytes[3];
+        outBytes[0] = static_cast<byte>(inBytes[0] << 2 | inBytes[1] >> 4);
+        outBytes[1] = static_cast<byte>(inBytes[1] << 4 | inBytes[2] >> 2);
+        outBytes[2] = static_cast<byte>(inBytes[2] << 6 | inBytes[3]);
 
         if (i + 4 == byteCount) {
             std::size_t discard = 0;

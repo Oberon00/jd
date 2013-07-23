@@ -83,7 +83,7 @@ void Timer::endFrame()
 }
 
 
-float const Timer::factor() const
+float Timer::factor() const
 {
     return m_factor;
 }

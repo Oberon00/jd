@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics/Font.hpp>
 
-static void loadFontResource(struct VFileFont&, std::string const&);
+inline void loadFontResource(struct VFileFont& fnt, std::string const& name);
 
 struct VFileFont: public sf::Font
 {

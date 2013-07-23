@@ -195,7 +195,19 @@ else ()
         message(FATAL_ERROR "${PROJECT_NAME} requires g++ 4.7 or greater.")
     endif ()
     elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+        add_definitions("-Weverything"
+            "-Wno-shadow" "-Wno-undef"
+            "-Wno-global-constructors" "-Wno-weak-vtables"
+            "-Wno-padded" "-Wno-exit-time-destructors"
+            "-Wno-mismatched-tags" # struct vs. class for std::hash
+            # Demands double curly braces at std::array initialization:
+            "-Wno-missing-braces"
+            "-Wno-covered-switch-default" "-Wno-float-equal"
+            "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic")
+        list(APPEND JD_HEADERS "clang_stdlib_config.hpp")
+        set(stdlibcfg "${CMAKE_CURRENT_SOURCE_DIR}/clang_stdlib_config.hpp")
+        add_definitions("-DBOOST_STDLIB_CONFIG=\"${stdlibcfg}\""
+                        "-D_GLIBCXX_USE_WCHAR_T")
     else ()
         message(FATAL_ERROR "Your C++ compiler does not support C++11.")
     endif ()

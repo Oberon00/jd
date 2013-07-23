@@ -11,6 +11,7 @@
 
 #include <functional> // std::hash
 #include <string>
+#include <cassert>
 
 namespace sf { class Text; class String; class View; }
 

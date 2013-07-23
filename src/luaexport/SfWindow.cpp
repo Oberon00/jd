@@ -7,9 +7,12 @@
 #include "luaUtils.hpp"
 
 #include <luabind/iterator_policy.hpp>
-#include <luabind/operator.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/Image.hpp> // for Window_setIcon
+
+#include <ostream>
+static std::ostream& operator<< (std::ostream& os, sf::VideoMode const& v);
+#include <luabind/operator.hpp>
 
 char const libname[] = "SfWindow";
 #include "ExportThis.hpp"
@@ -202,18 +205,16 @@ static void init(LuaVm& vm)
             .property("position", &MouseEvent_position<LHCURCLASS>),
 #       undef LHCURCLASS
 
-#       define LHCURCLASS Keyboard
         namespace_("kb") [
             LHFN(keyName)
         ]
-#       undef LHCURCLASS
     ];
 
     lua_State* L = vm.L();
     lua_getglobal(L, "jd");
     lua_getfield(L, -1, "kb");
     static luaU::ExportedEnumValue const keys[] = {
-#       define E(n, v) {n, Keyboard::v},
+#       define KEY(n, v) {n, Keyboard::v},
 #       include "sfKeyCodes.hpp"
         {nullptr, 0}
     };

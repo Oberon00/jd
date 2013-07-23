@@ -10,6 +10,7 @@
 #include <boost/noncopyable.hpp>
 
 #include <cassert>
+#include <iosfwd>
 
 
 class MetaComponent;
@@ -56,5 +57,8 @@ inline T* component_cast(Component* c) // safe & a bit slower
         static class MetaComponent const& staticMetaComponent; \
         virtual class MetaComponent const& metaComponent() const { return staticMetaComponent; } \
     private:
+
+        
+std::ostream& operator<< (std::ostream& os, Component const& c);
 
 #endif

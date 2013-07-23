@@ -35,7 +35,11 @@ std::string const findResource(
 
     std::string result(path + ".???");
     for (std::size_t i = 0; i < nExts; ++i) {
-        result.replace(result.begin() + path.size(), result.end(), exts[i]);
+        typedef std::string::difference_type offset_t;
+        result.replace(
+            result.begin() + static_cast<offset_t>(path.size()),
+            result.end(),
+            exts[i]);
         if (PHYSFS_exists(result.c_str()))
             return result;
     }
@@ -66,7 +70,7 @@ static void loadTextureResource(sf::Texture& tx, std::string const& name)
     }
 }
 
-static void loadFontResource(VFileFont& fnt, std::string const& name)
+inline void loadFontResource(VFileFont& fnt, std::string const& name)
 {
     std::string const filename = findResource(
         name,

@@ -36,7 +36,7 @@ static int writeString(lua_State* L)
     char const* data = luaL_checklstring(L, 2, &len);
     try {
         VFile f(filename, VFile::openW);
-        f.write(data, len);
+        f.write(data, static_cast<sf::Int64>(len));
         f.throwError();
         f.close();
         return 0;
@@ -54,7 +54,7 @@ static int readString(lua_State* L)
         f.throwError();
         assert(sz >= 0);
         std::vector<char> buf(static_cast<std::size_t>(sz));
-        f.read(&buf[0], buf.size());
+        f.read(&buf[0], static_cast<sf::Int64>(buf.size()));
         f.throwError();
         f.close();
 
@@ -99,7 +99,8 @@ static int compressString(lua_State* L)
                 static_cast<size_t>(srcLen * 1.001 + 12 + 1),
                 static_cast<size_t>(1)) +
             sizeof(uncompressed_len_t));
-        *reinterpret_cast<uncompressed_len_t*>(&buf[0]) = srcLen;
+        *reinterpret_cast<uncompressed_len_t*>(&buf[0]) =
+            static_cast<uncompressed_len_t>(srcLen);
         uLongf dstLen = buf.size() - sizeof(uncompressed_len_t);
         throwZErr(compress(
             reinterpret_cast<Bytef*>(&buf[sizeof(uncompressed_len_t)]), &dstLen,

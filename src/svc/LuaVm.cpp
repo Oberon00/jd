@@ -26,7 +26,7 @@ static int pcallf(lua_State* L)
 
 static lua_CFunction oldpanicf = nullptr;
 
-int panicf(lua_State* L)
+static int panicf(lua_State* L)
 {
     pcallf(L);
     LOG_F(luaU::Error(L, "Lua panic").what());

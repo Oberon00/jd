@@ -24,6 +24,10 @@
 static char const libname[] = "ComponentSystem";
 #include "luaexport/ExportThis.hpp"
 
+std::ostream& operator<< (std::ostream& os, Component const& c)
+{
+    return os << "jd.Component (" << c.metaComponent().name() << " @" << &c << ')';
+}
 
 namespace {
 
@@ -38,17 +42,12 @@ static std::string const& Component_componentName(Component const& c)
     return c.metaComponent().name();
 }
 
-luabind::object Component_parent(Component const& c, lua_State* L)
+static luabind::object Component_parent(Component const& c, lua_State* L)
 {
     if (c.parent())
         return luabind::object(L, c.parent()->ref());
     else
         return luabind::object();
-}
-
-static std::ostream& operator<< (std::ostream& os, Component const& c)
-{
-    return os << "jd.Component (" << c.metaComponent().name() << " @" << &c << ')';
 }
 
 static ssig::ConnectionBase* connectEvent(
@@ -186,7 +185,6 @@ bool operator<  (MetaComponent const& lhs, MetaComponent const& rhs)
 ///////////////////////////////////////////////////////
 
 LuaMetaComponent::LuaMetaComponent(lua_State* L, std::string const& name):
-    m_L(L),
     m_name(name)
 {
     ComponentRegistry::get(L).registerComponent(this);
@@ -204,11 +202,11 @@ void LuaMetaComponent::castDown(lua_State* L, Component* c) const
     o.push(L);
 }
 
-ssig::ConnectionBase* LuaMetaComponent::connectEvent(Component* c, std::string const& name) const
+ssig::ConnectionBase* LuaMetaComponent::connectEvent(lua_State* L, Component* c, std::string const& name) const
 {
     using namespace luabind;
-    object receiver(from_stack(m_L, -1));
-    object callback = globals(m_L)[jd::moduleName]["callback_connectLuaEvent"];
+    object receiver(from_stack(L, -1));
+    object callback = globals(L)[jd::moduleName]["callback_connectLuaEvent"];
     if (type(callback) != LUA_TFUNCTION)
         throw std::runtime_error("no callback for event connection defined (must be a plain function)");
     return object_cast<ssig::ConnectionBase*>(callback(c, name, receiver)[adopt(result)]);

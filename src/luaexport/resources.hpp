@@ -6,7 +6,7 @@
 #define RESOURCES_HPP_INCLUDED RESOURCES_HPP_INCLUDED
 
 #include "ressys/ResourceManager.hpp"
-
+#include "sharedPtrConverter.hpp"
 #include <luabind/luabind.hpp>
 
 

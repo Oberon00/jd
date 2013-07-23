@@ -25,7 +25,8 @@ static std::string const searchPath(
     replace_all(path, "?", name);
 
     std::vector<boost::iterator_range<std::string::iterator>> pelems;
-    split(pelems, path, [](char c) { return c == ';'; });
+    static bool(*splitter)(char) = [](char c) { return c == ';'; };
+    split(pelems, path, splitter);
 
     // hack: The C++ standard does not guarantee that std::string is zero
     //  terminated, only the return value of c_str() is. But even after calling

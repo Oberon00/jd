@@ -196,7 +196,7 @@ static int geo_index(lua_State* L)
     return 1;
 }
 
-bool geo_setattrib(lua_State* L, char const* n, LuaVec2* v)
+static bool geo_setattrib(lua_State* L, char const* n, LuaVec2* v)
 {
     if (n[0] != 0 && n[1] == 0) switch (n[0]) {
         case 'x': v->x = luaL_checknumber(L, 3); return true;
@@ -205,7 +205,7 @@ bool geo_setattrib(lua_State* L, char const* n, LuaVec2* v)
     return false;
 }
 
-bool geo_setattrib(lua_State* L, char const* n, LuaVec3* v)
+static bool geo_setattrib(lua_State* L, char const* n, LuaVec3* v)
 {
     if (n[0] != 0 && n[1] == 0) switch (n[0]) {
         case 'x': v->x = luaL_checknumber(L, 3); return true;
@@ -272,7 +272,7 @@ template <typename T>
 static int geo_create(lua_State* L);
 
 template <>
-int geo_create<LuaVec2>(lua_State* L)
+inline int geo_create<LuaVec2>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -291,7 +291,7 @@ int geo_create<LuaVec2>(lua_State* L)
 }
 
 template <>
-int geo_create<LuaVec3>(lua_State* L)
+inline int geo_create<LuaVec3>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -307,7 +307,7 @@ int geo_create<LuaVec3>(lua_State* L)
 }
 
 template <>
-int geo_create<LuaRect>(lua_State* L)
+inline int geo_create<LuaRect>(lua_State* L)
 {
     if (lua_istable(L, 1))
         lua_remove(L, 1); // remove table which is called
@@ -475,7 +475,7 @@ void Vec_export(lua_State* L)
     lua_pop(L, 1);
 }
 
-void Rect_export(lua_State* L)
+static void Rect_export(lua_State* L)
 {
     int const success = luaL_newmetatable(L, lgeo::Traits<LuaRect>::mtName);
     assert(success);
@@ -516,7 +516,7 @@ void Rect_export(lua_State* L)
 }
 
 
-void init(LuaVm& vm)
+static void init(LuaVm& vm)
 {
     lua_State* L = vm.L();
 

@@ -35,9 +35,8 @@ void EventDispatcher::dispatch()
 void EventDispatcher::dispatchEvent(sf::Event& ev)
 {
     m_sig_sfEvent(ev);
+    using sf::Event;
     switch (ev.type) {
-        using sf::Event;
-
         // Misc
         case Event::Closed: m_sig_closed(); break;
         case Event::Resized: m_sig_resized(ev.size); break;
@@ -66,6 +65,7 @@ void EventDispatcher::dispatchEvent(sf::Event& ev)
         case Event::JoystickMoved:
         break;
 
+        case sf::Event::Count:
         default:
             LOG_W("unknown sf::Event::type: " + boost::lexical_cast<std::string>(ev.type));
         break;

@@ -17,7 +17,7 @@ namespace jd {
 std::string const keyName(int keyCode)
 {
     switch(keyCode) {
-#   define E(n, v) case sf::Keyboard::v: return n;
+#   define KEY(n, v) case sf::Keyboard::v: return n;
 #   include "sfKeyCodes.hpp"
     }
     return "key #" + boost::lexical_cast<std::string>(keyCode);
@@ -45,7 +45,7 @@ void breakTextLines(sf::Text& t, float maxX)
 {
     sf::String s = t.getString();
     std::size_t lastBreakCharIdx = s.getSize();
-    static sf::String const breakBeforeChars("([{\"'`´");
+    static sf::String const breakBeforeChars("([{\"'`'");
     static auto const isBreakBeforeChar = [] (sf::Uint32 c) {
         return breakBeforeChars.find(c) != sf::String::InvalidPos;
     };

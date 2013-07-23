@@ -35,9 +35,14 @@ private:
 static const std::string full_time()
 {
     std::time_t tms = std::time(nullptr);
-#pragma warning (disable:4996)
+#ifdef BOOST_MSVC
+#    pragma warning (push)
+#    pragma warning (disable:4996)
+#endif
     return ctime(&tms);
-#pragma warning (default:4996)
+#ifdef BOOST_MSVC
+#    pragma warning (pop)
+#endif
 }
 
 const std::string Logfile::printable_time() const
@@ -149,7 +154,7 @@ void Logfile::write(std::string const& msg, loglevel level_, char const* locatio
     if (level_ < m_min_level)
         return;
 
-    auto level = static_cast<int>(level_);
+    auto level = static_cast<unsigned>(level_);
 
     static auto const maxloglevel = static_cast<int>(loglevel::max);
     static_assert(maxloglevel == 5, "Please correct levelnames below!");

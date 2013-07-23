@@ -7,16 +7,17 @@
 #include "ressys/AutoTexture.hpp"
 #include "ressys/ResourceManager.hpp"
 #include "ressys/VFileFont.hpp"
-#include "sharedPtrConverter.hpp"
 #include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
 #include "TransformGroup.hpp"
 
 #include <luabind/copy_policy.hpp>
-#include <luabind/operator.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <ostream>
+
+static std::ostream& operator<< (std::ostream& o, sf::Color c);
+#include <luabind/operator.hpp>
 
 static char const libname[] = "SfGraphics";
 #include "ExportThis.hpp"
@@ -47,7 +48,7 @@ static void addTextureProp(luabind::class_<T, B >& c)
 }
 
 
-std::ostream& operator<< (std::ostream& o, sf::Color c)
+static std::ostream& operator<< (std::ostream& o, sf::Color c)
 {
     return o << "jd.Color("
              << static_cast<unsigned>(c.r) << ','
@@ -98,7 +99,7 @@ static void Image_transparentMask(sf::Image& img, sf::Color const& c)
     static void Text_set##name(sf::Text& text, bool on)            \
     {                                                              \
             text.setStyle(on ? text.getStyle() | sf::Text::name    \
-                             : text.getStyle() & ~sf::Text::name); \
+                             : text.getStyle() & ~static_cast<unsigned>(sf::Text::name)); \
     }
 
 TEXT_STYLE_PROP(Bold)

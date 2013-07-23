@@ -155,7 +155,9 @@ static const char* loader(lua_State*, void* ud, std::size_t* sz)
     assert(ud);
     assert(sz);
     LoadInfo& loadinfo = *static_cast<LoadInfo*>(ud);
-    sf::Int64 r = loadinfo.f.read(&loadinfo.buf[0], loadinfo.buf.size());
+    sf::Int64 r = loadinfo.f.read(
+        &loadinfo.buf[0],
+        static_cast<sf::Int64>(loadinfo.buf.size()));
     if (r >= 0) {
         *sz = static_cast<std::size_t>(r);
         return &loadinfo.buf[0];
@@ -169,7 +171,8 @@ static int dumper(lua_State*, const void* p, std::size_t sz, void* ud)
     assert(p);
     assert(ud);
     VFile& f = *static_cast<VFile*>(ud);
-    return f.write(p, sz) == sz ? 0 : -1;
+    auto isz = static_cast<sf::Int64>(sz);
+    return f.write(p, isz) == isz ? 0 : -1;
 }
 
 
@@ -250,12 +253,12 @@ StackBalance::~StackBalance()
         if (m_action & pop)
             lua_settop(m_L, m_desiredTop);
         else if (m_action & debug)
-            assert(!"unbalanced stack: too much elements");
+            assert("unbalanced stack: too much elements" && false);
     } else if (top < m_desiredTop) {
         if (m_action & pushNil)
             lua_settop(m_L, m_desiredTop);
        else if (m_action & debug)
-            assert(!"unbalanced stack: too less elements");
+            assert("unbalanced stack: too less elements" && false);
     }
 }
 

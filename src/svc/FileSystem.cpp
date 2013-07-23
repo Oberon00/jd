@@ -108,7 +108,8 @@ sf::Int64 VFile::write(void const* data, sf::Int64 size)
 
 sf::Int64 VFile::seek(sf::Int64 position)
 {
-    if (!m_f || !check(PHYSFS_seek(m_f, position), 1, "seek"))
+    auto ipos = static_cast<PHYSFS_uint64>(position);
+    if (!m_f || !check(PHYSFS_seek(m_f, ipos), 1, "seek"))
         return -1;
     return tell();
 }
@@ -272,7 +273,7 @@ bool FileSystem::mountFirstWorking(
     std::string const& mountPoint,
     int flags)
 {
-    int const mflags = flags & ~logWarnings | mountOptional;
+    int const mflags = (flags & ~logWarnings) | mountOptional;
     std::string message = "Failed mounting all of the following:";
     for (auto const& path: paths) {
         if (mount(path, mountPoint, mflags))

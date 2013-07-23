@@ -2,10 +2,13 @@
 // This file is subject to the terms of the BSD 2-Clause License.
 // See LICENSE.txt or http://opensource.org/licenses/BSD-2-Clause
 
+
 #include "luaexport/SfBaseTypes.hpp"
 
-#include <luabind/operator.hpp>
 #include <SFML/System.hpp>
+#include <ostream>
+static std::ostream& operator<< (std::ostream& os, sf::Time const& v);
+#include <luabind/operator.hpp>
 
 static char const libname[] = "SfSystem";
 #include "ExportThis.hpp"

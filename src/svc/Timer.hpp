@@ -54,7 +54,7 @@ public:
     void processCallbacks();
     void endFrame();
 
-    float const factor() const;
+    float factor() const;
     void setFactor(float factor);
 
 private:

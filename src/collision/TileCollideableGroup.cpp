@@ -78,12 +78,13 @@ Collision TileCollideableInfo::makeCollision(
     Vector3u pos, Entity* e, sf::FloatRect const& r)
 {
     auto const iEntity = m_entities.find(pos);
+    sf::Vector2i const ipos2(static_cast<int>(pos.x), static_cast<int>(pos.y));
     if (iEntity != m_entities.end()) {
         if (e)
             iEntity->second->notifyCollision(pos, *e, r);
          return Collision(
             iEntity->second->parent(),
-            m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y)));
+            m_tilemap.globalTileRect(ipos2));
     } else {
         unsigned const tileId = m_tilemap[pos];
         auto const iProxy = m_proxyEntities.find(tileId);
@@ -92,7 +93,7 @@ Collision TileCollideableInfo::makeCollision(
                 iProxy->second->notifyCollision(pos, *e, r);
             return Collision(
                 iProxy->second->parent(),
-                m_tilemap.globalTileRect(sf::Vector2i(pos.x, pos.y)));
+                m_tilemap.globalTileRect(ipos2));
         }
     } // if no entity at pos registered
     return Collision();
@@ -226,24 +227,26 @@ sf::Vector2u TileCollideableInfo::findNext(
 
 std::size_t TileCollideableInfo::mapCorners(
     sf::FloatRect const& r,
-    sf::Vector2u& begin,
-    sf::Vector2u& last)
+    sf::Vector2u& begin_out,
+    sf::Vector2u& last_out)
 {
-    begin = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(jd::topLeft(r)));
-    begin.x = std::max(begin.x, 0u);
-    begin.y = std::max(begin.y, 0u);
-    last = static_cast<sf::Vector2u>(
-        m_tilemap.tilePosFromGlobal(jd::bottomRightIn(r)));
-    last.x = std::min(last.x, m_tilemap.size().x - 1);
-    last.y = std::min(last.y, m_tilemap.size().y - 1);
+    auto begin = m_tilemap.tilePosFromGlobal(jd::topLeft(r));
+    begin.x = std::max(begin.x, 0);
+    begin.y = std::max(begin.y, 0);
+    auto last = m_tilemap.tilePosFromGlobal(jd::bottomRightIn(r));
+    auto isize = jd::vec_cast<int>(m_tilemap.size());
+    last.x = std::min(last.x, isize.x - 1);
+    last.y = std::min(last.y, isize.y - 1);
 
     int intersectingPerLayer = (last.x - begin.x + 1) * (last.y - begin.y + 1);
     if (intersectingPerLayer <= 0) {
         return 0;
     }
+    
+    begin_out = jd::vec_cast<unsigned>(begin);
+    last_out = jd::vec_cast<unsigned>(last);
 
-    return intersectingPerLayer * m_tilemap.size().z;
+    return static_cast<unsigned>(intersectingPerLayer) * m_tilemap.size().z;
 }
 
 
@@ -256,8 +259,9 @@ std::vector<Collision> filter(
     std::size_t i = 0;
     while (i < collisions.size()) {
         if (!pred(positions[i].z)) {
-            collisions.erase(collisions.begin() + i);
-            positions.erase(positions.begin() + i);
+            auto off = static_cast<std::ptrdiff_t>(i);
+            collisions.erase(collisions.begin() + off);
+            positions.erase(positions.begin() + off);
         } else {
             ++i;
         }

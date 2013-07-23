@@ -41,7 +41,7 @@ public:
         CollideableGroup& other, DelegateState delegated = DelegateState::notDelegated)
     { other.collideWith(*this, nextDelegateState(delegated)); }
 
-    virtual void collide() { }; // Check for internal collisions
+    virtual void collide() { } // Check for internal collisions
 
     virtual void clear() = 0;
 

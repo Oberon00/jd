@@ -60,7 +60,7 @@ void Configuration::save()
     std::string s = "return ";
     s += luaU::serialize(L, -1);
     VFile f(m_confPath, VFile::openW);
-    f.write(s.data(), s.size());
+    f.write(s.data(), static_cast<sf::Int64>(s.size()));
     f.close(); // Close manually to avoid swallowing errors.
 }
 
@@ -81,15 +81,17 @@ luabind::object Configuration::getObject(std::string const& p)
         throw Error(p, "Configuration has not been loaded yet.");
 
     std::vector<boost::iterator_range<std::string::const_iterator>> pelems;
-    boost::split(pelems, p, [](char c) {return c == '.'; });
+    bool (*splitter)(char) = [](char c) {return c == '.'; };
+    boost::split(pelems, p, splitter);
     lua_State* L = m_conf.interpreter();
-    if (!lua_checkstack(L, pelems.size() + 2))
+    if (!lua_checkstack(L, static_cast<int>(pelems.size() + 2)))
         throw Error(p, "Cannot reserve lua stack size. Path to long?");
     lua_pushcfunction(L, &getTable);
     m_conf.push(L);
     for (auto const& elem: boost::adaptors::reverse(pelems))
-        lua_pushlstring(L, &*elem.begin(), elem.size());
-    try { luaU::pcall(L, pelems.size() + 1, 1); }
+        lua_pushlstring(L, &*elem.begin(),
+            static_cast<std::size_t>(elem.size()));
+    try { luaU::pcall(L, static_cast<int>(pelems.size() + 1), 1); }
     catch (luaU::Error const& e) {
         throw Error(p, e.what());
     }
