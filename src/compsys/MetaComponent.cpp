@@ -86,7 +86,7 @@ public:
             return;
         }
         wrapper.get(wrapper.state());
-        wrapper.m_strong_ref.set(wrapper.state());
+        wrapper.m_strong_ref.pop(wrapper.state());
     }
 
     virtual MetaComponent const& metaComponent() const { return *m_metaComponent; }
