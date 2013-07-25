@@ -4,13 +4,8 @@
 
 #include "svc/Timer.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
-
 static char const libname[] = "Timer";
 #include "ExportThis.hpp"
-
-
-JD_BASIC_COMPONENT_IMPL(Timer)
 
 static Timer::CallOrder Timer_callEvery(
     Timer& timer, sf::Time every, luabind::object o)
@@ -33,7 +28,7 @@ static void init(LuaVm& vm)
     LHMODULE [
 
 #       define LHCURCLASS Timer
-        class_<LHCURCLASS, Component>("Timer")
+        LHCLASS
             .def("callEvery", &Timer_callEvery)
             .def("callAfter", &Timer_callAfter)
             .LHPROPG(frameDuration)

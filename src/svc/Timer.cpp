@@ -120,7 +120,7 @@ void Timer::CallOrder::disconnect()
     if (!m_timer.valid())
         throw std::logic_error("attempt to cancel a CallOrder twice");
     m_timer->cancelOrder(m_id);
-    m_timer = static_cast<Component*>(nullptr);
+    m_timer = static_cast<Timer*>(nullptr);
 }
 
 bool Timer::CallOrder::isConnected() const

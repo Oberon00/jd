@@ -5,7 +5,6 @@
 #ifndef SOUNDMANAGER_HPP_INCLUDED
 #define SOUNDMANAGER_HPP_INCLUDED SOUNDMANAGER_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
 #include "ressys/AutoResource.hpp"
 #include "ressys/AutoSoundBuffer.hpp"
 #include "ressys/VFileMusic.hpp"
@@ -18,9 +17,7 @@
 
 typedef AutoResource<sf::Sound, sf::SoundBuffer> AutoSound;
 
-class SoundManager: public Component {
-    JD_COMPONENT
-
+class SoundManager {
 public:
     SoundManager();
     ~SoundManager();
@@ -32,7 +29,7 @@ public:
     void setBackgroundMusic(std::string const& name, sf::Time fadeDuration = sf::Time::Zero);
     void setBackgroundMusic(VFileMusic& music, sf::Time fadeDuration = sf::Time::Zero);
 
-    void fade();
+    void fade(sf::Time elapsedTime);
     void tidy();
 
 private:
@@ -41,7 +38,7 @@ private:
         FadedMusic(VFileMusic& music, float target, sf::Time fadeDuration);
 
         FadedMusic& operator= (FadedMusic&& rhs);
-        bool fade();
+        bool fade(sf::Time elapsedTime);
 
         float target;
         std::unique_ptr<VFileMusic> music;

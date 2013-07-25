@@ -5,7 +5,6 @@
 #ifndef DRAW_SERVICE_HPP_INCLUDED
 #define DRAW_SERVICE_HPP_INCLUDED DRAW_SERVICE_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
 #include "TransformGroup.hpp"
 
 #include <SFML/Graphics/Color.hpp>
@@ -17,8 +16,7 @@
 
 namespace sf { class RenderWindow; class RenderTarget; }
 
-class DrawService: public Component {
-    JD_COMPONENT
+class DrawService {
 public:
     struct Layer {
         Layer() { }

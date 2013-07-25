@@ -5,8 +5,6 @@
 #ifndef LUA_VM_HPP_INCLUDED
 #define LUA_VM_HPP_INCLUDED LUA_VM_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
-
 #include <boost/function.hpp>
 #include <luabind/error.hpp>
 
@@ -18,8 +16,7 @@
 class MetaComponent;
 struct lua_State;
 
-class LuaVm: public Component {
-    JD_COMPONENT
+class LuaVm {
 public:
 
     explicit LuaVm(std::string const& libConfigFilename = "luainit.lua");

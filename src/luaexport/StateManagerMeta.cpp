@@ -4,7 +4,6 @@
 
 #include "svc/StateManager.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "jdConfig.hpp"
 #include "State.hpp" // State class must be defined to make binding compile
 
@@ -20,7 +19,7 @@ static void init(LuaVm& vm)
     vm.initLib("State");
     LHMODULE [
 #       define LHCURCLASS StateManager
-        class_<StateManager, bases<Component>>("StateManager")
+        class_<StateManager>("StateManager")
             .def("push", (void(StateManager::*)(State&))(&StateManager::push))
             .def("push", (void(StateManager::*)(std::string const&))(&StateManager::push))
             .def("pushAdditional", (void(StateManager::*)(State&))(&StateManager::pushAdditional))
@@ -37,5 +36,3 @@ static void init(LuaVm& vm)
             .def("state", &StateManager::stateForId)
     ];
 }
-
-JD_BASIC_COMPONENT_IMPL(StateManager)

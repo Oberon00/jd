@@ -11,7 +11,6 @@
 #include "State.hpp"
 #include "svc/LuaVm.hpp"
 #include "svc/FileSystem.hpp"
-#include "svc/ServiceLocator.hpp"
 #include "svc/Mainloop.hpp"
 #include "svc/DrawService.hpp"
 #include "svc/EventDispatcher.hpp"
@@ -28,6 +27,7 @@
 #include <boost/locale/encoding_utf.hpp>
 #include <luabind/adopt_policy.hpp>
 #include <luabind/function.hpp> // call_function (used @ loadStateFromLua)
+#include <luabind/back_reference.hpp>
 #include <physfs.h>
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -58,52 +58,49 @@ static std::vector<std::string> cmdLine;
 static int argc_ = 0;
 static const char* const* argv_ = nullptr;
 
-template<typename T>
-struct ServiceEntry: public T
-{
-    ServiceEntry()
+class LoadStateFromLua {
+public:
+    LoadStateFromLua(lua_State* L): m_L(L) {}
+    
+    State* operator() (std::string const& name)
     {
-        ServiceLocator::registerService(*this);
+        std::string const filename = "lua/states/" + name + ".lua";
+        if (!PHYSFS_exists(filename.c_str()))
+            return nullptr;
+
+        LOG_D("Loading state \"" + name + "\"...");
+        State* s = nullptr;
+        try {
+            luaU::load(m_L, filename);
+            luabind::object chunk(luabind::from_stack(m_L, -1));
+            lua_pop(m_L, 1);
+
+            // The state must stay alive as long as the StateManager.
+            // However, if we simply use luabind::adopt here, we cause a memory
+            // leak. So, instead we bind the lifetime of the state to the one
+            // from the lua_State (== LuaVm in this case). As long as the LuaVm is
+            // destroyed (shortly) *after* the StateManager it just works.
+            // Otherwise, we would have a real problem: how could you possibly keep
+            // a Lua object alive, longer than it's lua_State?
+            luabind::object sobj = chunk();
+            s = luabind::object_cast<State*>(sobj);
+            sobj.push(m_L);
+            luaL_ref(m_L, LUA_REGISTRYINDEX);
+        } catch (luabind::cast_failed const& e) {
+            LOG_E("failed casting lua value to " + std::string(e.info().name()));
+        } catch (luabind::error const& e) {
+            LOG_E(luaU::Error(e, "failed loading state \"" + name + '\"').what());
+        } catch (std::exception const& e) {
+            LOG_EX(e);
+        }
+        log().write(
+            "Loading State " + name + (s ? " finished." : " failed."),
+            s ? loglevel::debug : loglevel::error, LOGFILE_LOCATION);
+        return s;
     }
+private:
+    lua_State* m_L;
 };
-
-static State* loadStateFromLua(std::string const& name)
-{
-    std::string const filename = "lua/states/" + name + ".lua";
-    if (!PHYSFS_exists(filename.c_str()))
-        return nullptr;
-
-    LOG_D("Loading state \"" + name + "\"...");
-    State* s = nullptr;
-    try {
-        lua_State* L = ServiceLocator::luaVm().L();
-        luaU::load(ServiceLocator::luaVm().L(), filename);
-        luabind::object chunk(luabind::from_stack(L, -1));
-        lua_pop(L, 1);
-
-        // The state must stay alive as long as the StateManager.
-        // However, if we simply use luabind::adopt here, we cause a memory
-        // leak. So, instead we bind the lifetime of the state to the one
-        // from the lua_State (== LuaVm in this case). As long as the LuaVm is
-        // destroyed (shortly) *after* the StateManager it just works.
-        // Otherwise, we would have a real problem: how could you possibly keep
-        // a Lua object alive, longer than it's lua_State?
-        luabind::object sobj = chunk();
-        s = luabind::object_cast<State*>(sobj);
-        sobj.push(L);
-        luaL_ref(L, LUA_REGISTRYINDEX);
-    } catch (luabind::cast_failed const& e) {
-        LOG_E("failed casting lua value to " + std::string(e.info().name()));
-    } catch (luabind::error const& e) {
-        LOG_E(luaU::Error(e, "failed loading state \"" + name + '\"').what());
-    } catch (std::exception const& e) {
-        LOG_EX(e);
-    }
-    log().write(
-        "Loading State " + name + (s ? " finished." : " failed."),
-        s ? loglevel::debug : loglevel::error, LOGFILE_LOCATION);
-    return s;
-}
 
 #ifdef _WIN32
 static int openOfsStdHandle(DWORD nStdHandle, int flags = _O_TEXT)
@@ -277,7 +274,6 @@ int main(int argc, char* argv[])
         initializeStdStreams(basepath);
 
         // Construct and register services //
-        auto const regSvc = ServiceLocator::registerService;
 
         LOG_D("Initializing virtual filesystem...");
         vfs::Init fsinit;
@@ -309,16 +305,30 @@ int main(int argc, char* argv[])
         initDefaultResourceLoaders();
 
         LOG_D("Initializing Lua...");
-        ServiceEntry<LuaVm> luaVm;
+        LuaVm luaVm;
         try {
             luaVm.initLibs();
             LOG_D("Finished initializing Lua.");
-
-            ServiceEntry<Mainloop> mainloop;
-            ServiceEntry<Configuration> conf;
-            ServiceEntry<Timer> timer;
-            ServiceEntry<SoundManager> sound;
-            ServiceEntry<StateManager> stateManager;
+            
+            luabind::object svctable = luabind::newtable(luaVm.L());
+            luabind::object jdtable = luabind::rawget(
+                luabind::globals(luaVm.L()), "jd");
+            luabind::rawset(jdtable, "svc", svctable);
+           
+            Mainloop mainloop;
+            luabind::rawset(svctable, "mainloop", &mainloop);
+            
+            StateManager stateManager;
+            luabind::rawset(svctable, "stateManager", &stateManager);
+            
+            Configuration conf(luaVm.L());
+            luabind::rawset(svctable, "configuration", &conf);
+            
+            SoundManager sound;
+            luabind::rawset(svctable, "soundManager", &sound);
+            
+            Timer timer;
+            luabind::rawset(svctable, "timer", &timer);
 
             LOG_D("Loading configuration...");
             conf.load();
@@ -340,22 +350,24 @@ int main(int argc, char* argv[])
             LOG_D("Finished creating Window and preparing SFML.");
 
             EventDispatcher eventDispatcher(*window);
-            regSvc(eventDispatcher);
+            luabind::rawset(svctable, "eventDispatcher", &eventDispatcher);
 
             using boost::bind;
             mainloop.connect_processInput(
                 bind(&EventDispatcher::dispatch, &eventDispatcher));
 
             // Various other initializations //
-            ServiceLocator::stateManager().setStateNotFoundCallback(
-                &loadStateFromLua);
+            stateManager.setStateNotFoundCallback(LoadStateFromLua(luaVm.L()));
 
             DrawService drawService(
                 *window, conf.get<std::size_t>("misc.layerCount", 1UL));
-            regSvc(drawService);
+            luabind::rawset(svctable, "drawService", &drawService);
+            
             mainloop.connect_preFrame(bind(&Timer::beginFrame, &timer));
             mainloop.connect_update(bind(&Timer::processCallbacks, &timer));
-            mainloop.connect_update(bind(&SoundManager::fade, &sound));
+            mainloop.connect_update([&timer, &sound]() {
+                sound.fade(timer.frameDuration());
+            });
             mainloop.connect_preDraw(bind(&DrawService::clear, &drawService));
             mainloop.connect_draw(bind(&DrawService::draw, &drawService));
             mainloop.connect_postDraw(bind(&DrawService::display, &drawService));
@@ -380,7 +392,7 @@ int main(int argc, char* argv[])
 
             // Run mainloop //
             LOG_D("Mainloop...");
-            r = ServiceLocator::mainloop().exec();
+            r = mainloop.exec();
             LOG_D("Mainloop finished with exit code " +
                   boost::lexical_cast<std::string>(r) + ".");
 

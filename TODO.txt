@@ -4,8 +4,6 @@ TODO
 Refactoring
 -----------
 
-* Replace ServiceLocator with Dependency Injection or be at least so honest to
-  use ordinary globals instead (no need to derive from Component).
 * Put (at least) core components in namespace jd to allow ADL: avoids ugly
   forward declarations of operator<< before #include <luabind/operator.hpp>
   and is good style anyway.

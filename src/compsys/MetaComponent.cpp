@@ -9,7 +9,6 @@
 #include "Entity.hpp"
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
-#include "svc/ServiceLocator.hpp"
 #include "svc/LuaVm.hpp"
 
 #include <boost/format.hpp>

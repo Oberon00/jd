@@ -4,13 +4,13 @@
 
 #include "LuaVm.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "FileSystem.hpp"
 #include "jdConfig.hpp"
 #include "Logfile.hpp"
 #include "luaUtils.hpp"
 
 #include <luabind/lua_include.hpp>
+#include <luabind/open.hpp>
 extern "C" {
 #   include <lualib.h>
 }
@@ -228,6 +228,3 @@ void LuaVm::deinit()
 
     collectgarbage(m_L);
 }
-
-
-JD_BASIC_COMPONENT_IMPL(LuaVm)

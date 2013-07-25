@@ -4,13 +4,11 @@
 
 #include "Configuration.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "Logfile.hpp"
 extern "C" {
 #   include "lua.h"
 }
 #include "svc/FileSystem.hpp"
-#include "svc/ServiceLocator.hpp"
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/range/adaptor/reversed.hpp>
@@ -18,7 +16,9 @@ extern "C" {
 static char const libname[] = "Configuration";
 #include "luaexport/ExportThis.hpp"
 
-JD_BASIC_COMPONENT_IMPL(Configuration)
+Configuration::Configuration(lua_State* L):
+    m_conf(luabind::newtable(L))
+{ }
 
 void Configuration::load(
     std::string const& configurationFilename,
@@ -27,12 +27,12 @@ void Configuration::load(
     LOG_D("Configuration filename is \"" + configurationFilename + "\".");
     m_confPath = configurationFilename;
     reload();
-    luabind::globals(ServiceLocator::luaVm().L())[jd::moduleName][globalName] = m_conf;
+    luabind::globals(m_conf.interpreter())[jd::moduleName][globalName] = m_conf;
 }
 
 void Configuration::reload()
 {
-    lua_State* L = ServiceLocator::luaVm().L();
+    lua_State* L = m_conf.interpreter();
     if (m_conf) {
         LUAU_BALANCED_STACK(L);
         m_conf.push(L);
@@ -55,7 +55,7 @@ void Configuration::reload()
 
 void Configuration::save()
 {
-    lua_State* L = ServiceLocator::luaVm().L();
+    lua_State* L = m_conf.interpreter();
     m_conf.push(L);
     std::string s = "return ";
     s += luaU::serialize(L, -1);
@@ -104,7 +104,7 @@ static void init(LuaVm& vm)
 {
     LHMODULE [
 #       define LHCURCLASS Configuration
-        class_<LHCURCLASS, Component>(BOOST_STRINGIZE(LHCURCLASS))
+        LHCLASS
             .LHMEMFN(reload)
             .LHMEMFN(save)
     ];

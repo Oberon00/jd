@@ -13,7 +13,6 @@
 #include "LuaFunction.hpp"
 #include "SfBaseTypes.hpp"
 #include "sfUtil.hpp"
-#include "svc/ServiceLocator.hpp"
 #include "Tilemap.hpp"
 
 #include <luabind/out_value_policy.hpp>

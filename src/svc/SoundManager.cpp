@@ -3,8 +3,6 @@
 // See LICENSE.txt or http://opensource.org/licenses/BSD-2-Clause
 
 #include "SoundManager.hpp"
-#include "Timer.hpp"
-#include "ServiceLocator.hpp"
 
 #include "ressys/ResourceManager.hpp"
 
@@ -42,9 +40,9 @@ SoundManager::FadedMusic& SoundManager::FadedMusic::operator= (FadedMusic&& rhs)
     return *this;
 }
 
-bool SoundManager::FadedMusic::fade()
+bool SoundManager::FadedMusic::fade(sf::Time elapsedTime)
 {
-    float frameSeconds = ServiceLocator::timer().frameDuration().asSeconds();
+    float frameSeconds = elapsedTime.asSeconds();
     float const newVolume = music->getVolume() + increment * frameSeconds;
     music->setVolume(newVolume);
     if (increment < 0 ? newVolume <= target : newVolume >= target) {
@@ -96,7 +94,7 @@ void SoundManager::tidy()
     m_playingSounds.end());
 }
 
-void SoundManager::fade()
+void SoundManager::fade(sf::Time elapsedTime)
 {
     if (
         !m_currentMusic.music ||
@@ -104,8 +102,9 @@ void SoundManager::fade()
     ) {
         return;
     }
+    
     if (m_previousMusic.music)
-        m_previousMusic.fade();
-    if (m_currentMusic.fade())
+        m_previousMusic.fade(elapsedTime);
+    if (m_currentMusic.fade(elapsedTime))
         m_previousMusic.music.reset();
 }

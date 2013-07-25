@@ -4,13 +4,9 @@
 
 #include "svc/DrawService.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
-
 static char const libname[] = "DrawService";
 #include "ExportThis.hpp"
 
-
-JD_BASIC_COMPONENT_IMPL(DrawService)
 
 static DrawService::Layer& getLayer(DrawService& ds, std::size_t n)
 {
@@ -21,7 +17,6 @@ static DrawService::Layer& getLayer(DrawService& ds, std::size_t n)
 
 static void init(LuaVm& vm)
 {
-    vm.initLib("ComponentSystem");
     vm.initLib("SfGraphics");
     LHMODULE [
 #       define LHCURCLASS DrawService::Layer
@@ -29,12 +24,14 @@ static void init(LuaVm& vm)
             .def_readonly(LHMEMARGS(group))
             .LHPROPRW(view),
 #       undef LHCURCLASS
-        class_<DrawService, Component>("DrawService")
-            .def("resetLayerViews", &DrawService::resetLayerViews)
+#       define LHCURCLASS DrawService
+        LHCLASS
+            .LHMEMFN(resetLayerViews)
             .def("layer", &getLayer)
-            .property("layerCount", &DrawService::layerCount)
+            .LHPROPG(layerCount)
             .property("backgroundColor",
                 &DrawService::backgroundColor,
                 &DrawService::setBackgroundColor)
+#       undef LHCURCLASS
     ];
 }

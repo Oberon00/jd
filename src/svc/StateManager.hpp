@@ -5,8 +5,6 @@
 #ifndef STATE_MANAGER_HPP_INCLUDED
 #define STATE_MANAGER_HPP_INCLUDED STATE_MANAGER_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
-
 #include <boost/function.hpp>
 
 #include <string>
@@ -16,8 +14,7 @@
 
 class State;
 
-class StateManager: public Component {
-    JD_COMPONENT
+class StateManager {
 public:
     StateManager(): m_modifying(false) { }
 

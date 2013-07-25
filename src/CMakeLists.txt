@@ -10,7 +10,6 @@ set(SVC_HEADERS
     svc/EventDispatcher.hpp
     svc/DrawService.hpp
     svc/Configuration.hpp
-    svc/ServiceLocator.hpp
     svc/Timer.hpp
     svc/SoundManager.hpp)
 
@@ -22,7 +21,6 @@ set(SVC_SOURCES
     svc/EventDispatcher.cpp
     svc/DrawService.cpp
     svc/Configuration.cpp
-    svc/ServiceLocator.cpp
     svc/Timer.cpp
     svc/SoundManager.cpp)
 source_group("Services" FILES ${SVC_SOURCES} ${SVC_HEADERS})
@@ -75,7 +73,6 @@ set(LUAEXPORT_SOURCES
     luaexport/SfGraphics.cpp
     luaexport/Logfile.cpp
     luaexport/EntitySystem.cpp
-    luaexport/ServiceLocator.cpp
     luaexport/Collisions.cpp
     luaexport/Geometry.cpp
     luaexport/DrawServiceMeta.cpp

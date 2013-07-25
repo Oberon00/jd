@@ -5,7 +5,7 @@
 #ifndef TIMER_HPP_INCLUDED
 #define TIMER_HPP_INCLUDED TIMER_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
+#include "WeakRef.hpp"
 
 #include <boost/function.hpp>
 #include <SFML/System/Clock.hpp>
@@ -16,9 +16,7 @@
 #include <string>
 
 
-class Timer: public Component {
-    JD_COMPONENT
-
+class Timer: public EnableWeakRefFromThis<Timer> {
 public:
     typedef boost::function<void()> Callback;
 

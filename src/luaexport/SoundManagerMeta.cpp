@@ -4,20 +4,14 @@
 
 #include "svc/SoundManager.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "resources.hpp"
 #include "sharedPtrConverter.hpp"
 
 static char const libname[] = "SoundManager";
 #include "ExportThis.hpp"
 
-
-JD_BASIC_COMPONENT_IMPL(SoundManager)
-
 static void init(LuaVm& vm)
 {
-    vm.initLib("ComponentSystem");
-
     using namespace sf;
     using namespace luabind;
 
@@ -35,7 +29,7 @@ static void init(LuaVm& vm)
     LHMODULE [
         cSoundBuffer,
 #       define LHCURCLASS SoundManager
-        class_<LHCURCLASS, Component>("SoundManager")
+        LHCLASS
             .def("playSound",
                 (void(LHCURCLASS::*)(std::string const&))
                 &SoundManager::playSound)

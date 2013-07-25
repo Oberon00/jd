@@ -7,7 +7,6 @@
 #include "compsys/BasicMetaComponent.hpp"
 #include "LuaEventHelpers.hpp"
 #include "SfBaseTypes.hpp"
-#include "svc/ServiceLocator.hpp"
 
 static char const libname[] = "EventDispatcher";
 #include "ExportThis.hpp"
@@ -37,42 +36,15 @@ JD_EVENT_TABLE_BEGIN(EventDispatcher)
 #undef E1
 JD_EVENT_TABLE_END
 
-static EventDispatcher* dsp = nullptr;
-
-static bool EventDispatcher_isKeyPressed(unsigned k)
-{
-    if (!dsp)
-        dsp = &ServiceLocator::eventDispatcher();
-    return dsp->isKeyPressed(static_cast<sf::Keyboard::Key>(k));
-}
-
-static bool EventDispatcher_isMouseButtonPressed(unsigned b)
-{
-    if (!dsp)
-        dsp = &ServiceLocator::eventDispatcher();
-    return dsp->isMouseButtonPressed(static_cast<sf::Mouse::Button>(b));
-}
-
-static LuaVec2 EventDispatcher_mousePosition()
-{
-    if (!dsp)
-        dsp = &ServiceLocator::eventDispatcher();
-    return static_cast<LuaVec2>(dsp->mousePosition());
-}
-
 static void init(LuaVm& vm)
 {
     vm.initLib("ComponentSystem");
     LHMODULE [
-        namespace_("kb") [
-            def("isKeyPressed", &EventDispatcher_isKeyPressed)
-        ],
-        namespace_("mouse") [
-            def("position", &EventDispatcher_mousePosition),
-            def("isButtonPressed", &EventDispatcher_isMouseButtonPressed)
-        ],
 #       define LHCURCLASS EventDispatcher
         class_<LHCURCLASS, Component>(BOOST_STRINGIZE(LHCURCLASS))
             .LHPROPG(isWindowFocused)
+            .LHMEMFN(isKeyPressed)
+            .LHMEMFN(isMouseButtonPressed)
+            .LHMEMFN(mousePosition)
     ];
 }

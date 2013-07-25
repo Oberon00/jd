@@ -5,8 +5,6 @@
 #ifndef CONFIGURATION_HPP_INCLUDED
 #define CONFIGURATION_HPP_INCLUDED CONFIGURATION_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
-#include "jdConfig.hpp"
 #include "luaUtils.hpp"
 #include "LuaVm.hpp"
 
@@ -15,10 +13,10 @@
 #include <string>
 
 
-class Configuration: public Component {
-    JD_COMPONENT
+class Configuration {
 public:
-
+    Configuration(lua_State* L);
+    
     class Error: public std::runtime_error {
     public:
         Error(std::string const& msg):
@@ -54,7 +52,6 @@ public:
             throw Error(p, luaU::Error(e).what());
         }
     }
-
 
     luabind::object getObject(std::string const& p);
 
