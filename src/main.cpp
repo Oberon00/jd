@@ -200,7 +200,6 @@ int main(int argc, char* argv[])
         cmdLine.assign(argv, argv + argc);
 #endif
 
-#ifdef _WIN32
         std::locale::global(boost::locale::generator().generate("")); // Use UTF-8
         fs::path::imbue(std::locale()); // Not sure if this is necessary.
         std::cout.imbue(std::locale());
@@ -208,6 +207,7 @@ int main(int argc, char* argv[])
         std::clog.imbue(std::locale());
         std::cin.imbue(std::locale());
 
+#ifdef _WIN32
         std::string defaultGame;
         { // Scope for moduleName, moduleNameW
             uint16_t moduleNameW[MAX_PATH];
@@ -285,12 +285,13 @@ int main(int argc, char* argv[])
         FileSystem& fs = FileSystem::get();
         regSvc(fs);
 
-        std::string programpath = PHYSFS_getBaseDir();
+        fs::path programpath = PHYSFS_getBaseDir();
         std::vector<std::string> baselibpaths;
-        baselibpaths.push_back(programpath + "/base.jd");
-        baselibpaths.push_back(programpath + "/../base.jd");
-        baselibpaths.push_back(programpath + "/../share/jade-engine/base.jd");
-        baselibpaths.push_back(programpath + "/../share/base.jd");
+        baselibpaths.push_back((programpath / "base.jd").string());
+        baselibpaths.push_back((programpath / "../base.jd/base.jd").string());
+        baselibpaths.push_back((programpath / "../base.jd").string());
+        baselibpaths.push_back((programpath / "../share/jade-engine/base.jd").string());
+        baselibpaths.push_back((programpath / "../share/base.jd").string());
         baselibpaths.push_back(basepath + "/base.jd");
         baselibpaths.push_back("./base.jd");
         fs.mountFirstWorking(baselibpaths, "/", FileSystem::logWarnings|FileSystem::mountOptional);
