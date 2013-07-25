@@ -7,6 +7,7 @@
 #ifndef LUA_FUNCTION_HPP_INCLUDED
 #define LUA_FUNCTION_HPP_INCLUDED LUA_FUNCTION_HPP_INCLUDED
 
+#include <boost/function/function_fwd.hpp>
 #include <boost/preprocessor/enum.hpp>
 #include <boost/preprocessor/iteration/iterate.hpp>
 #include <boost/preprocessor/repetition/enum_trailing.hpp>
@@ -66,6 +67,44 @@ struct LuaFunction<void>
 private:
     luabind::object m_func;
 };
+
+namespace luabind {
+    template <typename Signature>
+    struct default_converter<boost::function<Signature>>
+      : native_converter_base<boost::function<Signature>>
+    {
+        typedef boost::function<Signature> FType;
+        typedef typename FType::result_type FResultType;
+        static int compute_score(lua_State* L, int index)
+        {
+            if (lua_type(L, index) == LUA_TFUNCTION)
+                return 1;
+            if (luaL_getmetafield(L, index, "__call")) {
+                lua_pop(L, 1);
+                return 0;
+            }
+            return -1;
+        }
+
+        FType from(lua_State* L, int index)
+        {
+            return LuaFunction<FResultType>(
+                luabind::object(from_stack(L, index)));
+        }
+
+        //void to(lua_State* L, FType value); not supported
+    };
+
+    template <typename Signature>
+    struct default_converter<boost::function<Signature> const>
+      : default_converter<boost::function<Signature>>
+    {};
+
+    template <typename Signature>
+    struct default_converter<boost::function<Signature> const&>
+      : default_converter<boost::function<Signature>>
+    {};
+} // namespace luabind
 
 
 #endif // include guard
