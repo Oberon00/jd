@@ -9,7 +9,6 @@ Refactoring
 * Put (at least) core components in namespace jd to allow ADL: avoids ugly
   forward declarations of operator<< before #include <luabind/operator.hpp>
   and is good style anyway.
-* Replace the FileSystem singleton with free functions in a namespace.
 * StateManager / State needs to be completely rewritten: It's way to
   complicated without providing any benefits and, worse, lowers flexibility.
 * Maybe replace jd.connect with a Lua function <-> luabind::object() converter
@@ -17,3 +16,5 @@ Refactoring
   fooComponent:connect_bar(f) can be used instead.
 * Get rid of LuaComponent::bindLuaPart(): Maybe luabind::adopt() is now
   capable of replacing it.
+* Exceptions: Use boost::exception/error_info system or at least a proper
+  hierarchy.

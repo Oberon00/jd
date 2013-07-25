@@ -78,7 +78,6 @@ set(LUAEXPORT_SOURCES
     luaexport/ServiceLocator.cpp
     luaexport/Collisions.cpp
     luaexport/Geometry.cpp
-    luaexport/FileSystemMeta.cpp
     luaexport/DrawServiceMeta.cpp
     luaexport/MainloopMeta.cpp
     luaexport/StateManagerMeta.cpp

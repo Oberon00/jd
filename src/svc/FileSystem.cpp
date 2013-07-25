@@ -19,7 +19,7 @@ static std::string lastPhysFsError()
 }
 
 
-FileSystem::Error::Error(std::string const& msg, bool getLastError):
+vfs::Error::Error(std::string const& msg, bool getLastError):
     std::runtime_error(msg + (
         getLastError ? std::string(": ") + lastPhysFsError() : std::string())) { }
 
@@ -27,7 +27,7 @@ FileSystem::Error::Error(std::string const& msg, bool getLastError):
 
 #define CALL_PHYSFS(fn, ...) \
     if (!fn(__VA_ARGS__))           \
-        throw ::FileSystem::Error(#fn " failed"); \
+        throw ::vfs::Error(#fn " failed"); \
     (void)0
 
 VFile::VFile():
@@ -36,7 +36,7 @@ VFile::VFile():
 }
 
 VFile::VFile(std::string const& filename, OpenMode mode):
-    m_f(FileSystem::get().openRaw(filename, mode))
+    m_f(vfs::openRaw(filename, mode))
 {
 }
 
@@ -58,7 +58,7 @@ VFile::VFile(VFile&& rhs)
 void VFile::open(std::string const& filename, OpenMode mode)
 {
     close();
-    m_f = FileSystem::get().openRaw(filename, mode);
+    m_f = vfs::openRaw(filename, mode);
     m_err.clear();
 }
 
@@ -77,6 +77,7 @@ VFile::~VFile()
     try {
         close();
     } catch(std::exception const& e) {
+        LOG_E("Error closing VFile in destructor:");
         LOG_EX(e);
     }
 }
@@ -140,7 +141,7 @@ sf::Int64 VFile::check(sf::Int64 r, sf::Int64 rq, std::string const& op)
 void VFile::throwError() const
 {
     if (!m_err.empty())
-        throw FileSystem::Error(m_err, false);
+        throw vfs::Error(m_err, false);
 }
 
 
@@ -200,13 +201,13 @@ void VFileDevice::throwErr()
 //////////////////////////////////////////////////////////
 
 
-FileSystem::Init::Init()
+vfs::Init::Init()
 {
     // Use original encoding here.
     CALL_PHYSFS(PHYSFS_init, argv()[0]);
 }
 
-FileSystem::Init::~Init()
+vfs::Init::~Init()
 {
     if (!PHYSFS_isInit()) {
         LOG_W("PhysFS already shut down.");
@@ -219,17 +220,7 @@ FileSystem::Init::~Init()
 //////////////////////////////////////////////////////////
 
 
-FileSystem::FileSystem()
-{
-    if (!PHYSFS_isInit())
-        throw Error("FileSystem not initialized", false);
-}
-
-FileSystem::~FileSystem()
-{
-}
-
-PHYSFS_File* FileSystem::openRaw(std::string const& name, VFile::OpenMode mode)
+PHYSFS_File* vfs::openRaw(std::string const& name, VFile::OpenMode mode)
 {
     PHYSFS_File* f;
     switch (mode) {
@@ -243,7 +234,7 @@ PHYSFS_File* FileSystem::openRaw(std::string const& name, VFile::OpenMode mode)
     return f;
 }
 
-bool FileSystem::mount(
+bool vfs::mount(
     std::string const& path,
     std::string const& mountPoint,
     int flags)
@@ -268,7 +259,7 @@ bool FileSystem::mount(
 }
 
 
-bool FileSystem::mountFirstWorking(
+bool vfs::mountFirstWorking(
     std::vector<std::string> const& paths,
     std::string const& mountPoint,
     int flags)

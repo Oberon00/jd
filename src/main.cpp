@@ -280,10 +280,7 @@ int main(int argc, char* argv[])
         auto const regSvc = ServiceLocator::registerService;
 
         LOG_D("Initializing virtual filesystem...");
-        FileSystem::Init fsinit;
-
-        FileSystem& fs = FileSystem::get();
-        regSvc(fs);
+        vfs::Init fsinit;
 
         fs::path programpath = PHYSFS_getBaseDir();
         std::vector<std::string> baselibpaths;
@@ -294,17 +291,17 @@ int main(int argc, char* argv[])
         baselibpaths.push_back((programpath / "../share/base.jd").string());
         baselibpaths.push_back(basepath + "/base.jd");
         baselibpaths.push_back("./base.jd");
-        fs.mountFirstWorking(baselibpaths, "/", FileSystem::logWarnings|FileSystem::mountOptional);
+        vfs::mountFirstWorking(baselibpaths, "/", vfs::logWarnings|vfs::mountOptional);
 
-        if (!fs.mount(game, "/", FileSystem::logWarnings|(gameSpecified ?
-            FileSystem::prependPath : FileSystem::mountOptional))
+        if (!vfs::mount(game, "/", vfs::logWarnings|(gameSpecified ?
+            vfs::prependPath : vfs::mountOptional))
         ) {
             LOG_W("Mounting working directory instead.");
-            fs.mount(".");
+            vfs::mount(".");
         }
 
-        fs.mount(basepath + "data/", "/",
-            FileSystem::writeDirectory|FileSystem::prependPath);
+        vfs::mount(basepath + "data/", "/",
+            vfs::writeDirectory|vfs::prependPath);
 
 
         LOG_D("Finished initializing virtual filesystem.");

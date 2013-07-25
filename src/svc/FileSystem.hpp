@@ -79,22 +79,13 @@ private:
     VFile& m_f;
 };
 
-class FileSystem: public Component {
-    JD_COMPONENT
-public:
+namespace vfs { // Virtual File System
     struct Init { Init(); ~Init(); };
+    
     class Error: public std::runtime_error {
     public:
         Error(std::string const& msg, bool getLastError = true);
     };
-
-    virtual ~FileSystem();
-
-    static FileSystem& get()
-    {
-        static FileSystem instance;
-        return instance;
-    }
 
     PHYSFS_File* openRaw(std::string const& name, VFile::OpenMode mode);
 
@@ -113,9 +104,6 @@ public:
         std::vector<std::string> const& paths,
         std::string const& mountPoint = std::string(),
         int flags = prependPath);
-
-private:
-    FileSystem();
-};
+} // namespace vfs
 
 #endif
