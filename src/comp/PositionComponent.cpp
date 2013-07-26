@@ -13,11 +13,7 @@ static char const libname[] = "PositionComponent";
 #include "luaexport/ExportThis.hpp"
 
 
-JD_BASIC_EVT_COMPONENT_IMPL(PositionComponent)
-
-JD_EVENT_TABLE_BEGIN(PositionComponent)
-    JD_EVENT_ENTRY(rectChanged, void, _1, _2)
-JD_EVENT_TABLE_END
+JD_BASIC_COMPONENT_IMPL(PositionComponent)
 
 PositionComponent::PositionComponent(Entity& parent)
 {
@@ -78,6 +74,7 @@ static void init(LuaVm& vm)
         .property("rect", &LHCURCLASS::rect, &LHCURCLASS::setRect)
         .property("position", &LHCURCLASS::position, &LHCURCLASS::setPosition)
         .property("size", &LHCURCLASS::size, &LHCURCLASS::setSize)
+        .JD_EVENT(rectChanged, RectChanged)
         .LHMEMFN(move)
 #undef LHCURCLASS
     ];

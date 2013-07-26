@@ -13,12 +13,7 @@ static char const libname[] = "TileCollisionComponent";
 #include "ExportThis.hpp"
 
 
-JD_BASIC_EVT_COMPONENT_IMPL(TileCollisionComponent)
-
-JD_EVENT_TABLE_BEGIN(TileCollisionComponent)
-    JD_EVENT_ENTRY(collided,  void, _1, ref(_2), _3)
-    JD_EVENT_ENTRY(overridden, void, _1, ref(_2))
-JD_EVENT_TABLE_END
+JD_BASIC_COMPONENT_IMPL(TileCollisionComponent)
 
 static void init(LuaVm& vm)
 {
@@ -28,6 +23,8 @@ static void init(LuaVm& vm)
         class_<LHCURCLASS, Component, WeakRef<Component>>("TileCollisionComponent")
             .def(constructor<Entity&, TileCollideableInfo&>())
             .def(constructor<Entity&>())
+            .JD_EVENT(collided, Collided)
+            .JD_EVENT(overridden, Overriden)
 
 #       undef LHCURCLASS
     ];

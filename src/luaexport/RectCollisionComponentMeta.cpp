@@ -11,11 +11,7 @@ static char const libname[] = "RectCollisionComponent";
 #include "ExportThis.hpp"
 
 
-JD_BASIC_EVT_COMPONENT_IMPL(RectCollisionComponent)
-
-JD_EVENT_TABLE_BEGIN(RectCollisionComponent)
-    JD_EVENT_ENTRY(collided, void, _1, ref(_2), _3)
-JD_EVENT_TABLE_END
+JD_BASIC_COMPONENT_IMPL(RectCollisionComponent)
 
 static void init(LuaVm& vm)
 {
@@ -24,6 +20,7 @@ static void init(LuaVm& vm)
 #       define LHCURCLASS RectCollisionComponent
         class_<LHCURCLASS, Component, WeakRef<Component>>("RectCollisionComponent")
             .def(constructor<Entity&>())
+            .JD_EVENT(collided, Collided)
 
 #       undef LHCURCLASS
     ];

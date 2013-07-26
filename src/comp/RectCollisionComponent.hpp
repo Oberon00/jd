@@ -17,7 +17,7 @@
 
 class RectCollisionComponent: public Component {
     JD_COMPONENT
-    SSIG_DEFINE_MEMBERSIGNAL(collided, void(sf::FloatRect, Entity&, sf::FloatRect))
+    SSIG_DEFINE_MEMBERSIGNAL(collided, void(sf::FloatRect, Entity*, sf::FloatRect))
 
 public:
     RectCollisionComponent() { }
@@ -25,7 +25,7 @@ public:
 
     void notifyCollision(sf::FloatRect rect, Entity& other, sf::FloatRect otherRect)
     {
-        m_sig_collided(rect, other, otherRect);
+        m_sig_collided(rect, &other, otherRect);
     }
 };
 

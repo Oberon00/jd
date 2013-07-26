@@ -21,8 +21,8 @@ typedef sf::Vector3<unsigned> Vector3u;
 class TileCollisionComponent: public Component {
     JD_COMPONENT
 
-    SSIG_DEFINE_MEMBERSIGNAL(collided, void(Vector3u, Entity&, sf::FloatRect))
-    SSIG_DEFINE_MEMBERSIGNAL(overridden, void(Vector3u, TileCollisionComponent&))
+    SSIG_DEFINE_MEMBERSIGNAL(collided, void(Vector3u, Entity*, sf::FloatRect))
+    SSIG_DEFINE_MEMBERSIGNAL(overridden, void(Vector3u, TileCollisionComponent*))
 
 public:
     explicit TileCollisionComponent(Entity& parent);
@@ -35,12 +35,12 @@ public:
 
     void notifyCollision(Vector3u p, Entity& c, sf::FloatRect cr)
     {
-        m_sig_collided(p, c, cr);
+        m_sig_collided(p, &c, cr);
     }
 
     void notifyOverride(Vector3u p, TileCollisionComponent& c)
     {
-        m_sig_overridden(p, c);
+        m_sig_overridden(p, &c);
     }
 
     TileCollideableInfo const* tileInfo() const { return m_tileinfo.getOpt(); }

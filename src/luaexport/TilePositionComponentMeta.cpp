@@ -14,11 +14,7 @@ static char const libname[] = "TilePositionComponent";
 #include "ExportThis.hpp"
 
 
-JD_BASIC_EVT_COMPONENT_IMPL(TilePositionComponent)
-
-JD_EVENT_TABLE_BEGIN(TilePositionComponent)
-    JD_EVENT_ENTRY(tilePositionChanged, void, _1, _2)
-JD_EVENT_TABLE_END
+JD_BASIC_COMPONENT_IMPL(TilePositionComponent)
 
 static void init(LuaVm& vm)
 {
@@ -29,6 +25,7 @@ static void init(LuaVm& vm)
             .def(constructor<Entity&, jd::Tilemap const&, unsigned>())
             .def(constructor<Entity&, jd::Tilemap const&>())
             .LHPROPG(tilePosition)
+            .JD_EVENT(tilePositionChanged, TilePositionChanged)
 #       undef LHCURCLASS
     ];
 }
