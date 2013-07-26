@@ -45,4 +45,28 @@ ssig::ScopedConnection<Signature>* makeConnection(
     return new ssig::ScopedConnection<Signature>(con);
 }
 
+namespace luabind {
+    template <typename Signature>
+    struct default_converter<ssig::Connection<Signature>>
+      : native_converter_base<ssig::Connection<Signature>>
+    {
+        void to(lua_State* L, ssig::Connection<Signature> const& value)
+        {
+            luabind::object o(
+                L, static_cast<ssig::ConnectionBase*>(makeConnection(value)));
+            o.push(L);
+        }
+    };
+
+    template <typename Signature>
+    struct default_converter<ssig::Connection<Signature> const>
+      : default_converter<ssig::Connection<Signature>>
+    {};
+
+    template <typename Signature>
+    struct default_converter<ssig::Connection<Signature> const&>
+      : default_converter<ssig::Connection<Signature>>
+    {};
+} // namespace luabind
+
 #endif // include guard
