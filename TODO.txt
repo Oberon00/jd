@@ -11,7 +11,7 @@ Refactoring
   complicated without providing any benefits and, worse, lowers flexibility.
 * Maybe replace jd.connect with a Lua function <-> luabind::object() converter
   so that jd.connect() is not necessary anymore and
-  fooComponent:connect_bar(f) can be used instead.
+  fooComponent:onBar(f) can be used instead.
 * Get rid of LuaComponent::bindLuaPart(): Maybe luabind::adopt() is now
   capable of replacing it.
 * Exceptions: Use boost::exception/error_info system or at least a proper
