@@ -34,6 +34,8 @@
         using boost::ref; using boost::cref;
 
 #define JD_EVENT_TABLE_END return nullptr; }
+        
+#define JD_EVENT(name, cname) def("on" #cname, &LHCURCLASS::connect_##name)
 
 template<typename Signature>
 ssig::ConnectionBase* makeConnection(
