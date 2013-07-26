@@ -6,10 +6,8 @@
 #define LUA_EVENT_HELPERS_HPP_INCLUDED LUA_EVENT_HELPERS_HPP_INCLUDED
 
 #include "LuaFunction.hpp"
-
-#include <boost/bind.hpp>
+#include <luabind/adopt_policy.hpp>
 #include <ssig.hpp>
-
 
 #define LUA_EVENT_HELPERS_MAX_ARGS SSIG_MAX_ARGS
 
@@ -37,9 +35,8 @@
 
 #define JD_EVENT_TABLE_END return nullptr; }
 
-
 template<typename Signature>
-ssig::ScopedConnection<Signature>* makeConnection(
+ssig::ConnectionBase* makeConnection(
     ssig::Connection<Signature> const& con)
 {
     return new ssig::ScopedConnection<Signature>(con);
@@ -52,8 +49,7 @@ namespace luabind {
     {
         void to(lua_State* L, ssig::Connection<Signature> const& value)
         {
-            luabind::object o(
-                L, static_cast<ssig::ConnectionBase*>(makeConnection(value)));
+            luabind::object o(L, makeConnection(value), luabind::adopt(luabind::result));
             o.push(L);
         }
     };
@@ -68,5 +64,7 @@ namespace luabind {
       : default_converter<ssig::Connection<Signature>>
     {};
 } // namespace luabind
+
+#define JD_EVENT(name, cname) def("on" #cname, &LHCURCLASS::connect_##name)
 
 #endif // include guard
