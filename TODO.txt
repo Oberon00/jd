@@ -6,10 +6,43 @@ Refactoring
 
 * Put (at least) core components in namespace jd to allow ADL: avoids ugly
   forward declarations of operator<< before #include <luabind/operator.hpp>
-  and is good style anyway.
+  and is good style anyway. [style]
 * StateManager / State needs to be completely rewritten: It's way to
   complicated without providing any benefits and, worse, lowers flexibility.
+  [ease of use, flexibility; important]
+    + Just don't implement anything in C++ until needed and do everything
+      in Lua? Since usage of the State system is not enforced, it could just be
+      deprecated in the meantime.
 * Get rid of LuaComponent::bindLuaPart(): Maybe luabind::adopt() is now
-  capable of replacing it.
+  capable of replacing it. [ease of use; trivial]
 * Exceptions: Use boost::exception/error_info system or at least a proper
-  hierarchy.
+  hierarchy. [low priority]
+* Make jd a dll, loadable by the standard Lua interpreter? [huge?]
+
+
+Improvements
+------------
+
+* SoundManager: A way is necessary to determine which music is currently
+  playing, so that e.g. all Menu-like states can just continue playing
+  instead of always restarting the music if it is already running.
+* Container export: __(new)index metamethods instead of get/set(), __len
+  metamethod instead of size(), safe dependencies __(i)pairs support (!).
+  + Will require luabind changes.
+
+
+New Features
+------------
+
+* Locale detection for Lua using Boost.Locale t support loading files
+  specific for the users's language (such as strings-<locale>.lua) [nice]
+* (Real) I/O capabilities, modelled after Lua's standard io module.
+* GUI library for SFML or OpenGL. [big; important]
+* Default startup environment when no game is found.
+    + Game chooser (From where? Platform's file chooser? Game "registry"?)
+    + "About" information?
+* Security: Is sandboxing from Lua enough or is a API for creating Lua
+  substates and passing values around necessary?
+    + ini or other configuration files instead of lua scripts everywhere?
+* Exposure of C++11 random number library.
+* Documentation of the Lua API. [huge]
