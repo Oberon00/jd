@@ -9,41 +9,6 @@
 #include <luabind/adopt_policy.hpp>
 #include <ssig.hpp>
 
-#define LUA_EVENT_HELPERS_MAX_ARGS SSIG_MAX_ARGS
-
-#define JD_EVENT_ENTRY(ename, r, ...) \
-    if (name == BOOST_STRINGIZE(ename))           \
-        return makeConnection(cc->connect_##ename(boost::bind( \
-            LuaFunction<r>(recv), __VA_ARGS__))); \
-    else { }
-
-#define JD_EVENT_ENTRY0(ename, r) \
-    if (name == BOOST_STRINGIZE(ename))          \
-        return makeConnection(cc->connect_##ename(boost::bind( \
-            &luabind::call_function<r>, recv))); \
-    else { }
-
-#define JD_EVENT_TABLE_BEGIN(ct) \
-    ssig::ConnectionBase* ct##Meta::connectEvent( \
-            lua_State* L,                         \
-            Component* c,                         \
-            std::string const& name) const        \
-    {                                             \
-        ct* cc = c->as<ct>();                     \
-        luabind::object recv(luabind::from_stack(L, -1)); \
-        using boost::ref; using boost::cref;
-
-#define JD_EVENT_TABLE_END return nullptr; }
-        
-#define JD_EVENT(name, cname) def("on" #cname, &LHCURCLASS::connect_##name)
-
-template<typename Signature>
-ssig::ConnectionBase* makeConnection(
-    ssig::Connection<Signature> const& con)
-{
-    return new ssig::ScopedConnection<Signature>(con);
-}
-
 namespace luabind {
     template <typename Signature>
     struct default_converter<ssig::Connection<Signature>>
@@ -51,8 +16,15 @@ namespace luabind {
     {
         void to(lua_State* L, ssig::Connection<Signature> const& value)
         {
-            luabind::object o(L, makeConnection(value), luabind::adopt(luabind::result));
+            luabind::object o(L, makeConnection(value),
+                luabind::adopt(luabind::result));
             o.push(L);
+        }
+    private:
+        ssig::ConnectionBase* makeConnection(
+            ssig::Connection<Signature> const& con)
+        {
+            return new ssig::ScopedConnection<Signature>(con);
         }
     };
 

@@ -8,6 +8,14 @@ local tabutil = require 'tabutil'
 local util = require 'util'
 local oo = require 'oo'
 
+-- Compatibility
+function jd.connect(component, event, callback)
+    -- When we get event="foo", we need to call the components onFoo function,
+    -- i.e. the first letter becomes uppercase.
+    local event = event:gsub("^%l", string.upper)
+    return component["on" .. event](component, callback)
+end
+
 local M = { }
 
 do

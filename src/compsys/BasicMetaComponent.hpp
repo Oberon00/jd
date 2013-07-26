@@ -27,24 +27,6 @@ public:
     }
 };
 
-#define JD_EVT_METACOMPONENT(c, bc) \
-    namespace {                                     \
-    class c##Meta: public bc {                      \
-    public:                                         \
-        virtual ssig::ConnectionBase* connectEvent( \
-            lua_State*,                             \
-            Component*,                             \
-            std::string const& name) const;         \
-    };                                              \
-    } // anonymous namespace
-
-
 #define JD_BASIC_COMPONENT_IMPL(c) JD_COMPONENT_IMPL(c, BasicMetaComponent<c>)
-
-#define JD_BASIC_EVT_COMPONENT_IMPL(c) \
-    JD_EVT_METACOMPONENT(c, BasicMetaComponent<c>) \
-    JD_COMPONENT_IMPL(c, c##Meta)
-
-
 
 #endif

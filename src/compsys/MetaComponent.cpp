@@ -49,21 +49,6 @@ static luabind::object Component_parent(Component const& c, lua_State* L)
         return luabind::object();
 }
 
-static ssig::ConnectionBase* connectEvent(
-    lua_State* L,
-    Component& sender,
-    std::string const& eventname,
-    luabind::object const& receiver)
-{
-    receiver.push(L);
-    ssig::ConnectionBase* result = sender.metaComponent().connectEvent(
-        L, &sender, eventname);
-    lua_pop(L, 1);
-    if (!result)
-        throw luaU::Error("Event \"" + eventname + "\" not found!");
-    return result;
-}
-
 class wrap_Component: public Component, public luabind::wrap_base {
 public:
     wrap_Component(lua_State* L, Entity& parent, std::string const& classname)
@@ -145,7 +130,6 @@ static void init(LuaVm& vm)
             .def(tostring(const_self))
             .LHISREFVALID2(Component),
         def("registerComponent", &registerMetaComponent),
-        def("connect", &connectEvent, adopt(result)),
         class_<ssig::ConnectionBase, wrap_ConnectionBase>("ConnectionBase")
             .def(constructor<>())
             .def("disconnect", &ssig::ConnectionBase::disconnect)
@@ -199,14 +183,4 @@ void LuaMetaComponent::castDown(lua_State* L, Component* c) const
     assert(dynamic_cast<wrap_Component*>(c));
     luabind::object o(L, c->ref<wrap_Component>());
     o.push(L);
-}
-
-ssig::ConnectionBase* LuaMetaComponent::connectEvent(lua_State* L, Component* c, std::string const& name) const
-{
-    using namespace luabind;
-    object receiver(from_stack(L, -1));
-    object callback = globals(L)[jd::moduleName]["callback_connectLuaEvent"];
-    if (type(callback) != LUA_TFUNCTION)
-        throw std::runtime_error("no callback for event connection defined (must be a plain function)");
-    return object_cast<ssig::ConnectionBase*>(callback(c, name, receiver)[adopt(result)]);
 }

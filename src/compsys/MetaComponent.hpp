@@ -13,7 +13,6 @@
 
 
 struct lua_State;
-namespace ssig { class ConnectionBase; }
 class Component;
 
 class InvalidMetaComponentName: public std::runtime_error {
@@ -34,13 +33,6 @@ public:
         assert("not scriptable!" && false);
         throw std::runtime_error("castDown() is not implemented.");
     }
-
-    // receiver is on top of stack; return value disconnects automatically on deletion
-    virtual ssig::ConnectionBase* connectEvent(lua_State*, Component*, std::string const& name) const
-    {
-        (void)name;
-        return nullptr;
-    }
 };
 
 // Two MetaComponent instances are equal if and only if they have the same
@@ -58,8 +50,6 @@ public:
     std::string const& name() const override;
 
     void castDown(lua_State* L, Component* c) const override;
-    ssig::ConnectionBase* connectEvent(
-        lua_State* L, Component* c, std::string const& name) const override;
 
 private:
     std::string const m_name;
