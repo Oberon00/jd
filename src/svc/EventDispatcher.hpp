@@ -5,17 +5,13 @@
 #ifndef EVENT_DISPATCHER_HPP_INCLUDED
 #define EVENT_DISPATCHER_HPP_INCLUDED EVENT_DISPATCHER_HPP_INCLUDED
 
-#include "compsys/Component.hpp"
-
 #include <SFML/Window/Event.hpp>
 #include <ssig.hpp>
 
 
 namespace sf { class Window; }
 
-class EventDispatcher: public Component {
-    JD_COMPONENT
-
+class EventDispatcher {
     // Raw
     SSIG_DEFINE_MEMBERSIGNAL(sfEvent, void(sf::Event const&))
 

@@ -5,10 +5,6 @@
 #ifndef MAINLOOP_HPP_INCLUDED
 #define MAINLOOP_HPP_INCLUDED MAINLOOP_HPP_INCLUDED
 
-namespace sf { class RenderWindow; }
-
-#include "compsys/Component.hpp"
-
 #include <ssig.hpp>
 
 #include <cstdlib>
@@ -16,9 +12,7 @@ namespace sf { class RenderWindow; }
 
 class MetaComponent;
 
-class Mainloop: public Component {
-    JD_COMPONENT
-
+class Mainloop {
 #define CALLBACKS(m) \
         m(started)      \
         m(preFrame)     \

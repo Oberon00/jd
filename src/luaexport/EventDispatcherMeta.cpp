@@ -4,47 +4,34 @@
 
 #include "svc/EventDispatcher.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "LuaEventHelpers.hpp"
 #include "SfBaseTypes.hpp"
 
 static char const libname[] = "EventDispatcher";
 #include "ExportThis.hpp"
 
-
-JD_BASIC_EVT_COMPONENT_IMPL(EventDispatcher)
-
-JD_EVENT_TABLE_BEGIN(EventDispatcher)
-#define E0(n) JD_EVENT_ENTRY0(n, void)
-#define E1(n) JD_EVENT_ENTRY(n, void, _1)
-    E0(closed)
-    E1(resized)
-    E0(lostFocus)
-    E0(gainedFocus)
-    E1(textEntered)
-
-    E1(keyPressed)
-    E1(keyReleased)
-
-    E1(mouseWheelMoved)
-    E1(mouseButtonPressed)
-    E1(mouseButtonReleased)
-    E1(mouseMoved)
-    E0(mouseEntered)
-    E0(mouseLeft)
-#undef E0
-#undef E1
-JD_EVENT_TABLE_END
-
 static void init(LuaVm& vm)
 {
     vm.initLib("ComponentSystem");
     LHMODULE [
 #       define LHCURCLASS EventDispatcher
-        class_<LHCURCLASS, Component>(BOOST_STRINGIZE(LHCURCLASS))
+        LHCLASS
             .LHPROPG(isWindowFocused)
             .LHMEMFN(isKeyPressed)
             .LHMEMFN(isMouseButtonPressed)
             .LHMEMFN(mousePosition)
+            .JD_EVENT(closed, Closed)
+            .JD_EVENT(resized, Resized)
+            .JD_EVENT(lostFocus, LostFocus)
+            .JD_EVENT(gainedFocus, GainedFocus)
+            .JD_EVENT(textEntered, TextEntered)
+            .JD_EVENT(keyPressed, KeyPressed)
+            .JD_EVENT(keyReleased, KeyReleased)
+            .JD_EVENT(mouseWheelMoved, MouseWheelMoved)
+            .JD_EVENT(mouseButtonPressed, MouseButtonPressed)
+            .JD_EVENT(mouseButtonReleased, MouseButtonReleased)
+            .JD_EVENT(mouseMoved, MouseMoved)
+            .JD_EVENT(mouseEntered, MouseEntered)
+            .JD_EVENT(mouseLeft, MouseLeft)
     ];
 }

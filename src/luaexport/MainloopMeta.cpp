@@ -2,25 +2,12 @@
 // This file is subject to the terms of the BSD 2-Clause License.
 // See LICENSE.txt or http://opensource.org/licenses/BSD-2-Clause
 
-#define MAINLOOP_KEEP_CALLBACKS
 #include "svc/Mainloop.hpp"
 
-#include "compsys/BasicMetaComponent.hpp"
 #include "LuaEventHelpers.hpp"
 
 static char const libname[] = "Mainloop";
 #include "ExportThis.hpp"
-
-
-JD_BASIC_EVT_COMPONENT_IMPL(Mainloop)
-
-JD_EVENT_TABLE_BEGIN(Mainloop)
-#define ENTRY(n) JD_EVENT_ENTRY0(n, void)
-   CALLBACKS(ENTRY)
-#undef ENTRY
-   JD_EVENT_ENTRY(quitting, void, _1)
-   JD_EVENT_ENTRY(quitRequested, void, _1)
-JD_EVENT_TABLE_END
 
 static void quit0(Mainloop& ml)
 {
@@ -32,8 +19,19 @@ static void init(LuaVm& vm)
     vm.initLib("ComponentSystem");
     LHMODULE [
 #       define LHCURCLASS Mainloop
-        class_<LHCURCLASS, Component>(BOOST_STRINGIZE(LHCURCLASS))
+        LHCLASS
             .LHMEMFN(quit)
             .def("quit", &quit0)
+            .JD_EVENT(started, Started)
+            .JD_EVENT(preFrame, PreFrame)
+            .JD_EVENT(processInput, ProcessInput)
+            .JD_EVENT(update, Update)
+            .JD_EVENT(interact, Interact)
+            .JD_EVENT(preDraw, PreDraw)
+            .JD_EVENT(draw, Draw)
+            .JD_EVENT(postDraw, PostDraw)
+            .JD_EVENT(postFrame, PostFrame)
+            .JD_EVENT(quitting, Quitting)
+            .JD_EVENT(quitRequested, QuitRequested)
     ];
 }
