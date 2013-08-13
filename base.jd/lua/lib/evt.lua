@@ -124,16 +124,29 @@ lclass('Table', M)
 local Connection = oo.cppclass('Connection', oo.NIL_ENV, jd.ConnectionBase)
 
 lclass('Signal', M)
-
+    
+    local function erased_placeholder() end
+    
     local function erase(self, i)
-        local slotCount = #self
-        if i == slotCount then
-            self[i] = nil
-        else
-            self[i] = self[slotCount]
-            self[slotCount] = nil
-        end
+        self[i] = erased_placeholder
+        self.needsErase= true
     end
+    
+    local function doErase(self)
+        local slotCount = #self
+        for i = 1, slotCount do
+            if erased_placeholder == self[i] then
+                if i == slotCount then
+                    self[i] = nil
+                else
+                    self[i] = self[slotCount]
+                    self[slotCount] = nil
+                    slotCount = slotCount - 1
+                end -- if i == slotCount / else
+            end -- if erased_placeholder == self[i]
+        end -- for each slot
+        self.needsErase = false
+    end -- local function doErase
 
     local function disconnectHint(self, f, hint)
         if self[i] == f then
@@ -148,6 +161,10 @@ lclass('Signal', M)
         in which the slots are called is undefined.
     --]]
     function M.Signal:__call(...)
+        if self.needsErase then
+            doErase(self)
+        end
+        
         for i = 1, #self do
             self[i](...)
         end
@@ -163,6 +180,10 @@ lclass('Signal', M)
         should use it only if you really need the return values.
     --]]
     function M.Signal:callR(...)
+        if self.needsErase then
+            doErase(self)
+        end
+        
         local result = { }
         for i = 1, #self do
             result[i] = table.pack(self[i](...))
@@ -178,8 +199,9 @@ lclass('Signal', M)
 
     function M.Signal:clear()
         for i = 1, #self do
-            self[i] = nil
+            self[i] = erased_placeholder
         end
+        self.needsErase = true
     end
 
     --[[
