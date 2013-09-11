@@ -245,4 +245,8 @@ target_link_libraries(jd
     ${ZLIB_LIBRARY}
     ${Boost_LIBRARIES})
 
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    target_link_libraries(jd dl)
+endif()
+
 install(TARGETS jd RUNTIME DESTINATION bin)
